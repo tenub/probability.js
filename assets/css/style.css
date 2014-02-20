@@ -1,0 +1,47 @@
+body {
+	font-family: 'Open Sans', sans-serif;
+	overflow-y: scroll;
+}
+h1 {
+	color: #248;
+	margin: 0.5em 0;
+	text-align: center;
+}
+pre {
+	background: #f9f9f9;
+	border: 1px solid #eee;
+	border-radius: 1em;
+	color: #333;
+	display: inline-block;
+	font-family: 'Inconsolata', monospace;
+	margin: 0;
+	padding: 1em 4em 1em 1em;
+	text-align: left;
+	transition: all 0.5s;
+}
+pre:hover {
+	background: #eee;
+	border: 1px solid #ddd;
+	color: #000;
+	transition: all 0.5s;
+}
+pre:hover small.ln {
+	color: #bbb;
+	transition: all 0.5s;
+}
+button, input, select, textarea {
+	background: #fff;
+	border: 1px solid rgba(0,0,0,0.3);
+	outline: none;
+}
+button:focus, input:focus, select:focus, textarea:focus {
+	box-shadow: 0 0 1em rgba(0,0,0,0.2);
+}
+.container {
+	margin: 1em auto 0 auto;
+	text-align: center;
+}
+small.ln {
+	color: #aaa;
+	transition: all 0.5s;
+}

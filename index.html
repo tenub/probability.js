@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta charset="utf-8">
+<title>math</title>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700">
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Inconsolata:400,700&subset=latin,latin-ext">
+<link rel="stylesheet" href="assets/css/style.css">
+<!--[if lt IE 9]>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+<![endif]-->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+<script src="assets/js/math.js"></script>
+<script>
+	$(document).ready(function(){
+		$('#calc').submit(function(e){
+			e.preventDefault();
+			var distr=[],
+				p=parseFloat($('#p').val(),10),
+				n=parseInt($('#n').val(),10);
+			for(var i=1; i<=n; i++){
+				distr.push(Math.p.d.binomial.pmf(p,n,i));
+			}
+			$el=$('<div/>').addClass('result').html(
+				'<h1>PMF<small>(n=<em>'+n+'</em>, p=<em>'+p+'</em>)</small></h1><pre>'+Math.h.arr_dump(distr)+'</pre>'
+			);
+			$('.container').append($el.hide().fadeIn(500));
+		});
+	});
+</script>
+</head>
+<body>
+<div class="container">
+	<form id="calc">
+		<label>Probability: </label><input type="number" min="0" max="1" step="0.05" value="0.5" id="p"/>
+		<label>Trials: </label><input type="number" min="0" max="170" step="1" value="40" id="n"/>
+		<input type="submit" value="Calculate">
+	</form>
+</div>
+</body>
+</html>
