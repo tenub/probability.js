@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css">
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.min.css">
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700">
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Inconsolata:400,700&subset=latin,latin-ext">
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Inconsolata:400,700&amp;subset=latin,latin-ext">
 <link rel="stylesheet" href="assets/css/style.css">
 <!--[if lt IE 9]>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
@@ -16,6 +16,7 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.13/d3.min.js"></script>
 <script src="assets/js/math.js"></script>
 <script>
 	$(document).ready(function(){
@@ -24,17 +25,87 @@
 			var distr=[],
 				p=parseFloat($('#p').val(),10),
 				n=parseInt($('#n').val(),10);
-			for(var i=1; i<=n; i++){
-				distr.push(Math.p.d.binomial.pmf(p,n,i));
+			for(var i=0; i<n; i++){
+				distr.push({k:i,p:Math.p.d.binomial.pdf(p,n,i)});
 			}
+			console.log(Math.round(Math.p.m.variance(Math.p.d.binomial.mgf(p,n),0)*100)/100);
 			$el=$('<div/>').addClass('result').html(
-				'<h1>PMF<small>(n=<em>'+n+'</em>, p=<em>'+p+'</em>)</small></h1><pre>'+Math.h.arr_dump(distr)+'</pre>'
+				'<h1>PMF<small>(n=<em>'+n+'</em>, p=<em>'+p+'</em>)</small></h1><pre>'+Math.h.arr_dump(distr,'p')+'</pre>'
 			);
 			$('.container').append($el.hide().fadeIn(500));
-			console.log(Math.e.eval(Math.p.d.binomial.mgf(p,n)));
+			/*var margin = {
+				top: 20,
+				right: 20,
+				bottom: 30,
+				left: 50
+			},
+			width = 960 - margin.left - margin.right,
+			height = 500 - margin.top - margin.bottom;
+
+			var x = d3.scale.linear()
+					.range([0, width]);
+
+			var y = d3.scale.linear()
+					.range([height, 0]);
+
+			var xAxis = d3.svg.axis()
+					.scale(x)
+					.orient("bottom");
+
+			var yAxis = d3.svg.axis()
+					.scale(y)
+					.orient("left");
+
+			var area = d3.svg.area()
+					.x(function(d) { return x(d.k); })
+					.y0(height)
+					.y1(function(d) { return y(d.p); });
+
+			var svg = d3.select("body").append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+			d3.entries(distr, function(data) {
+
+				x.domain(d3.extent(data, function(d) { return d.k; }));
+				y.domain([0, d3.max(data, function(d) { return d.p; })]);
+
+				svg.append("path")
+						.datum(data)
+						.attr("class", "area")
+						.attr("d", area);
+
+				svg.append("g")
+						.attr("class", "x axis")
+						.attr("transform", "translate(0," + height + ")")
+						.call(xAxis);
+
+				svg.append("g")
+						.attr("class", "y axis")
+						.call(yAxis)
+					.append("text")
+						.attr("transform", "rotate(-90)")
+						.attr("y", 6)
+						.attr("dy", ".71em")
+						.style("text-anchor", "end")
+						.text("Price ($)");
+			});*/
 		});
 	});
 </script>
+<style>
+	.axis path, .axis line {
+		fill: none;
+		stroke: #000;
+		shape-rendering: crispEdges;
+	}
+	.area {
+		fill: steelblue;
+	}
+</style>
+
 </head>
 <body>
 <div class="container">
@@ -43,6 +114,7 @@
 		<label>Trials: </label><input type="number" min="0" max="170" step="1" value="40" id="n"/>
 		<input type="submit" value="Calculate">
 	</form>
+	<div id="graph"></div>
 </div>
 </body>
 </html>

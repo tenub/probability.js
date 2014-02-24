@@ -5,7 +5,7 @@
 // Define helper functions
 Math.h={
 	isInt:function(n){
-		return typeof n==='number' && n%1==0;
+		return typeof n==='number' && n%1===0;
 	},
 	factorial:function(n){
 		if(!Math.h.isInt(n)){
@@ -29,7 +29,46 @@ Math.h={
 	choose:function(n,k){
 		return Math.h.factorial(n)/(Math.h.factorial(n-k)*Math.h.factorial(k));
 	},
-	arr_dump:function(array,rows){
+	triangular:function(n){
+		return Math.h.choose(n+1,2);
+	},
+	derivative:function(f,o,x){
+		var h=0.01, v1, v2;
+		switch(o){
+			case 1:
+				while((typeof v1==='undefined' && typeof v2==='undefined') || Math.abs(v1-v2)>1E-7) {
+					v1=(-f(x+2*h)+8*f(x+h)-8*f(x-h)+f(x-2*h))/(12*h);
+					h-=h/2;
+					v2=(-f(x+2*h)+8*f(x+h)-8*f(x-h)+f(x-2*h))/(12*h);
+				}
+				return v2;
+			case 2:
+				while((typeof v1==='undefined' && typeof v2==='undefined') || Math.abs(v1-v2)>1E-7) {
+                    v1=(-f(x+2*h)+16*f(x+h)-30*f(x)+16*f(x-h)-f(x-2*h))/(12*Math.pow(h,2));
+					h-=h/2;
+					v2=(-f(x+2*h)+16*f(x+h)-30*f(x)+16*f(x-h)-f(x-2*h))/(12*Math.pow(h,2));
+                    console.log(v1,v2);
+				}
+				return v2;
+			case 3:
+				return (f(x+2*h)-2*f(x+h)+2*f(x-h)-f(x-2*h))/2*Math.pow(h,3);
+			case 4:
+				return (f(x+2*h)-4*f(x+h)+6*f(x)-4*f(x-h)+f(x-2*h))/Math.pow(h,4);
+		}
+	},
+	sq_size:function(num){
+		var m=Math.floor(Math.sqrt(num));
+		if(num%m===0)
+			return m;
+		else{
+			for(var i=1; i<(m-1); i++){
+				if(num%(m-i)===0)
+					return (m-i);
+			}
+			return m;
+		}
+	},
+	arr_dump:function(array,key,rows){
 		l=array.length;
 		if(typeof rows==='undefined'){
 			rows=Math.h.sq_size(l);
@@ -46,95 +85,13 @@ Math.h={
 					str+='0';
 				str+=(i+rows)+'</small>';*/
 			}
-			str+='\t'+array[i]+',';
+			str+=(typeof key==='undefined')?'\t'+array[i]+',':'\t'+array[i][key]+',';
 			/*if(i%rows===rows-1)
 				str+='\t';*/
 		}
 		str=str.slice(0,-1);
 		str+='\n]';
 		return str;
-	},
-	sq_size:function(num){
-		var m=Math.floor(Math.sqrt(num));
-		if(num%m===0)
-			return m;
-		else{
-			for(var i=1; i<(m-1); i++){
-				if(num%(m-i)===0)
-					return (m-i);
-			}
-			return m;
-		}
-	},
-	derivative:function(f,o){
-		var x, h=0.0001;
-		switch(order){
-			case 1:
-				return -(f(x+2*h)+8*f(x+h)-8*f(x-h)+f(x-2*h))/12*h;
-			case 2:
-				return -(f(x+2*h)+16*f(x+h)-30*f(x)+16*f(x-h)-f(x-2*h))/12*Math.pow(h,2);
-			case 3:
-				return (f(x+2*h)-2*f(x+h)+2*f(x-h)-f(x-2*h))/2*Math.pow(h,3);
-			case 4:
-				return (f(x+2*h)-4*f(x+h)+6*f(x)-4*f(x-h)+f(x-2*h))/Math.pow(h,4);
-			default:
-				return 0;
-		}
-	}
-};
-
-// Define function evaluation object
-Math.e={
-	operators:['+','-','*','/','^'],
-	eval:function(f){
-		var s=[];
-		f=f.split(' ');
-
-		/*	While there are input tokens left
-		 *		Read the next token from input.
-		 *		If the token is a value
-		 *			Push it onto the stack.
-		 *		Otherwise, the token is an operator (operator here includes both operators and functions).
-		 *			It is known a priori that the operator takes n arguments.
-		 *			If there are fewer than n values on the stack
-		 *				(Error) The user has not input sufficient values in the expression.
-		 *			Else, Pop the top n values from the stack.
-		 *			Evaluate the operator, with the values as arguments.
-		 *			Push the returned results, if any, back onto the stack.
-		 *	If there is only one value in the stack
-		 *		That value is the result of the calculation.
-		 *	Otherwise, there are more values in the stack
-		 *		(Error) The user input has too many values.
-		 */
-
-		for(var i=0, l=f.length; i<l; i++){
-			if(/[^^\/*!+-]/.test(f[i]))
-				s.push(f[i]);
-			else{
-				s.splice(0,2);
-				switch(f[i]){
-					case '+':
-						s.push(s[0]+s[1]);
-						break;
-					case '-':
-						s.push(s[0]-s[1]);
-						break;
-					case '*':
-						s.push(s[0]*s[1]);
-						break;
-					case '/':
-						s.push(s[0]/s[1]);
-						break;
-					case '^':
-						s.push(Math.pow(s[0],s[1]));
-						break;
-				}
-			}
-		}
-
-		console.log(s);
-
-		return s;
 	}
 };
 
@@ -142,11 +99,11 @@ Math.e={
 Math.p={
 	// Define moments
 	m:{
-		mean:function(f){
-			return Math.h.derivative(f,1); // p*n
+		mean:function(f,n){
+			return Math.h.derivative(f,1,n); // p*n
 		},
-		variance:function(){
-			return Math.h.derivative(f,2); // p*n*(1-p)
+		variance:function(f,n){
+			return Math.h.derivative(f,1,Math.pow(n,2)) - Math.pow(Math.h.derivative(f,1,n),2); //Math.h.derivative(f,2,n); // p*n*(1-p)
 		},
 		skewness:function(){
 			return Math.h.derivative(f,3); // (1-2*p)/Math.sqrt(p*n*(1-p))
@@ -159,9 +116,11 @@ Math.p={
 	d:{
 		binomial:{
 			mgf:function(p,n){
-				return '1 0.5 - 2.71 0.1 ^ 0.5 * + 10'; // '1 p - e t ^ p * + n'; // (1-p+p*e^t)^n;
+				return function(t){
+					return Math.pow(1-p+p*Math.exp(t),n);
+				}; // (1-p+p*e^t)^n;
 			},
-			pmf:function(p,n,k){
+			pdf:function(p,n,k){
 				return Math.round(Math.h.choose(n,k)*Math.pow(p,k)*Math.pow((1-p),(n-k))*10000)/10000;
 			},
 			cdf:function(p,n,k){
