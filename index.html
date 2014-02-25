@@ -29,7 +29,7 @@
 			for(var i=0; i<n; i++){
 				distr.push({k:i,p:Math.p.d.binomial.cdf(p,n,i)});
 			}
-			console.log(Math.round(Math.p.m.variance(Math.p.d.binomial.mgf(p,n),0)*100)/100);
+			console.log(Math.round(Math.p.m.skewness(Math.p.d.binomial.mgf(p,n),0)*100)/100);
 			$el=$('<div/>').addClass('result').html(
 				'<h1>PMF<small>(n=<em>'+n+'</em>, p=<em>'+p+'</em>)</small></h1><pre>'+Math.h.arr_dump(distr,'p')+'</pre>'
 			);

@@ -33,7 +33,7 @@ Math.h={
 		return Math.h.choose(n+1,2);
 	},
 	derivative:function(f,o,x){
-		var h=0.01,v1,v2,f1;
+		var h=0.01,d,a=[],v1,v2,v,f1;
 		switch(o){
 			case 1:
 				f1=function(x,h){ return (-f(x+2*h)+8*f(x+h)-8*f(x-h)+f(x-2*h))/(12*h); };
@@ -48,12 +48,19 @@ Math.h={
 				f1=function(x,h){ return (f(x+2*h)-4*f(x+h)+6*f(x)-4*f(x-h)+f(x-2*h))/Math.pow(h,4); };
 				break;
 		}
-		while((typeof v1==='undefined' && typeof v2==='undefined') || Math.abs(v1-v2)>1E-5) {
+		while((typeof v1==='undefined' && typeof v2==='undefined') || d>1E-9 || h>1E-9) {
 			v1=f1(x,h);
 			h-=h/2;
 			v2=f1(x,h);
+			d=Math.abs(v1-v2);
+			a.push({diff:d,val:v2});
 		}
-		return (h>1E-7)?v2:undefined;
+		console.log(a);
+		return a.filter(function(el1){
+			return el1.diff===Math.min.apply(null,a.map(function(el2){
+				return el2.val;
+			}));
+		});
 	},
 	sq_size:function(num){
 		var m=Math.floor(Math.sqrt(num));
