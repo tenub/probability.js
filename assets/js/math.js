@@ -33,28 +33,27 @@ Math.h={
 		return Math.h.choose(n+1,2);
 	},
 	derivative:function(f,o,x){
-		var h=0.01, v1, v2;
+		var h=0.01,v1,v2,f1;
 		switch(o){
 			case 1:
-				while((typeof v1==='undefined' && typeof v2==='undefined') || Math.abs(v1-v2)>1E-7) {
-					v1=(-f(x+2*h)+8*f(x+h)-8*f(x-h)+f(x-2*h))/(12*h);
-					h-=h/2;
-					v2=(-f(x+2*h)+8*f(x+h)-8*f(x-h)+f(x-2*h))/(12*h);
-				}
-				return v2;
+				f1=function(x,h){ return (-f(x+2*h)+8*f(x+h)-8*f(x-h)+f(x-2*h))/(12*h); };
+				break;
 			case 2:
-				while((typeof v1==='undefined' && typeof v2==='undefined') || Math.abs(v1-v2)>1E-7) {
-                    v1=(-f(x+2*h)+16*f(x+h)-30*f(x)+16*f(x-h)-f(x-2*h))/(12*Math.pow(h,2));
-					h-=h/2;
-					v2=(-f(x+2*h)+16*f(x+h)-30*f(x)+16*f(x-h)-f(x-2*h))/(12*Math.pow(h,2));
-                    console.log(v1,v2);
-				}
-				return v2;
+				f1=function(x,h){ return (-f(x+2*h)+16*f(x+h)-30*f(x)+16*f(x-h)-f(x-2*h))/(12*Math.pow(h,2)); };
+				break;
 			case 3:
-				return (f(x+2*h)-2*f(x+h)+2*f(x-h)-f(x-2*h))/2*Math.pow(h,3);
+				f1=function(x,h){ return (f(x+2*h)-2*f(x+h)+2*f(x-h)-f(x-2*h))/(2*Math.pow(h,3)); };
+				break;
 			case 4:
-				return (f(x+2*h)-4*f(x+h)+6*f(x)-4*f(x-h)+f(x-2*h))/Math.pow(h,4);
+				f1=function(x,h){ return (f(x+2*h)-4*f(x+h)+6*f(x)-4*f(x-h)+f(x-2*h))/Math.pow(h,4); };
+				break;
 		}
+		while((typeof v1==='undefined' && typeof v2==='undefined') || Math.abs(v1-v2)>1E-5) {
+			v1=f1(x,h);
+			h-=h/2;
+			v2=f1(x,h);
+		}
+		return (h>1E-7)?v2:undefined;
 	},
 	sq_size:function(num){
 		var m=Math.floor(Math.sqrt(num));
@@ -99,22 +98,27 @@ Math.h={
 Math.p={
 	// Define moments
 	m:{
-		mean:function(f,n){
-			return Math.h.derivative(f,1,n); // p*n
+		mean:function(f,t){
+			return Math.h.derivative(f,1,t);
 		},
-		variance:function(f,n){
-			return Math.h.derivative(f,1,Math.pow(n,2)) - Math.pow(Math.h.derivative(f,1,n),2); //Math.h.derivative(f,2,n); // p*n*(1-p)
+		variance:function(f,t){
+			return Math.h.derivative(f,2,t)-Math.pow(Math.p.m.mean(f,t),2);
 		},
-		skewness:function(){
-			return Math.h.derivative(f,3); // (1-2*p)/Math.sqrt(p*n*(1-p))
+		skewness:function(f,t){
+			return (Math.h.derivative(f,3,t)-3*Math.p.m.mean(f,t)*Math.p.m.variance(f,t)-Math.pow(Math.p.m.mean(f,t),3))/Math.pow(Math.p.m.variance(f,t),1.5);
 		},
-		kurtosis:function(){
-			return Math.h.derivative(f,4); // (1-6*p*(1-p))/(p*n*(1-p))
+		kurtosis:function(f,t){
+			return Math.h.derivative(f,4,t)/Math.pow(Math.p.m.variance(f,t),2)-3; // (1-6*p*(1-p))/(p*n*(1-p))
 		}
 	},
 	// Define distribution sub-object
 	d:{
 		binomial:{
+			params:{
+				p:'Probability',
+				n:'Trials',
+				k:'Successes'
+			},
 			mgf:function(p,n){
 				return function(t){
 					return Math.pow(1-p+p*Math.exp(t),n);
@@ -130,6 +134,23 @@ Math.p={
 					F+=(Math.h.choose(n,i)*Math.pow(p,i)*Math.pow((1-p),(n-i)));
 				}
 				return Math.round(F*10000)/10000;
+			}
+		},
+		geometric:{
+			params:{
+				p:'Probability',
+				k:'TTS'
+			},
+			mgf:function(p){
+				return function(t){
+					return p/(1-(1-p)*Math.exp(t));
+				}; // p/(1-(1-p)*e^t);
+			},
+			pdf:function(p,k){
+				return Math.round(Math.pow(1-p,k)*p*10000)/10000;
+			},
+			cdf:function(p,k){
+				return Math.round((1-Math.pow((1-p),(k+1)))*10000)/10000;
 			}
 		}
 	}

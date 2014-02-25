@@ -16,6 +16,7 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/mathjs/0.18.0/math.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.13/d3.min.js"></script>
 <script src="assets/js/math.js"></script>
 <script>
@@ -26,7 +27,7 @@
 				p=parseFloat($('#p').val(),10),
 				n=parseInt($('#n').val(),10);
 			for(var i=0; i<n; i++){
-				distr.push({k:i,p:Math.p.d.binomial.pdf(p,n,i)});
+				distr.push({k:i,p:Math.p.d.binomial.cdf(p,n,i)});
 			}
 			console.log(Math.round(Math.p.m.variance(Math.p.d.binomial.mgf(p,n),0)*100)/100);
 			$el=$('<div/>').addClass('result').html(
