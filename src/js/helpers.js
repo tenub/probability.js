@@ -1,33 +1,32 @@
-function Helpers() {
+// Define helper functions
+Math.h = {
 
-	var self = this;
+	/**
+	 * determines if a number is an integer
+	 *
+	 * @param {number} n
+	 * @return {boolean}
+	 */
+	isInt: function(n) {
 
-	self.isInt = function(n) {
+		return typeof n === 'number' && isFinite(n) && n > -9007199254740992 && n < 9007199254740992 && Math.floor(n) === n;
 
-		return (typeof n === 'number' && (n % 1) === 0);
+	},
 
-	};
-
-	self.factorial = function(n) {
+	/**
+	 * computes the factorial of a number
+	 * handles integers exactly and approximates floats via numerical estimation of its gamma function value
+	 *
+	 * @param {number} n
+	 * @return {number}
+	 */
+	factorial: function(n) {
 
 		var i = 0;
 
-		if (!self.isInt(n)) {
+		if (!this.isInt(n)) {
 
-			// Lanczos Approximation of the Gamma Function
-			// As described in Numerical Recipes in C (2nd ed. Cambridge University Press, 1992)
-			var z = n + 1,
-				p = [1.000000000190015, 76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 1.208650973866179E-3, -5.395239384953E-6],
-				d1 = Math.sqrt(2 * Math.PI) / z,
-				d2 = p[0],
-				d3 = Math.pow((z + 5.5), (z + 0.5)),
-				d4 = Math.exp(-(z + 5.5));
-
-			for (i=1; i<=6; ++i) {
-				d2 += p[i] / (z + i);
-			}
-
-			return (d1 * d2 * d3 * d4);
+			return this.gamma(n - 1);
 
 		} else {
 
@@ -41,21 +40,103 @@ function Helpers() {
 
 		}
 
-	};
+	},
 
-	self.choose = function(n, k) {
+	/**
+	 * computes the combination of a number
+	 *
+	 * @param {number} n
+	 * @param {number} k
+	 * @return {number}
+	 */
+	choose: function(n, k) {
 
-		return (self.factorial(n) / (self.factorial(n - k) * self.factorial(k)));
+		return this.factorial(n) / (this.factorial(n - k) * this.factorial(k));
 
-	};
+	},
 
-	self.triangular = function(n) {
+	/**
+	 * computes the sum of all values less than or equal to a number
+	 *
+	 * @param {number} n
+	 * @return {number}
+	 */
+	triangular: function(n) {
 
-		return (self.choose(n + 1, 2));
+		return this.choose(n + 1, 2);
 
-	};
+	},
 
-	self.derivative = function(f, o, x) {
+	/**
+	 * estimates the value of the gamma function at a certain value
+	 *
+	 * @param {number} n
+	 * @return {number}
+	 */
+	gamma: function(n) {
+
+		var g = 7,
+				p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7],
+				g_ln = 607 / 128,
+				p_ln = [0.99999999999999709182, 57.156235665862923517, -59.597960355475491248, 14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4, 0.46523628927048575665e-4, -0.98374475304879564677e-4, 0.15808870322491248884e-3, -0.21026444172410488319e-3, 0.21743961811521264320e-3, -0.16431810653676389022e-3, 0.84418223983852743293e-4, -0.26190838401581408670e-4, 0.36899182659531622704e-5];
+
+		if (n < 0.5) {
+
+			return Math.PI / (Math.sin(Math.PI * n) * this.gamma(1 - n));
+
+		} else if (n > 100) {
+
+			return Math.exp(lngamma(n));
+
+		} else {
+
+			n -= 1;
+
+			var x = p[0];
+
+			for (var i=1; i<g+2; i++) {
+				x += p[i] / (n + i);
+			}
+
+			var t = n + g + 0.5;
+
+			return Math.sqrt(2 * Math.PI) * Math.pow(t, n + 0.5) * Math.exp(-t) * x;
+
+		}
+
+		function lngamma(n) {
+
+			if (n < 0) {
+
+				return Number('0/0');
+
+			}
+
+			var x = p_ln[0];
+
+			for (var i=p_ln.length-1; i>0; --i) {
+
+				x += p_ln[i] / (n + i);
+
+			}
+
+			var t = n + g_ln + 0.5;
+
+			return 0.5 * Math.log(2 * Math.PI) + (n + 0.5) * Math.log(t) - t + Math.log(x) - Math.log(n);
+
+		}
+
+	},
+
+	/**
+	 * numerically estimates the derivative of a function
+	 *
+	 * @param {function} f - single-variable function to derive
+	 * @param {number} o - order of derivative to compute
+	 * @param {number} x - value at which to evaluate the derivative
+	 * @return {number}
+	 */
+	derivative: function(f, o, x) {
 
 		var h = 0.01,
 			i = 0,
@@ -109,99 +190,63 @@ function Helpers() {
 
 		return false;
 
-	};
+	},
 
-	self.integral = function(f, a, b) {
+	/**
+	 * numerically estimates the integral of a function using Simpson's rule
+	 *
+	 * @param {function} f - single-variable function to integrate
+	 * @param {number} a - lower bound
+	 * @param {number} b - upper bound
+	 * @return {number}
+	 */
+	integral: function(f, a, b) {
 
-		var n = 4,
-			i = 0,
-			dx = (b - a) / n,
-			r = [],
-			v1 = 0,
-			v2 = 0,
-			j = a;
+		return (b - a) / 6 * (f(a) + 4 * f((a + b) / 2) + f(b));
 
-		while (n < 128) {
+	},
 
-			while (dx > 0) {
+	/**
+	 * determines the closest integer to a number's square root
+	 *
+	 * @param {number} n
+	 * @return {number}
+	 */
+	sq_size: function(n) {
 
-				if (j === a || j === b)
-					v1 += f(j);
-				else if (j % (2 * dx) === 0)
-					v1 += 2 * f(j);
-				else
-					v1 += 4 * f(j);
+		var m = Math.floor(Math.sqrt(n));
 
-				j += dx;
-
-				if (j > b)
-					break;
-
-			}
-
-			j = a;
-			v1 *= dx / 3;
-			n *= 2;
-			dx = (b - a) / n;
-
-			while (dx > 0) {
-
-				if (j === a || j === b)
-					v2 += f(j);
-				else if (j % (2 * dx) === 0)
-					v2 += 2 * f(j);
-				else
-					v2 += 4 * f(j);
-
-				j += dx;
-
-				if (j > b)
-					break;
-
-			}
-
-			v2 *= dx / 3;
-			r[i] = { n: n, d: Math.abs(v1 - v2), v1: v1, v2: v2 };
-
-			if (i > 0 && r[i].d > r[i - 1].d)
-				return r[i - 1].v1; // prevent loss of significance and instability
-			else
-				i += 1;
-
-		}
-
-		return false;
-		// (b-a)/n * ( f(a)/2 + sum(k=1,n-1)[f(a+k*(b-a)/n)] + f(b)/2 )
-
-	};
-
-	self.sq_size = function(num) {
-
-		var m = Math.floor(Math.sqrt(num));
-
-		if (num % m === 0) {
+		if (n % m === 0) {
 
 			return m;
 
 		} else {
 
 			for (var i=1; i<(m-1); i++) {
-				if (num % (m - i) === 0)
-					return (m - i);
+				if (n % (m - i) === 0)
+					return m - i;
 			}
 
 			return m;
 
 		}
 
-	};
+	},
 
-	self.arr_dump = function(array, key, rows) {
+	/**
+	 * outputs formatted array values
+	 *
+	 * @param {array} array
+	 * @param {string} [key] - if array elements are objects, specifies which key value to use
+	 * @param {integer} [cols] - specify number of columns to output
+	 * @return {string}
+	 */
+	arr_dump: function(array, key, cols) {
 
 		var l = array.length;
 
 		if (typeof rows === 'undefined') {
-			rows = self.sq_size(l);
+			rows = this.sq_size(l);
 		}
 
 		var str='[';
@@ -212,24 +257,9 @@ function Helpers() {
 
 				str += '\n';
 
-				/*str += '<small class="ln">';
-
-				if ((i + 1).toString().length < 2)
-					str += '0';
-
-				str += (i + 1) + '-';
-
-				if ((i + 1 + rows).toString().length < 2)
-					str += '0';
-
-				str += (i + rows) + '</small>';*/
-
 			}
 
 			str += (typeof key === 'undefined') ? '\t' + array[i] + ',' : '\t' + Math.round(array[i][key] * 10000) / 10000 + ',';
-
-			/*if (i % rows === rows - 1)
-				str += '\t';*/
 
 		}
 
@@ -239,8 +269,6 @@ function Helpers() {
 
 		return str;
 
-	};
+	}
 
-	return self;
-
-}
+};

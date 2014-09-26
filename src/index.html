@@ -35,16 +35,17 @@
 			e.preventDefault();
 			var distr=[],
 				p=parseFloat($('#p').val(),10),
-				n=parseInt($('#k').val(),10);
+				n=parseInt($('#n').val(),10),
+				k=parseInt($('#k').val(),10);
 			for(var i=0; i<n; i++){
-				distr.push({k:i,p:Math.p.distribution[distrType].cdf(p,i)});
+				distr.push({k:i,p:Math.p.distribution[distrType].cdf(p,i,k)});
 			}
 			var html ='<h1>PMF<small>(n=<em>'+n+'</em>, p=<em>'+p+'</em>)</small></h1>';
 				html+='<pre class="center"><span>μ: '+Math.p.moments.mean(Math.p.distribution[distrType].mgf(p,n),0)+'</span>';
 				html+='<span>σ<sup>2</sup>: '+Math.p.moments.variance(Math.p.distribution[distrType].mgf(p,n),0)+'</span>';
 				html+='<span>γ<sub>1</sub>: '+Math.p.moments.skewness(Math.p.distribution[distrType].mgf(p,n),0)+'</span>';
 				html+='<span>γ<sub>2</sub>: '+Math.p.moments.kurtosis(Math.p.distribution[distrType].mgf(p,n),0)+'</span></pre><br/>';
-				html+='<pre>'+Math.p.arr_dump(distr,'p')+'</pre>';
+				html+='<pre>'+Math.h.arr_dump(distr,'p')+'</pre>';
 			var $el=$('<div/>').addClass('result').html(html);
 
 			$('.container').append($el.hide().fadeIn(500));
