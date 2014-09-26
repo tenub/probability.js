@@ -10,64 +10,21 @@
 <!--[if lt IE 9]>
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
 <![endif]-->
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="assets/js/helpers.min.js"></script>
-<script src="assets/js/probability.min.js"></script>
-<script>
-	$(document).ready(function(){
-		var distrType='binomial';
-		$('#params').html(getParams(distrType));
-		$('select[name=distr-type]').change(function(e){
-			distrType=$(this).val();
-			$('#params').html(getParams(distrType));
-		});
-		function getParams(distrType){
-			if(typeof Math.p.distribution[distrType]!=='undefined'){
-				var html='';
-				for(var param in Math.p.distribution[distrType].params){
-					var po=Math.p.distribution[distrType].params[param];
-					html+='<label>'+po.title+': </label><input type="number" min="'+po.min+'" max="'+po.max+'" step="'+po.step+'" value="'+po.value+'" id="'+param+'"/>';
-				}
-				return html;
-			}
-		}
-		$('#calc').submit(function(e){
-			e.preventDefault();
-			var distr=[],
-				p=parseFloat($('#p').val(),10),
-				n=parseInt($('#n').val(),10),
-				k=parseInt($('#k').val(),10);
-			for(var i=0; i<n; i++){
-				distr.push({k:i,p:Math.p.distribution[distrType].cdf(p,i,k)});
-			}
-			var html ='<h1>PMF<small>(n=<em>'+n+'</em>, p=<em>'+p+'</em>)</small></h1>';
-				html+='<pre class="center"><span>μ: '+Math.p.moments.mean(Math.p.distribution[distrType].mgf(p,n),0)+'</span>';
-				html+='<span>σ<sup>2</sup>: '+Math.p.moments.variance(Math.p.distribution[distrType].mgf(p,n),0)+'</span>';
-				html+='<span>γ<sub>1</sub>: '+Math.p.moments.skewness(Math.p.distribution[distrType].mgf(p,n),0)+'</span>';
-				html+='<span>γ<sub>2</sub>: '+Math.p.moments.kurtosis(Math.p.distribution[distrType].mgf(p,n),0)+'</span></pre><br/>';
-				html+='<pre>'+Math.h.arr_dump(distr,'p')+'</pre>';
-			var $el=$('<div/>').addClass('result').html(html);
-
-			$('.container').append($el.hide().fadeIn(500));
-
-		});
-	});
-</script>
-
+<script data-main="assets/js/main.min" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.14/require.min.js"></script>
 </head>
 <body>
-<div class="container">
-	<form id="calc">
-		<select name="distr-type">
-			<optgroup label="Distribution Type">
-				<option value="binomial">Binomial</option>
-				<option value="geometric">Geometric</option>
-			</optgroup>
-		</select>
-		<fieldset id="params"></fieldset>
-		<input type="submit" value="Calculate">
-	</form>
-	<div id="graph"></div>
-</div>
+	<div class="container">
+		<form id="calc">
+			<select name="distr-type">
+				<optgroup label="Distribution Type">
+					<option value="binomial">Binomial</option>
+					<option value="geometric">Geometric</option>
+				</optgroup>
+			</select>
+			<fieldset id="params"></fieldset>
+			<input type="submit" value="Calculate">
+		</form>
+		<div id="graph"></div>
+	</div>
 </body>
 </html>

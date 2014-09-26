@@ -1,3 +1,49 @@
+@mixin alpha-me($var1, $var2, $var3:null, $var4:null) {
+
+	// Set variables for global use
+	$property: $var1;
+	$attributes: null;
+	$color: null;
+	$color-bg: null;
+
+	// Check if $var2 is a color
+	@if ( type-of($var2) == color ) {
+
+		// Set default background if not specified
+		@if not $var3 { $var3: #FFFFFF; }
+
+		// Update variables
+		$color: $var2;
+		$color-bg: $var3;
+
+	// Otherwise it should be the attributes
+	} @else if ( type-of($var2) != color ) {
+
+		// Set default background if not specified
+		@if not $var4 { $var4: #FFFFFF; }
+
+		// Update variables
+		$attributes: $var2;
+		$color: $var3;
+		$color-bg: $var4;
+
+	}
+
+	// Extract alpha channel from color
+	$percent: alpha($color) * 100%;
+
+	// Make color opaque
+	$opaque: opacify($color, 1);
+
+	// Blend color with background.
+	$color-solid: mix($opaque, $color-bg, $percent);
+
+	// Return built style with solid color and transparent color
+	#{$property}: #{$attributes} $color-solid;
+	#{$property}: #{$attributes} $color;
+
+}
+
 body {
 	font-family: 'Open Sans', sans-serif;
 	overflow-y: scroll;
@@ -43,16 +89,16 @@ input,
 select,
 textarea {
 	background: #fff;
-	border: 1px solid rgba(0,0,0,0.3);
+	@include alpha-me(border, 1px solid, rgba(black, 0.3));
 	outline: none;
 	margin: 1em;
 	padding: 0.2em 0.4em;
 	&:hover {
-		background: rgba(0,0,0,0.05);
+		@include alpha-me(background, rgba(black, 0.05), white);
 	}
 	&:focus {
 		background: #fff;
-		box-shadow: 0 0 1em rgba(0,0,0,0.2);
+		@include alpha-me(box-shadow, 0 0 1em, rgba(black, 0.2));
 	}
 }
 

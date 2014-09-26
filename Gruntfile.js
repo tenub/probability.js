@@ -68,6 +68,7 @@ module.exports = function (grunt) {
 					'adjoining-classes': false,
 					'box-sizing': false,
 					'box-model': false,
+					'fallback-colors': false,
 					'floats': false,
 					'font-sizes': false,
 					'ids': false,
@@ -137,7 +138,7 @@ module.exports = function (grunt) {
 				files: [{
 					expand: true,
 					cwd: 'src/js',
-					src: ['*.js', '**/*.js'],
+					src: ['**/*.js'],
 					dest: 'dist/assets/js',
 					ext: '.min.js'
 				}]

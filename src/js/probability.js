@@ -34,16 +34,18 @@ Math.p = {
 
 		binomial: {
 
-			params: {
-				p: { title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
-				n: { title: 'Trials', min: 0, max: 100, step: 1, value: 40 },
-				k: { title: 'Successes', min: 0, max: 100, step: 1, value: 20 }
-			},
+			params: [
+				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
+				{ id: 'n', title: 'Trials', min: 0, max: 100, step: 1, value: 40 },
+				{ id: 'k', title: 'Successes', min: 0, max: 100, step: 1, value: 20 }
+			],
 
 			mgf: function(p, n) {
 
 				return function(t) {
+
 					return Math.pow((1 - p + p * Math.exp(t)), n);
+
 				};	// (1-p+p*e^t)^n;
 
 			},
@@ -51,7 +53,9 @@ Math.p = {
 			pdf: function(p, n) {
 
 				return function(k) {
+
 					return Math.h.choose(n, k) * Math.pow(p, k) * Math.pow((1 - p), (n - k));
+
 				};	// (n k)*p^k*(1-p)^(n-k)
 
 			},
@@ -67,15 +71,17 @@ Math.p = {
 
 		geometric: {
 
-			params: {
-				p: { title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
-				k: { title: 'TTS', min: 0, max: 100, step: 1, value: 40 }
-			},
+			params: [
+				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
+				{ id: 'k', title: 'TTS', min: 0, max: 100, step: 1, value: 40 }
+			],
 
 			mgf: function(p) {
 
 				return function(t) {
+
 					return p / (1 - (1 - p) * Math.exp(t));
+
 				};	// p/(1-(1-p)*e^t);
 
 			},
@@ -83,7 +89,9 @@ Math.p = {
 			pdf: function(p) {
 
 				return function(k) {
+
 					return Math.pow(1 - p, k) * p;
+
 				};	// (1-p)^k*p
 
 			},

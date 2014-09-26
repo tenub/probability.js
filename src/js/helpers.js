@@ -14,6 +14,39 @@ Math.h = {
 	},
 
 	/**
+	 * estimate the value of Euler's number using n series expansion terms
+	 *
+	 * @param {integer} n
+	 * @return {float}
+	 */
+	e: function(n) {
+
+		var s = 0;
+
+		if (typeof n === 'undefined' || !this.isInt(n)) {
+
+			n = 18; // lowest value that results in accurate float precision
+
+		}
+
+		for (var i=0; i<n; i++) {
+
+			s += 1 / this.factorial(i);
+
+		}
+
+		return s;
+
+	},
+
+	/**
+	 * calculate the exact value of pi using Machin's formula
+	 *
+	 * @return {float}
+	 */
+	pi: 16 * Math.atan(1 / 5) - 4 * Math.atan(1 / 239),
+
+	/**
 	 * computes the factorial of a number
 	 * handles integers exactly and approximates floats via numerical estimation of its gamma function value
 	 *
@@ -33,7 +66,9 @@ Math.h = {
 			var f = (n < 0) ? undefined : 1;
 
 			for (i=n; i>1; --i) {
+
 				f *= i;
+
 			}
 
 			return f;
@@ -76,9 +111,9 @@ Math.h = {
 	gamma: function(n) {
 
 		var g = 7,
-				p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7],
-				g_ln = 607 / 128,
-				p_ln = [0.99999999999999709182, 57.156235665862923517, -59.597960355475491248, 14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4, 0.46523628927048575665e-4, -0.98374475304879564677e-4, 0.15808870322491248884e-3, -0.21026444172410488319e-3, 0.21743961811521264320e-3, -0.16431810653676389022e-3, 0.84418223983852743293e-4, -0.26190838401581408670e-4, 0.36899182659531622704e-5];
+			p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7],
+			g_ln = 607 / 128,
+			p_ln = [0.99999999999999709182, 57.156235665862923517, -59.597960355475491248, 14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4, 0.46523628927048575665e-4, -0.98374475304879564677e-4, 0.15808870322491248884e-3, -0.21026444172410488319e-3, 0.21743961811521264320e-3, -0.16431810653676389022e-3, 0.84418223983852743293e-4, -0.26190838401581408670e-4, 0.36899182659531622704e-5];
 
 		if (n < 0.5) {
 
@@ -95,7 +130,9 @@ Math.h = {
 			var x = p[0];
 
 			for (var i=1; i<g+2; i++) {
+
 				x += p[i] / (n + i);
+
 			}
 
 			var t = n + g + 0.5;
@@ -132,7 +169,7 @@ Math.h = {
 	 * numerically estimates the derivative of a function
 	 *
 	 * @param {function} f - single-variable function to derive
-	 * @param {number} o - order of derivative to compute
+	 * @param {integer} o - order of derivative to compute
 	 * @param {number} x - value at which to evaluate the derivative
 	 * @return {number}
 	 */
@@ -171,6 +208,9 @@ Math.h = {
 				};
 				break;
 
+			default:
+				return false;
+
 		}
 
 		while (true) {
@@ -181,14 +221,16 @@ Math.h = {
 			a[i] = { h: h, d: Math.abs(v1-v2), v1: v1, v2: v2 };
 
 			if (i > 0 && a[i].d > a[i - 1].d) {
+
 				return a[i - 1].v1; // prevent loss of significance and instability
+
 			} else {
+
 				i += 1;
+
 			}
 
 		}
-
-		return false;
 
 	},
 
@@ -223,8 +265,13 @@ Math.h = {
 		} else {
 
 			for (var i=1; i<(m-1); i++) {
-				if (n % (m - i) === 0)
+
+				if (n % (m - i) === 0) {
+
 					return m - i;
+
+				}
+
 			}
 
 			return m;
@@ -246,7 +293,9 @@ Math.h = {
 		var l = array.length;
 
 		if (typeof rows === 'undefined') {
+
 			rows = this.sq_size(l);
+
 		}
 
 		var str='[';
