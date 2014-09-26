@@ -48,8 +48,9 @@ module.exports = function (grunt) {
 			assets: {
 				files: [{
 					expand: true,
+					flatten: true,
 					cwd: 'src',
-					src: ['*.scss'],
+					src: ['**/*.scss'],
 					dest: 'build/css',
 					ext: '.css'
 				}]
