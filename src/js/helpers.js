@@ -175,7 +175,7 @@ Math.h = {
 	 */
 	derivative: function(f, o, x) {
 
-		var h = 0.01,
+		var h = 0.0001,
 			i = 0,
 			a = [],
 			v1,
