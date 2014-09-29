@@ -140,8 +140,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	self.plot = function(data, id, xr) {
 
-		console.log(Math.max.apply(Math, data.map(function(v) { return v.y; })));
-
 		// define dimensions of graph
 		var m = [80, 80, 80, 80]; // margins
 		var w = 640 - m[1] - m[3]; // width
@@ -159,13 +157,13 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				// verbose logging to show what's actually being done
 				//console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
 				// return the X coordinate where we want to plot this datapoint
-				return x(i);
+				return x(d.x);
 			})
 			.y(function(d) {
 				// verbose logging to show what's actually being done
 				//console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + ' using our yScale.');
 				// return the Y coordinate where we want to plot this datapoint
-				return y(d);
+				return y(d.y);
 			});
 
 			// Add an SVG element with the desired dimensions and margin.
@@ -193,11 +191,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			// Add the line by appending an svg:path element with the data line we created above
 			// do this AFTER the axes above so that the line is above the tick-lines
-			graph.append('svg:path')
-				.attr('d', line(data)
-					.x(function(d) { return d.x; })
-					.y(function(d) { return d.y; })
-				);
+			graph.append('svg:path').attr('d', line(data));
 
 	};
 

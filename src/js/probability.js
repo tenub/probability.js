@@ -76,7 +76,7 @@ Math.p = {
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
-				{ id: 'n', title: 'TTS', min: 0, max: 100, step: 1, value: 40 }
+				{ id: 'n', title: 'Trials', min: 0, max: 100, step: 1, value: 40 }
 			],
 
 			mgf: function(params) {
