@@ -30,10 +30,10 @@ module.exports = function (grunt) {
 	});
 	grunt.registerTask('build', function(n) {
 		if (n && n === 'sass') {
-			grunt.task.run(['clean', 'csslint:lax', 'jshint', 'concat', 'autoprefixer', 'cleanempty', 'cssmin', 'uglify', 'copy']);
+			grunt.task.run(['clean', 'csslint:lax', 'jshint', 'concat', 'autoprefixer', 'cleanempty', 'uglify', 'copy']);
 		} else {
 			grunt.loadNpmTasks('grunt-contrib-sass');
-			grunt.task.run(['clean', 'sass', 'csslint:lax', 'jshint', 'concat', 'autoprefixer', 'cleanempty', 'cssmin', 'uglify', 'copy']);
+			grunt.task.run(['clean', 'sass', 'csslint:lax', 'jshint', 'concat', 'autoprefixer', 'cleanempty', 'uglify', 'copy']);
 		}
 	});
 	grunt.registerTask('doc', 'jsdoc:all');
@@ -105,13 +105,13 @@ module.exports = function (grunt) {
 		'concat': {
 			css: {
 				src: ['src/**/*.css', 'build/css/*.css'],
-				dest: 'build/css/main.css'
+				dest: 'dist/assets/css/main.css'
 			}
 		},
 
 		'autoprefixer': {
 			no_dest: {
-				src: 'build/css/main.css'
+				src: 'dist/assets/css/main.css'
 			}
 		},
 

@@ -36,8 +36,8 @@ Math.p = {
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
-				{ id: 'n', title: 'Trials', min: 0, max: 100, step: 1, value: 40 },
-				{ id: 'k', title: 'Successes', min: 0, max: 100, step: 1, value: 20 }
+				{ id: 'n', title: 'Trials', min: 0, max: 100, step: 1, value: 40 }/*,
+				{ id: 'k', title: 'Successes', min: 0, max: 100, step: 1, value: 20 }*/
 			],
 
 			mgf: function(p, n) {
@@ -60,10 +60,13 @@ Math.p = {
 
 			},
 
-			cdf: function(p, n, k) {
+			cdf: function(p, n) {
 
-				return Math.h.integral(Math.p.distribution.binomial.pdf(p, n), 0, k);
-					// I_(1-p)(n-k, 1+k)
+				return function(k) {
+
+					return Math.h.integral(Math.p.distribution.binomial.pdf(p, n), 0, k);
+
+				};	// I_(1-p)(n-k, 1+k)
 
 			}
 

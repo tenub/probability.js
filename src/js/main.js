@@ -1,29 +1,32 @@
 require.config({
 	baseUrl: 'assets/js',
 	paths: {
+		d3: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min',
 		jquery: 'http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min',
 		mustache: 'http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min'
 	}
 });
 
-define(['jquery', 'mustache', 'helpers.min', 'probability.min'], function($, mustache) {
+define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function($, mustache, d3) {
 
 	var self = this;
 
+	self.n = 0;
+
 	self.templates = {
 
-		params: '{{#.}}<label>{{ title }}: </label><input type="number" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ value }}" id="{{ id }}"/>{{/.}}',
+		params: '{{#.}}<label>{{ title }}:<input type="number" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ value }}" id="{{ id }}"/></label>{{/.}}',
 
 		binomial: {
 			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
 			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
-			distr: '<br/><pre>{{ values }}</pre>'
+			distr: '<div id="{{ id }}"></div>'
 		},
 
 		geometric: {
 			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
 			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
-			distr: '<br/><pre>{{ values }}</pre>'
+			distr: '<div id="{{ id }}"></div>'
 		}
 
 	};
@@ -38,9 +41,7 @@ define(['jquery', 'mustache', 'helpers.min', 'probability.min'], function($, mus
 
 	self.bindEvents = function() {
 
-		var self = this;
-
-		$('select[name=distr-type]').change(function(e) {
+		$('select[name=distr-type]').on('change', function(e) {
 
 			distrType = $(this).val();
 
@@ -48,7 +49,7 @@ define(['jquery', 'mustache', 'helpers.min', 'probability.min'], function($, mus
 
 		});
 
-		$('#calc').submit(function(e) {
+		$('#calc').on('submit', function(e) {
 
 			e.preventDefault();
 
@@ -56,22 +57,38 @@ define(['jquery', 'mustache', 'helpers.min', 'probability.min'], function($, mus
 				distrType = $('select[name=distr-type]').val(),
 				p = parseFloat($('#p').val(), 10),
 				n = parseInt($('#n').val(), 10),
-				k = parseInt($('#k').val(), 10),
+				//k = parseInt($('#k').val(), 10),
 				m_0 = Math.p.distribution[distrType].mgf(p, n);
 
 			for (var i=0; i<n; i++) {
 
-				distr.push({ k: i, p: Math.p.distribution[distrType].cdf(p, i, k) });
+				distr.push({ k: i, p: Math.p.distribution[distrType].pdf(p, n)(i) });
 
 			}
 
 			var html = mustache.render(self.templates[distrType].title, { n: n, p: p });
 				html += mustache.render(self.templates[distrType].params, { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) });
-				html += mustache.render(self.templates[distrType].distr, { values: Math.h.arr_dump(distr, 'p') });
+				html += mustache.render(self.templates[distrType].distr, { values: Math.h.arr_dump(distr, 'p'), id: 'graph-' + self.n });
 
 			var $el = $('<div/>').addClass('result').html(html);
 
 			$('.container').append($el.hide().fadeIn(500));
+
+			self.plot(distr.map(function(el) {
+				return el.p;
+			}), '#graph-' + self.n);
+
+			self.n += 1;
+
+		});
+
+		$('#calc').on('reset', function(e) {
+
+			e.preventDefault();
+
+			self.n = 0;
+
+			$('.result').remove();
 
 		});
 
@@ -84,6 +101,63 @@ define(['jquery', 'mustache', 'helpers.min', 'probability.min'], function($, mus
 			return mustache.render(self.templates.params, Math.p.distribution[distrType].params);
 
 		}
+
+	};
+
+	self.plot = function(data, id) {
+
+		// define dimensions of graph
+		var m = [80, 80, 80, 80]; // margins
+		var w = 640 - m[1] - m[3]; // width
+		var h = 360 - m[0] - m[2]; // height
+
+		// X scale will fit all values from data[] within pixels 0-w
+		var x = d3.scale.linear().domain([0, data.length]).range([0, w]);
+		// Y scale will fit values from 0-maxval within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
+		var y = d3.scale.linear().domain([0, d3.max(data)]).range([h, 0]);
+
+		// create a line function that can convert data[] into x and y points
+		var line = d3.svg.line()
+			// assign the X function to plot our line as we wish
+			.x(function(d, i) {
+				// verbose logging to show what's actually being done
+				//console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
+				// return the X coordinate where we want to plot this datapoint
+				return x(i);
+			})
+			.y(function(d) {
+				// verbose logging to show what's actually being done
+				//console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + ' using our yScale.');
+				// return the Y coordinate where we want to plot this datapoint
+				return y(d);
+			});
+
+			// Add an SVG element with the desired dimensions and margin.
+			var graph = d3.select(id).append('svg:svg')
+						.attr('width', w + m[1] + m[3])
+						.attr('height', h + m[0] + m[2])
+					.append('svg:g')
+						.attr('transform', 'translate(' + m[3] + ', ' + m[0] + ')');
+
+			// create yAxis
+			var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
+			// Add the x-axis.
+			graph.append('svg:g')
+						.attr('class', 'x axis')
+						.attr('transform', 'translate(0, ' + h + ')')
+						.call(xAxis);
+
+			// create left yAxis
+			var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient('left');
+			// Add the y-axis to the left
+			graph.append('svg:g')
+						.attr('class', 'y axis')
+						.attr('transform', 'translate(-25, 0)')
+						.call(yAxisLeft);
+
+			// Add the line by appending an svg:path element with the data line we created above
+			// do this AFTER the axes above so that the line is above the tick-lines
+			graph.append('svg:path').attr('d', line(data));
 
 	};
 
