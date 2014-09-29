@@ -27,13 +27,19 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
 			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
 			distr: '<div id="{{ id }}"></div>'
+		},
+
+		gaussian: {
+			title: '<h1>PMF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>',
+			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+			distr: '<div id="{{ id }}"></div>'
 		}
 
 	};
 
 	self.init = function() {
 
-		$('#params').html(self.getParams($('select[name=distr-type] option').eq(0).val() || 'binomial'));
+		$('#params').html(self.renderParams($('select[name=distr-type] option').eq(0).val() || 'binomial'));
 
 		self.bindEvents();
 
@@ -45,7 +51,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			distrType = $(this).val();
 
-			$('#params').html(self.getParams(distrType));
+			$('#params').html(self.renderParams(distrType));
 
 		});
 
@@ -53,30 +59,43 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
-			var distr = [],
+			var i, inc, start, end,
+				distr = [],
 				distrType = $('select[name=distr-type]').val(),
-				p = parseFloat($('#p').val(), 10),
-				n = parseInt($('#n').val(), 10),
-				//k = parseInt($('#k').val(), 10),
-				m_0 = Math.p.distribution[distrType].mgf(p, n);
+				params = self.getParams('#params'),
+				m_0 = Math.p.distribution[distrType].mgf(params);
 
-			for (var i=0; i<n; i++) {
+			switch (distrType) {
 
-				distr.push({ k: i, p: Math.p.distribution[distrType].pdf(p, n)(i) });
+				case 'gaussian':
+					inc = 3 * params.std / 100;
+					start = params.mean - 3 * params.std;
+					end = params.mean + 3 * params.std;
+					break;
+
+				default:
+					inc = 1;
+					start = 0;
+					end = params.n || 1;
+					break;
 
 			}
 
-			var html = mustache.render(self.templates[distrType].title, { n: n, p: p });
+			for (i=start; i<end; i+=inc) {
+
+				distr.push({ x: i, y: Math.p.distribution[distrType].pdf(params)(i) });
+
+			}
+
+			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates[distrType].params, { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) });
-				html += mustache.render(self.templates[distrType].distr, { values: Math.h.arr_dump(distr, 'p'), id: 'graph-' + self.n });
+				html += mustache.render(self.templates[distrType].distr, { values: Math.h.arr_dump(distr, 'y'), id: 'graph-' + self.n });
 
 			var $el = $('<div/>').addClass('result').html(html);
 
 			$('.container').append($el.hide().fadeIn(500));
 
-			self.plot(distr.map(function(el) {
-				return el.p;
-			}), '#graph-' + self.n);
+			self.plot(distr, '#graph-' + self.n, [start, end]);
 
 			self.n += 1;
 
@@ -94,7 +113,22 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
-	self.getParams = function(distrType) {
+	self.getParams = function(id) {
+
+		var $el = $(id),
+			params = {};
+
+		$el.find('input').each(function() {
+
+			params[this.id] = parseFloat(this.value, 10);
+
+		});
+
+		return params;
+
+	};
+
+	self.renderParams = function(distrType) {
 
 		if (typeof Math.p.distribution[distrType] !== 'undefined') {
 
@@ -104,7 +138,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
-	self.plot = function(data, id) {
+	self.plot = function(data, id, xr) {
+
+		console.log(Math.max.apply(Math, data.map(function(v) { return v.y; })));
 
 		// define dimensions of graph
 		var m = [80, 80, 80, 80]; // margins
@@ -112,9 +148,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		var h = 360 - m[0] - m[2]; // height
 
 		// X scale will fit all values from data[] within pixels 0-w
-		var x = d3.scale.linear().domain([0, data.length]).range([0, w]);
+		var x = d3.scale.linear().domain([d3.min(xr), d3.max(xr)]).range([0, w]);
 		// Y scale will fit values from 0-maxval within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
-		var y = d3.scale.linear().domain([0, d3.max(data)]).range([h, 0]);
+		var y = d3.scale.linear().domain([0, Math.max.apply(Math, data.map(function(v) { return v.y; }))]).range([h, 0]);
 
 		// create a line function that can convert data[] into x and y points
 		var line = d3.svg.line()
@@ -157,7 +193,11 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			// Add the line by appending an svg:path element with the data line we created above
 			// do this AFTER the axes above so that the line is above the tick-lines
-			graph.append('svg:path').attr('d', line(data));
+			graph.append('svg:path')
+				.attr('d', line(data)
+					.x(function(d) { return d.x; })
+					.y(function(d) { return d.y; })
+				);
 
 	};
 

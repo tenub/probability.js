@@ -40,31 +40,31 @@ Math.p = {
 				{ id: 'k', title: 'Successes', min: 0, max: 100, step: 1, value: 20 }*/
 			],
 
-			mgf: function(p, n) {
+			mgf: function(params) {
 
 				return function(t) {
 
-					return Math.pow((1 - p + p * Math.exp(t)), n);
+					return Math.pow((1 - params.p + params.p * Math.exp(t)), params.n);
 
-				};	// (1-p+p*e^t)^n;
+				};	// (1-p+p*e^t)^n
 
 			},
 
-			pdf: function(p, n) {
+			pdf: function(params) {
 
 				return function(k) {
 
-					return Math.h.choose(n, k) * Math.pow(p, k) * Math.pow((1 - p), (n - k));
+					return Math.h.choose(params.n, k) * Math.pow(params.p, k) * Math.pow((1 - params.p), (params.n - k));
 
 				};	// (n k)*p^k*(1-p)^(n-k)
 
 			},
 
-			cdf: function(p, n) {
+			cdf: function(params) {
 
 				return function(k) {
 
-					return Math.h.integral(Math.p.distribution.binomial.pdf(p, n), 0, k);
+					return Math.h.integral(Math.p.distribution.binomial.pdf(params), 0, k);
 
 				};	// I_(1-p)(n-k, 1+k)
 
@@ -76,33 +76,75 @@ Math.p = {
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
-				{ id: 'k', title: 'TTS', min: 0, max: 100, step: 1, value: 40 }
+				{ id: 'n', title: 'TTS', min: 0, max: 100, step: 1, value: 40 }
 			],
 
-			mgf: function(p) {
+			mgf: function(params) {
 
 				return function(t) {
 
-					return p / (1 - (1 - p) * Math.exp(t));
+					return params.p / (1 - (1 - params.p) * Math.exp(t));
 
-				};	// p/(1-(1-p)*e^t);
+				};	// p/(1-(1-p)*e^t)
 
 			},
 
-			pdf: function(p) {
+			pdf: function(params) {
 
 				return function(k) {
 
-					return Math.pow(1 - p, k) * p;
+					return Math.pow(1 - params.p, k) * params.p;
 
 				};	// (1-p)^k*p
 
 			},
 
-			cdf: function(p, k) {
+			cdf: function(params) {
 
-				return Math.h.integral(Math.p.distribution.geometric.pdf(p), 0, k);
-					// 1-(1-p)^(k+1)
+				return function(k) {
+
+					return Math.h.integral(Math.p.distribution.geometric.pdf(params), 0, k);
+
+				};	// 1-(1-p)^(k+1)
+
+			}
+
+		},
+
+		gaussian: {
+
+			params: [
+				{ id: 'mean', title: 'Mean', min: -10000, max: 10000, step: 0.05, value: 100 },
+				{ id: 'std', title: 'Standard Deviation', min: -10000, max: 10000, step: 0.05, value: 50 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return Math.exp(params.mean * t + 0.5 * Math.pow(params.std, 2) * Math.pow(t, 2));
+
+				};	// exp(u*t+.5*o^2*t^2)
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return 1 / (params.std * Math.pow(2 * Math.PI, 0.5)) * Math.exp(-Math.pow(x - params.mean, 2) / (2 * Math.pow(params.std, 2)));
+
+				};	// 1/(o*(2*pi)^.5)*exp(-(x-u)^2/(2*o^2))
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.gaussian.pdf(params), 0, x);
+
+				};
 
 			}
 
