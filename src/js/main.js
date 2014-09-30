@@ -29,6 +29,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			distr: '<div id="{{ id }}"></div>'
 		},
 
+		poisson: {
+			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
+			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+			distr: '<div id="{{ id }}"></div>'
+		},
+
 		gaussian: {
 			title: '<h1>PMF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>',
 			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
@@ -71,6 +77,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 					inc = 3 * params.std / 100;
 					start = params.mean - 3 * params.std;
 					end = params.mean + 3 * params.std;
+					break;
+
+				case 'poisson':
+					inc = 1;
+					start = 0;
+					end = 50;
 					break;
 
 				default:

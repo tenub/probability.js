@@ -111,6 +111,44 @@ Math.p = {
 
 		},
 
+		poisson: {
+
+			params: [
+				{ id: 'lambda', title: 'Lambda', min: 0, max: 20, step: 1, value: 1 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return Math.exp(params.lambda * (Math.pow(Math.E, t) - 1));
+
+				};	// e^(l*(e^t-1))
+
+			},
+
+			pdf: function(params) {
+
+				return function(k) {
+
+					return Math.pow(params.lambda, k) / Math.h.factorial(k) * Math.exp(-params.lambda);
+
+				};	// l^k/k!*e^-l
+
+			},
+
+			cdf: function(params) {
+
+				return function(k) {
+
+					return Math.h.integral(Math.p.distribution.poisson.pdf(params), 0, k);
+
+				};	// r([k+1],l)/[k]!
+
+			}
+
+		},
+
 		gaussian: {
 
 			params: [
