@@ -29,6 +29,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			distr: '<div id="{{ id }}"></div>'
 		},
 
+		exponential: {
+			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
+			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+			distr: '<div id="{{ id }}"></div>'
+		},
+
 		poisson: {
 			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
 			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
@@ -68,36 +74,19 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			var i, inc, start, end,
 				distr = [],
 				distrType = $('select[name=distr-type]').val(),
+				distrIval = Math.p.distribution[distrType].interval,
 				params = self.getParams('#params'),
 				m_0 = Math.p.distribution[distrType].mgf(params);
 
-			switch (distrType) {
+			if (distrIval === 'bounded') {
 
-				case 'gaussian':
-					inc = 3 * params.std / 100;
-					start = params.mean - 3 * params.std;
-					end = params.mean + 3 * params.std;
-					break;
-
-				case 'poisson':
-					inc = 1;
-					start = 0;
-					end = 50;
-					break;
-
-				default:
-					inc = 1;
-					start = 0;
-					end = params.n || 1;
-					break;
+				inc = 1;
+				start = 0;
+				end = params.n || 1;
 
 			}
 
-			for (i=start; i<end; i+=inc) {
-
-				distr.push({ x: i, y: Math.p.distribution[distrType].pdf(params)(i) });
-
-			}
+			distr = self.genPDF(distrType, params, inc, start, end);
 
 			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates[distrType].params, { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) });
@@ -107,7 +96,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			$('.container').append($el.hide().fadeIn(500));
 
-			self.plot(distr, '#graph-' + self.n, [start, end]);
+			self.plot(distr, '#graph-' + self.n, [distr[0].x, distr[distr.length - 1].x]);
 
 			self.n += 1;
 
@@ -147,6 +136,63 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			return mustache.render(self.templates.params, Math.p.distribution[distrType].params);
 
 		}
+
+	};
+
+	self.findStart = function(distrType, params) {
+
+		var prev, next, i=0;
+
+		while (typeof prev === 'undefined' || i < 9999) {
+
+			prev = Math.p.distribution[distrType].pdf(params)(i);
+			console.log(prev);
+
+			i += 0.01;
+
+			next = Math.p.distribution[distrType].pdf(params)(i);
+
+			if (next > 0.001) {
+				break;
+			}
+
+		}
+
+		return prev;
+
+	};
+
+	self.genPDF = function(distrType, params, inc, start, end) {
+
+		var distr = [], i, j=0, preVal, curVal;
+
+		if (typeof start !== 'undefined') {
+
+			for (i=start; i<end; i+=inc) {
+
+				distr.push({ x: i, y: Math.p.distribution[distrType].pdf(params)(i) });
+
+			}
+
+		} else {
+
+			i = self.findStart(distrType, params);
+
+			while (typeof curVal === 'undefined' || preVal - curVal > 0.0001) {
+
+				preVal = Math.p.distribution[distrType].pdf(params)(i);
+
+				distr.push({ x: i, y: preVal });
+
+				i += 0.01;
+
+				curVal = Math.p.distribution[distrType].pdf(params)(i);
+
+			}
+
+		}
+
+		return distr;
 
 	};
 
