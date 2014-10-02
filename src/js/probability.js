@@ -161,6 +161,52 @@ Math.p = {
 
 		},
 
+		exponential: {
+
+			discrete: false,
+
+			bounds: [0, Infinity],
+
+			params: [
+				{ id: 'lambda', title: 'Lambda', min: 0, max: 3, step: 0.1, value: 0.5 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					if (t < params.lambda) {
+						return Math.pow(1 - t / params.lambda, -1);
+					}
+
+					return 0;
+
+				};	// (1-t/l)^(-1), t<l
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return params.lambda * Math.exp(-params.lambda * x);
+
+				};	// l*e^(-l*x)
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.exponential.pdf(params), 0, x);
+
+				};	// 1-e^(-l*x)
+
+			}
+
+		},
+
 		gaussian: {
 
 			discrete: false,

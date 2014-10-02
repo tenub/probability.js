@@ -17,34 +17,28 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		params: '{{#.}}<label>{{ title }}:<input type="number" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ value }}" id="{{ id }}"/></label>{{/.}}',
 
+		moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+
+		distr: '<div id="{{ id }}"></div>',
+
 		binomial: {
 			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
-			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
-			distr: '<div id="{{ id }}"></div>'
 		},
 
 		geometric: {
 			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
-			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
-			distr: '<div id="{{ id }}"></div>'
 		},
 
 		exponential: {
 			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
-			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
-			distr: '<div id="{{ id }}"></div>'
 		},
 
 		poisson: {
 			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
-			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
-			distr: '<div id="{{ id }}"></div>'
 		},
 
 		gaussian: {
 			title: '<h1>PMF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>',
-			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
-			distr: '<div id="{{ id }}"></div>'
 		}
 
 	};
@@ -79,11 +73,11 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				m_0 = Math.p.distribution[distrType].mgf(params),
 				moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) };
 
-			distr = self.genPDF(distrType, params, moments);
+			distr = self.buildPDF(distrType, params, moments);
 
 			var html = mustache.render(self.templates[distrType].title, params);
-				html += mustache.render(self.templates[distrType].moments, moments);
-				html += mustache.render(self.templates[distrType].distr, { values: Math.h.arr_dump(distr, 'y'), id: 'graph-' + self.n });
+				html += mustache.render(self.templates.moments, moments);
+				html += mustache.render(self.templates.distr, { values: Math.h.arr_dump(distr, 'y'), id: 'graph-' + self.n });
 
 			var $el = $('<div/>').addClass('result').html(html);
 
@@ -132,39 +126,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
-	self.genPDF = function(distrType, params, moments) {
+	self.buildPDF = function(distrType, params, moments) {
 
 		var distr = [],
-			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100,
-			i = 0,
-			start = moments.mean,
-			prevVal,
-			nextVal;
+			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
 
-		while (true) {
-
-			if (i > 5 * moments.variance) {
-				break;
-			}
-
-			if (!isNaN(prevVal) && !isNaN(nextVal) && prevVal <= 0.00001 && nextVal <= 0.00001) {
-				break;
-			}
-
-			prevVal = Math.p.distribution[distrType].pdf(params)(start - i);
-			nextVal = Math.p.distribution[distrType].pdf(params)(start + i);
-
-			if (start - i >= Math.p.distribution[distrType].bounds[0] && start - i <= Math.p.distribution[distrType].bounds[1]) {
-				distr.push({ x: start - i, y: prevVal });
-			}
-
-			if (start + i >= Math.p.distribution[distrType].bounds[0] && start + i <= Math.p.distribution[distrType].bounds[1]) {
-				distr.push({ x: start + i, y: nextVal });
-			}
-
-			i += inc;
-
-		}
+		distr = self.generatePDF(distrType, params, moments, -inc).concat(self.generatePDF(distrType, params, moments, inc));
 
 		distr.sort(function(a, b) {
 			if (a.x < b.x) {
@@ -180,59 +147,73 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
+	self.generatePDF = function(distrType, params, moments, inc) {
+
+		var distr = [],
+			i = 0,
+			start = moments.mean,
+			value;
+
+		while (i < 10 * moments.variance) {
+
+			if (!self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && (value <= 0.00001 ||  value > 1.0))) {
+				break;
+			}
+
+			value = Math.p.distribution[distrType].pdf(params)(start - i);
+			distr.push({ x: start - i, y: value });
+
+			i += inc;
+
+		}
+
+		return distr;
+
+	};
+
+	self.inBounds = function(value, bounds) {
+
+		if (value >= bounds[0] && value <= bounds[1]) {
+			return true;
+		}
+
+		return false;
+
+	};
+
 	self.plot = function(data, id, xr) {
 
-		// define dimensions of graph
-		var m = [80, 80, 80, 80]; // margins
-		var w = 640 - m[1] - m[3]; // width
-		var h = 360 - m[0] - m[2]; // height
+		var m = [80, 80, 80, 80],
+			w = 640 - m[1] - m[3],
+			h = 360 - m[0] - m[2],
 
-		// X scale will fit all values from data[] within pixels 0-w
-		var x = d3.scale.linear().domain([d3.min(xr), d3.max(xr)]).range([0, w]);
-		// Y scale will fit values from 0-maxval within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
-		var y = d3.scale.linear().domain([0, Math.max.apply(Math, data.map(function(v) { return v.y; }))]).range([h, 0]);
+			x = d3.scale.linear().domain([d3.min(xr), d3.max(xr)]).range([0, w]),
+			y = d3.scale.linear().domain([0, Math.max.apply(Math, data.map(function(v) { return v.y; }))]).range([h, 0]);
 
-		// create a line function that can convert data[] into x and y points
 		var line = d3.svg.line()
-			// assign the X function to plot our line as we wish
-			.x(function(d, i) {
-				// verbose logging to show what's actually being done
-				//console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
-				// return the X coordinate where we want to plot this datapoint
-				return x(d.x);
-			})
-			.y(function(d) {
-				// verbose logging to show what's actually being done
-				//console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + ' using our yScale.');
-				// return the Y coordinate where we want to plot this datapoint
-				return y(d.y);
-			});
+			.x(function(d) { return x(d.x); })
+			.y(function(d) { return y(d.y); });
 
-			// Add an SVG element with the desired dimensions and margin.
 			var graph = d3.select(id).append('svg:svg')
 						.attr('width', w + m[1] + m[3])
 						.attr('height', h + m[0] + m[2])
 					.append('svg:g')
 						.attr('transform', 'translate(' + m[3] + ', ' + m[0] + ')');
 
-			// create yAxis
 			var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
-			// Add the x-axis.
+
 			graph.append('svg:g')
 						.attr('class', 'x axis')
 						.attr('transform', 'translate(0, ' + h + ')')
 						.call(xAxis);
 
-			// create left yAxis
 			var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient('left');
-			// Add the y-axis to the left
+
 			graph.append('svg:g')
 						.attr('class', 'y axis')
 						.attr('transform', 'translate(-25, 0)')
 						.call(yAxisLeft);
 
-			// Add the line by appending an svg:path element with the data line we created above
-			// do this AFTER the axes above so that the line is above the tick-lines
 			graph.append('svg:path').attr('d', line(data));
 
 	};
