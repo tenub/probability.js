@@ -19,31 +19,31 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		binomial: {
 			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
-			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
 			distr: '<div id="{{ id }}"></div>'
 		},
 
 		geometric: {
 			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
-			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
 			distr: '<div id="{{ id }}"></div>'
 		},
 
 		exponential: {
 			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
-			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
 			distr: '<div id="{{ id }}"></div>'
 		},
 
 		poisson: {
 			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
-			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
 			distr: '<div id="{{ id }}"></div>'
 		},
 
 		gaussian: {
 			title: '<h1>PMF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>',
-			params: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+			moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
 			distr: '<div id="{{ id }}"></div>'
 		}
 
@@ -76,27 +76,20 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				distrType = $('select[name=distr-type]').val(),
 				distrIval = Math.p.distribution[distrType].interval,
 				params = self.getParams('#params'),
-				m_0 = Math.p.distribution[distrType].mgf(params);
+				m_0 = Math.p.distribution[distrType].mgf(params),
+				moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) };
 
-			if (distrIval === 'bounded') {
-
-				inc = 1;
-				start = 0;
-				end = params.n || 1;
-
-			}
-
-			distr = self.genPDF(distrType, params, inc, start, end);
+			distr = self.genPDF(distrType, params, moments);
 
 			var html = mustache.render(self.templates[distrType].title, params);
-				html += mustache.render(self.templates[distrType].params, { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) });
+				html += mustache.render(self.templates[distrType].moments, moments);
 				html += mustache.render(self.templates[distrType].distr, { values: Math.h.arr_dump(distr, 'y'), id: 'graph-' + self.n });
 
 			var $el = $('<div/>').addClass('result').html(html);
 
 			$('.container').append($el.hide().fadeIn(500));
 
-			self.plot(distr, '#graph-' + self.n, [distr[0].x, distr[distr.length - 1].x]);
+			self.plot(distr, '#graph-' + self.n, [Math.min.apply(Math, distr.map(function(el) { return el.x; })), Math.max.apply(Math, distr.map(function(el) { return el.x; }))]);
 
 			self.n += 1;
 
@@ -139,58 +132,49 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
-	self.findStart = function(distrType, params) {
+	self.genPDF = function(distrType, params, moments) {
 
-		var prev, next, i=0;
+		var distr = [],
+			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100,
+			i = 0,
+			start = moments.mean,
+			prevVal,
+			nextVal;
 
-		while (typeof prev === 'undefined' || i < 9999) {
+		while (true) {
 
-			prev = Math.p.distribution[distrType].pdf(params)(i);
-			console.log(prev);
-
-			i += 0.01;
-
-			next = Math.p.distribution[distrType].pdf(params)(i);
-
-			if (next > 0.001) {
+			if (i > 5 * moments.variance) {
 				break;
 			}
 
-		}
-
-		return prev;
-
-	};
-
-	self.genPDF = function(distrType, params, inc, start, end) {
-
-		var distr = [], i, j=0, preVal, curVal;
-
-		if (typeof start !== 'undefined') {
-
-			for (i=start; i<end; i+=inc) {
-
-				distr.push({ x: i, y: Math.p.distribution[distrType].pdf(params)(i) });
-
+			if (!isNaN(prevVal) && !isNaN(nextVal) && prevVal <= 0.00001 && nextVal <= 0.00001) {
+				break;
 			}
 
-		} else {
+			prevVal = Math.p.distribution[distrType].pdf(params)(start - i);
+			nextVal = Math.p.distribution[distrType].pdf(params)(start + i);
 
-			i = self.findStart(distrType, params);
-
-			while (typeof curVal === 'undefined' || preVal - curVal > 0.0001) {
-
-				preVal = Math.p.distribution[distrType].pdf(params)(i);
-
-				distr.push({ x: i, y: preVal });
-
-				i += 0.01;
-
-				curVal = Math.p.distribution[distrType].pdf(params)(i);
-
+			if (start - i >= Math.p.distribution[distrType].bounds[0] && start - i <= Math.p.distribution[distrType].bounds[1]) {
+				distr.push({ x: start - i, y: prevVal });
 			}
 
+			if (start + i >= Math.p.distribution[distrType].bounds[0] && start + i <= Math.p.distribution[distrType].bounds[1]) {
+				distr.push({ x: start + i, y: nextVal });
+			}
+
+			i += inc;
+
 		}
+
+		distr.sort(function(a, b) {
+			if (a.x < b.x) {
+				return -1;
+			}
+			if (a.x > b.x) {
+				return 1;
+			}
+			return 0;
+		});
 
 		return distr;
 

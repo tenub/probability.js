@@ -34,7 +34,9 @@ Math.p = {
 
 		binomial: {
 
-			interval: 'bounded',
+			discrete: true,
+
+			bounds: [0, Infinity],
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
@@ -76,7 +78,9 @@ Math.p = {
 
 		geometric: {
 
-			interval: 'infinite',
+			discrete: true,
+
+			bounds: [0, Infinity],
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
@@ -117,7 +121,9 @@ Math.p = {
 
 		poisson: {
 
-			interval: 'infinite',
+			discrete: true,
+
+			bounds: [0, Infinity],
 
 			params: [
 				{ id: 'lambda', title: 'Lambda', min: 0, max: 20, step: 1, value: 1 }
@@ -157,7 +163,9 @@ Math.p = {
 
 		gaussian: {
 
-			interval: 'infinite',
+			discrete: false,
+
+			bounds: [-Infinity, Infinity],
 
 			params: [
 				{ id: 'mean', title: 'Mean', min: -10000, max: 10000, step: 0.05, value: 100 },
