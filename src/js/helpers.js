@@ -105,6 +105,31 @@ Math.h = {
 	/**
 	 * estimates the value of the gamma function at a certain value
 	 *
+	 * @param {number} x
+	 * @return {number}
+	 */
+	erf: function(x) {
+
+		var c = [0.254829592, -0.284496736, 1.421413741, -1.453152027, 1.061405429],
+			p = 0.3275911,
+			s = 1;
+
+		if (x < 0) {
+			s = -1;
+		}
+
+		x = Math.abs(x);
+
+		var t = 1.0 / (1.0 + p * x),
+			y = 1.0 - (((((c[4] * t + c[3]) * t) + c[2]) * t + c[1]) * t + c[0]) * t * Math.exp(-x * x);
+
+		return s * y;
+
+	},
+
+	/**
+	 * estimates the value of the gamma function at a certain value
+	 *
 	 * @param {number} n
 	 * @return {number}
 	 */
@@ -220,7 +245,7 @@ Math.h = {
 			v2 = f1(x, h);
 			a[i] = { h: h, d: Math.abs(v1-v2), v1: v1, v2: v2 };
 
-			if (i > 0 && a[i].d > a[i - 1].d) {
+			if ((i > 0 && a[i].d > a[i - 1].d) || i > 99999) {
 
 				return a[i - 1].v1; // prevent loss of significance and instability
 

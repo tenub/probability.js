@@ -23,28 +23,44 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		distr: '<div id="{{ id }}"></div>',
 
+		uniform: {
+			title: '<h1>PMF<small>(a=<em>{{ a }}</em>, b=<em>{{ b }}</em>)</small></h1>'
+		},
+
 		binomial: {
-			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
+			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
 		},
 
 		geometric: {
-			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
+			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
+		},
+
+		logarithmic: {
+			title: '<h1>PMF<small>(p=<em>{{ p }}</em>)</small></h1>'
 		},
 
 		exponential: {
-			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
+			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
 		},
 
 		poisson: {
-			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>',
+			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
 		},
 
 		gaussian: {
-			title: '<h1>PMF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>',
+			title: '<h1>PMF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
 		},
 
 		gamma: {
-			title: '<h1>PMF<small>(k=<em>{{ k }}</em>, &theta;=<em>{{ theta }}</em>)</small></h1>',
+			title: '<h1>PMF<small>(k=<em>{{ k }}</em>, &theta;=<em>{{ theta }}</em>)</small></h1>'
+		},
+
+		rayleigh: {
+			title: '<h1>PMF<small>(&sigma;=<em>{{ sigma }}</em>)</small></h1>'
+		},
+
+		gumbel: {
+			title: '<h1>PMF<small>(&mu;=<em>{{ mu }}</em>, &beta;=<em>{{ beta }}</em>)</small></h1>'
 		}
 
 	};

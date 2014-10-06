@@ -32,6 +32,49 @@ Math.p = {
 	// define distributions
 	distribution: {
 
+		uniform: {
+
+			discrete: true,
+
+			bounds: [0, Infinity],
+
+			params: [
+				{ id: 'a', title: 'Lower Bound', min: 0, max: 10000, step: 0.05, value: 0 },
+				{ id: 'b', title: 'Upper Bound', min: 0, max: 10000, step: 1, value: 10 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return (Math.exp(params.a * t) - Math.exp((params.b + 1) * t)) / ((params.b - params.a + 1) * (1 - Math.exp(t)));
+
+				};	// (e^(a*t)-e^((b+1)*t))/n*(1-e^t)
+
+			},
+
+			pdf: function(params) {
+
+				return function() {
+
+					return 1 / (params.b - params.a + 1);
+
+				};	// 1/n
+
+			},
+
+			cdf: function(params) {
+
+				return function() {
+
+					return Math.h.integral(Math.p.distribution.uniform.pdf(params), params.a, params.b);
+
+				};	// (floor(k) - a + 1) / n
+
+			}
+
+		},
+
 		binomial: {
 
 			discrete: true,
@@ -113,6 +156,48 @@ Math.p = {
 					return Math.h.integral(Math.p.distribution.geometric.pdf(params), 0, k);
 
 				};	// 1-(1-p)^(k+1)
+
+			}
+
+		},
+
+		logarithmic: {
+
+			discrete: true,
+
+			bounds: [1, Infinity],
+
+			params: [
+				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.01, value: 0.5 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return Math.log(1 - params.p * Math.exp(t)) / Math.log(1 - params.p);
+
+				};	// ln(1-p*exp(t))/ln(1-p), t<-ln(p)
+
+			},
+
+			pdf: function(params) {
+
+				return function(k) {
+
+					return -1 / Math.log(1 - params.p) * Math.pow(params.p, k) / k;
+
+				};	// -1/ln(1-p)*p^k/k
+
+			},
+
+			cdf: function(params) {
+
+				return function(k) {
+
+					return Math.h.integral(Math.p.distribution.logarithmic.pdf(params), 0, k);
+
+				};	// 1+B(p;k+1,0)/ln(1-p)
 
 			}
 
@@ -287,6 +372,93 @@ Math.p = {
 					return Math.h.integral(Math.p.distribution.gamma.pdf(params), 0, x);
 
 				};
+
+			}
+
+		},
+
+		rayleigh : {
+
+			discrete: false,
+
+			bounds: [0, Infinity],
+
+			params: [
+				{ id: 'sigma', title: 'Sigma', min: 0, max: 1000, step: 0.05, value: 2 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return 1 + params.sigma * t * Math.exp(Math.pow(params.sigma, 2) * Math.pow(t, 2) / 2) * Math.sqrt(Math.PI / 2) * (Math.h.erf(params.sigma * t / Math.sqrt(2)) + 1);
+
+				};	// 1+s*t*e^(-s^2*t^2/2)*(pi/2)^.5*(erf(s*t/2^.5)+1)
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return x / Math.pow(params.sigma, 2) * Math.exp(-Math.pow(x, 2) / (2 * Math.pow(params.sigma, 2)));
+
+				};	// x/s^2*exp(-x^2/(2*s^2))
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.rayleigh.pdf(params), 0, x);
+
+				};
+
+			}
+
+		},
+
+		gumbel : {
+
+			discrete: false,
+
+			bounds: [-Infinity, Infinity],
+
+			params: [
+				{ id: 'mu', title: 'Location', min: -1000, max: 1000, step: 0.05, value: 1 },
+				{ id: 'beta', title: 'Scale', min: 0, max: 1000, step: 0.05, value: 2 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return Math.h.gamma(1 - params.beta * t) * Math.exp(params.mu * t);
+
+				};	// gamma(1-B*t)*e^(mu*t)
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					var z = (x - params.mu) / params.beta;
+
+					return 1 / params.beta * Math.exp(-(z + Math.exp(-z)));
+
+				};	// 1/B*e^-(z+e^-z), z=(x-mu)/B
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.rayleigh.pdf(params), 0, x);
+
+				};	// e^-e^-z
 
 			}
 
