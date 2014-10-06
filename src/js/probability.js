@@ -1,6 +1,6 @@
 Math.p = {
 
-	// Define moments
+	// define moments
 	moments: {
 
 		mean: function(f, t) {
@@ -29,7 +29,7 @@ Math.p = {
 
 	},
 
-	// Define distributions
+	// define distributions
 	distribution: {
 
 		binomial: {
@@ -40,8 +40,7 @@ Math.p = {
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
-				{ id: 'n', title: 'Trials', min: 0, max: 100, step: 1, value: 40 }/*,
-				{ id: 'k', title: 'Successes', min: 0, max: 100, step: 1, value: 20 }*/
+				{ id: 'n', title: 'Trials', min: 0, max: 100, step: 1, value: 40 }
 			],
 
 			mgf: function(params) {

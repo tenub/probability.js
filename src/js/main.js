@@ -11,8 +11,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	var self = this;
 
+	// track number of distributions generated
 	self.n = 0;
 
+	// mustache templates used for displaying generated statistics
 	self.templates = {
 
 		params: '{{#.}}<label>{{ title }}:<input type="number" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ value }}" id="{{ id }}"/></label>{{/.}}',
@@ -47,6 +49,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
+	/**
+	 * generate support parameters based on first element in dropdown list or default to binomial distribution if there are no options
+	 * bind all necessary events
+	 */
 	self.init = function() {
 
 		$('#params').html(self.renderParams($('select[name=distr-type] option').eq(0).val() || 'binomial'));
@@ -55,8 +61,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
+	/**
+	 * bind events needed for generating statistics corresponding to any distribution
+	 */
 	self.bindEvents = function() {
 
+		// generate input elements based on selected distribution type
 		$('select[name=distr-type]').on('change', function(e) {
 
 			distrType = $(this).val();
@@ -65,6 +75,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		});
 
+		// generate the actual statistics based on input parameters when form is submitted
 		$('#calc').on('submit', function(e) {
 
 			e.preventDefault();
@@ -93,6 +104,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		});
 
+		// reset number of distributions tracked
+		// remove all generated results
 		$('#calc').on('reset', function(e) {
 
 			e.preventDefault();
@@ -105,6 +118,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
+	/**
+	 * build params object to send to other methods in the library
+	 *
+	 * @param {string} id - id of form element containing parameter inputs
+	 * @return {object} statistical parameters object
+	 */
 	self.getParams = function(id) {
 
 		var $el = $(id),
@@ -120,6 +139,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
+	/**
+	 * render input html for distribution parameters
+	 *
+	 * @param {string} distrType - distribution type as string
+	 * @return {string} html
+	 */
 	self.renderParams = function(distrType) {
 
 		if (typeof Math.p.distribution[distrType] !== 'undefined') {
@@ -130,28 +155,51 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
+	/**
+	 * call method to generate distribution plot based on parameters
+	 *
+	 * @param {string} distrType - distribution type as string
+	 * @param {object} params - statistical parameters object
+	 * @param {object} moments - moments object generated via moment-generating function
+	 * @return {array} array of objects containing x-y value pairs
+	 */
 	self.buildPDF = function(distrType, params, moments) {
 
-		var distr = [],
+		var pdf = [],
+			cdf = [],
 			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
 
-		distr = self.generatePDF(distrType, params, moments, -inc).concat(self.generatePDF(distrType, params, moments, inc));
+		pdf = self.generateDF(distrType, params, moments, -inc).concat(self.generateDF(distrType, params, moments, inc));
+		//cdf = self.generateDF(distrType, params, moments, -inc, 'cdf').concat(self.generateDF(distrType, params, moments, inc, 'cdf'));
 
-		distr.sort(function(a, b) {
-			if (a.x < b.x) {
-				return -1;
-			}
-			if (a.x > b.x) {
-				return 1;
-			}
+		pdf.sort(function(a, b) {
+			if (a.x < b.x) { return -1; }
+			if (a.x > b.x) { return 1; }
 			return 0;
 		});
 
-		return distr;
+		/*cdf.sort(function(a, b) {
+			if (a.x < b.x) { return -1; }
+			if (a.x > b.x) { return 1; }
+			return 0;
+		});*/
+
+		return pdf;
 
 	};
 
-	self.generatePDF = function(distrType, params, moments, inc) {
+	/**
+	 * generate one side of distribution plot numerically until y value becomes negligible
+	 * starts at the mean and moves outward in direction of the sign of increment
+	 *
+	 * @param {string} distrType - distribution type as string
+	 * @param {object} params - statistical parameters object
+	 * @param {object} moments - moments object generated via moment-generating function
+	 * @param {number} inc - increment to loop over
+	 * @param {string} [type] - cdf or pdf (defaults to pdf if not specified)
+	 * @return {array} array of objects containing x-y value pairs
+	 */
+	self.generateDF = function(distrType, params, moments, inc, type) {
 
 		var distr = [],
 			i = 0,
@@ -164,7 +212,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				break;
 			}
 
-			value = Math.p.distribution[distrType].pdf(params)(start - i);
+			value = (typeof type !== 'undefined' && type === 'cdf') ? Math.p.distribution[distrType].cdf(params)(start - i) : Math.p.distribution[distrType].pdf(params)(start - i);
 			distr.push({ x: start - i, y: value });
 
 			i += inc;
@@ -175,6 +223,13 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
+	/**
+	 * determines if a value is within bounds of two-element array
+	 *
+	 * @param {number} value - any number to test
+	 * @param {array} bounds - two-element array of lower/upper bounds
+	 * @return {boolean}
+	 */
 	self.inBounds = function(value, bounds) {
 
 		if (value >= bounds[0] && value <= bounds[1]) {
@@ -185,13 +240,20 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	};
 
+	/**
+	 * plot array data using d3
+	 *
+	 * @param {array} data - array of x-y key/value objects
+	 * @param {string} id - id of element to append plot to
+	 * @param {array} xr - two-element array of min/max x values
+	 */
 	self.plot = function(data, id, xr) {
 
 		var m = [80, 80, 80, 80],
 			w = 640 - m[1] - m[3],
 			h = 360 - m[0] - m[2],
 
-			x = d3.scale.linear().domain([d3.min(xr), d3.max(xr)]).range([0, w]),
+			x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]),
 			y = d3.scale.linear().domain([0, Math.max.apply(Math, data.map(function(v) { return v.y; }))]).range([h, 0]);
 
 		var line = d3.svg.line()
