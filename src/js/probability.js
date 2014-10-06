@@ -248,6 +248,49 @@ Math.p = {
 
 			}
 
+		},
+
+		gamma: {
+
+			discrete: false,
+
+			bounds: [0, Infinity],
+
+			params: [
+				{ id: 'k', title: 'k', min: 0, max: 1000, step: 0.05, value: 3 },
+				{ id: 'theta', title: 'Theta', min: 0, max: 1000, step: 0.05, value: 2 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return Math.pow((1 - params.theta * t), -params.k);
+
+				};	// (1-th*t)^(-k), t<1/th
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return 1 / (Math.h.gamma(params.k) * Math.pow(params.theta, params.k)) * Math.pow(x, params.k - 1) * Math.exp(-x / params.theta);
+
+				};	// 1/(gamma(k)*th^k)*x^(k-1)*e^(-x/th)
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.gamma.pdf(params), 0, x);
+
+				};
+
+			}
+
 		}
 
 	}
