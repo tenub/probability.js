@@ -334,6 +334,53 @@ Math.p = {
 
 		},
 
+		beta: {
+
+			discrete: false,
+
+			bounds: [0, 1],
+
+			params: [
+				{ id: 'a', title: 'Alpha', min: 0, max: 1000, step: 0.05, value: 2 },
+				{ id: 'b', title: 'Beta', min: 0, max: 1000, step: 0.05, value: 2 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return 1 + Math.h.sum(function(k) {
+						return Math.h.product_sum(function(r) {
+							return (params.a + r) / (params.a + params.b + r);
+						}, 0, k - 1) * Math.pow(t, k / Math.h.factorial(k), 1, Infinity);
+					});
+
+				};	// 1+sum_(k,1,inf)(prod_(r,0,k-1)((a+r)/(a+b+r))*t^k/k!)
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return Math.pow(x, params.a - 1) * Math.pow((1 - x), params.b - 1) / Math.h.beta(params.a, params.b);
+
+				};	// x^(a-1)*(1-x)^(b-1)/B(a,b)
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.beta.pdf(params), 0, x);
+
+				};	// I_x(a,b)
+
+			}
+
+		},
+
 		gamma: {
 
 			discrete: false,

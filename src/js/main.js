@@ -51,6 +51,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			title: '<h1>PMF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
 		},
 
+		beta: {
+			title: '<h1>PMF<small>(&alpha;=<em>{{ a }}</em>, &beta;=<em>{{ b }}</em>)</small></h1>'
+		},
+
 		gamma: {
 			title: '<h1>PMF<small>(k=<em>{{ k }}</em>, &theta;=<em>{{ theta }}</em>)</small></h1>'
 		},
@@ -185,6 +189,13 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			cdf = [],
 			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
 
+		if (isNaN(inc)) {
+			inc = 0.01;
+		}
+
+		moments.mean = moments.mean || 0;
+		moments.variance = moments.variance || 0;
+
 		pdf = self.generateDF(distrType, params, moments, -inc).concat(self.generateDF(distrType, params, moments, inc));
 		//cdf = self.generateDF(distrType, params, moments, -inc, 'cdf').concat(self.generateDF(distrType, params, moments, inc, 'cdf'));
 
@@ -222,9 +233,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			start = moments.mean,
 			value;
 
-		while (i < 10 * moments.variance) {
+		while (i <= 10 * moments.variance) {
 
-			if (!self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && (value <= 0.00001 ||  value > 1.0))) {
+			if (!self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value > 1.0 || value < 0))) {
 				break;
 			}
 

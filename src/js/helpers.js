@@ -128,6 +128,19 @@ Math.h = {
 	},
 
 	/**
+	 * estimates the value of the beta function at certain parameter values by using its relation to the gamma function
+	 *
+	 * @param {number} a
+	 * @param {number} b
+	 * @return {number}
+	 */
+	beta: function(a, b) {
+
+		return this.gamma(a) * this.gamma(b) / this.gamma(a + b);
+
+	},
+
+	/**
 	 * estimates the value of the gamma function at a certain value
 	 *
 	 * @param {number} n
@@ -191,6 +204,72 @@ Math.h = {
 	},
 
 	/**
+	 * calculate a generic sum using supplied function and parameters
+	 *
+	 * @param {function} f
+	 * @param {integer} a
+	 * @param {integer} b
+	 * @return {number} sum
+	 */
+	sum: function(f, a, b) {
+
+		var v1,
+			v2,
+			i = a,
+			sum = 0;
+
+		while (i <= b) {
+
+			if ((typeof v1 !== 'undefined' && typeof v2 !== 'undefined' && Math.abs(v2 - v1) < 0.000000001) || i > 99999) {
+				break;
+			}
+
+			v1 = f(i);
+			v2 = f(i + 1);
+			sum += v1;
+
+			i += 1;
+
+		}
+
+		return sum;
+
+	},
+
+	/**
+	 * calculate a generic product-sum using supplied function and parameters
+	 *
+	 * @param {function} f
+	 * @param {integer} a
+	 * @param {integer} b
+	 * @return {number} sum
+	 */
+	product_sum: function(f, a, b) {
+
+		var v1,
+			v2,
+			i = a,
+			sum = 1;
+
+		while (true) {
+
+			v1 = f(i);
+			v2 = f(i + 1);
+			sum *= v1;
+
+			if (i === b || Math.abs(v2 - v1) < 0.000000001 || i > 99999) {
+				break;
+			}
+
+			i += 1;
+
+		}
+
+		return sum;
+
+	},
+
+	/**
 	 * numerically estimates the derivative of a function
 	 *
 	 * @param {function} f - single-variable function to derive
@@ -245,7 +324,7 @@ Math.h = {
 			v2 = f1(x, h);
 			a[i] = { h: h, d: Math.abs(v1-v2), v1: v1, v2: v2 };
 
-			if ((i > 0 && a[i].d > a[i - 1].d) || i > 99999) {
+			if ((!isNaN(v1) && !isNaN(v2) && (i > 0 && a[i].d > a[i - 1].d)) || i > 99999) {
 
 				return a[i - 1].v1; // prevent loss of significance and instability
 
