@@ -540,6 +540,48 @@ Math.p = {
 
 			}
 
+		},
+
+		chi : {
+
+			discrete: false,
+
+			bounds: [0, Infinity],
+
+			params: [
+				{ id: 'k', title: 'k', min: 0, max: 1000, step: 1, value: 1 },
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return Math.pow(1 - 2 * t, -params.k / 2);
+
+				};	// (1-2*t)^(-k/2), t<.5
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return 1 / (Math.pow(2, params.k / 2) * Math.h.gamma(params.k / 2)) * Math.pow(x, params.k / 2 - 1) * Math.exp(-x / 2);
+
+				};	// 1/(2^(k/2)*gamma(k/2))*x^(k/2-1)*e^(-x/2)
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.chi.pdf(params), 0, x);
+
+				};	// 1/gamma(k/2)*phi(k/2,x/2)
+
+			}
+
 		}
 
 	}

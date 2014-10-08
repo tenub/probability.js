@@ -65,6 +65,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		gumbel: {
 			title: '<h1>PMF<small>(&mu;=<em>{{ mu }}</em>, &beta;=<em>{{ beta }}</em>)</small></h1>'
+		},
+
+		chi: {
+			title: '<h1>PMF<small>(k=<em>{{ k }}</em>)</small></h1>'
 		}
 
 	};
