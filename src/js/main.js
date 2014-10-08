@@ -251,13 +251,11 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				distr.push({ x: start - i, y: value });
 			}
 
-			if (!self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
+			if (isNaN(value) || !self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
 				break;
 			}
 
 			i += inc;
-
-			console.log(value);
 
 		}
 
