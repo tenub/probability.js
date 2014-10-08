@@ -245,12 +245,15 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		while (i <= 10 * moments.variance) {
 
-			if (!self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || /* value > 1.0 || */ value <= 0))) {
-				break;
+			value = (typeof type !== 'undefined' && type === 'cdf') ? Math.p.distribution[distrType].cdf(params)(start - i) : Math.p.distribution[distrType].pdf(params)(start - i);
+
+			if (!isNaN(value)) {
+				distr.push({ x: start - i, y: value });
 			}
 
-			value = (typeof type !== 'undefined' && type === 'cdf') ? Math.p.distribution[distrType].cdf(params)(start - i) : Math.p.distribution[distrType].pdf(params)(start - i);
-			distr.push({ x: start - i, y: value });
+			if (!self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
+				break;
+			}
 
 			i += inc;
 
@@ -310,14 +313,24 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 						.attr('transform', 'translate(0, ' + h + ')')
 						.call(xAxis);
 
-			var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient('left');
+			var yAxis = d3.svg.axis().scale(y).ticks(4).orient('left');
 
 			graph.append('svg:g')
 						.attr('class', 'y axis')
-						.attr('transform', 'translate(-25, 0)')
-						.call(yAxisLeft);
+						.attr('transform', 'translate(0, 0)')
+						.call(yAxis);
 
 			graph.append('svg:path').attr('d', line(data));
+
+			graph.append('text')
+				.attr('text-anchor', 'middle')
+				.attr('transform', 'translate(' + (-3 * m[0] / 4) + ',' + (h / 2) + ')rotate(-90)')
+				.text('p(x)');
+
+			graph.append('text')
+				.attr('text-anchor', 'middle')
+				.attr('transform', 'translate(' + (w / 2) + ',' + (h + (m[1] / 2)) + ')')
+				.text('x');
 
 	};
 

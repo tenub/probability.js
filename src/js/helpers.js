@@ -14,6 +14,19 @@ Math.h = {
 	},
 
 	/**
+	 * round a number n to d decimal places
+	 *
+	 * @param {number} n
+	 * @param {number} d
+	 * @return {number}
+	 */
+	round: function(n, d) {
+
+		return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
+
+	},
+
+	/**
 	 * estimate the value of Euler's number using n series expansion terms
 	 *
 	 * @param {integer} n

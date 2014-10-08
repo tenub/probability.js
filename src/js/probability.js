@@ -5,25 +5,25 @@ Math.p = {
 
 		mean: function(f, t) {
 
-			return Math.round(Math.h.derivative(f, 1, t) * 1000) / 1000;
+			return Math.h.round(Math.h.derivative(f, 1, t), 3);
 
 		},
 
 		variance: function(f, t) {
 
-			return Math.round((Math.h.derivative(f, 2, t) - Math.pow(Math.p.moments.mean(f, t), 2)) * 1000) / 1000;
+			return Math.h.round(((Math.h.derivative(f, 2, t) - Math.pow(Math.p.moments.mean(f, t), 2))), 3);
 
 		},
 
 		skewness: function(f, t) {
 
-			return Math.round(((Math.h.derivative(f, 3, t) - 3 * Math.p.moments.mean(f, t) * Math.p.moments.variance(f, t) - Math.pow(Math.p.moments.mean(f, t), 3)) / Math.pow(Math.p.moments.variance(f, t), 1.5)) * 1000) / 1000;
+			return Math.h.round(((Math.h.derivative(f, 3, t) - 3 * Math.p.moments.mean(f, t) * Math.p.moments.variance(f, t) - Math.pow(Math.p.moments.mean(f, t), 3)) / Math.pow(Math.p.moments.variance(f, t), 1.5)), 3);
 
 		},
 
 		kurtosis: function(f, t) {
 
-			return Math.round((Math.h.derivative(f, 4, t) / Math.pow(Math.p.moments.variance(f, t), 2) - 3) * 1000) / 1000;
+			return Math.h.round((Math.h.derivative(f, 4, t) / Math.pow(Math.p.moments.variance(f, t), 2) - 3), 3);
 
 		}
 
@@ -47,9 +47,9 @@ Math.p = {
 
 				return {
 
-					mean: 1 / 2 * (params.a + params.b),
+					mean: Math.h.round(1 / 2 * (params.a + params.b), 3),
 
-					variance: 1 / 12 * Math.pow(params.b - params.a, 2),
+					variance: Math.h.round(1 / 12 * Math.pow(params.b - params.a, 2), 3),
 
 					skewness: 0,
 
@@ -369,13 +369,13 @@ Math.p = {
 
 				return {
 
-					mean: params.a / (params.a + params.b),
+					mean: Math.h.round((params.a / (params.a + params.b)), 3),
 
-					variance: params.a * params.b / (Math.pow(params.a + params.b, 2) * (params.a + params.b + 1)),
+					variance: Math.h.round((params.a * params.b / (Math.pow(params.a + params.b, 2) * (params.a + params.b + 1))), 3),
 
-					skewness: 2 * (params.b - params.a) * Math.sqrt(params.a + params.b + 1) / ((params.a + params.b + 2) * Math.sqrt(params.a * params.b)),
+					skewness: Math.h.round((2 * (params.b - params.a) * Math.sqrt(params.a + params.b + 1) / ((params.a + params.b + 2) * Math.sqrt(params.a * params.b))), 3),
 
-					kurtosis: 6 * (Math.pow(params.a - params.b, 2) * (params.a + params.b + 1) - params.a * params.b * (params.a + params.b + 2)) / (params.a * params.b * (params.a + params.b + 2) * (params.a + params.b + 3))
+					kurtosis: Math.h.round((6 * (Math.pow(params.a - params.b, 2) * (params.a + params.b + 1) - params.a * params.b * (params.a + params.b + 2)) / (params.a * params.b * (params.a + params.b + 2) * (params.a + params.b + 3))), 3)
 
 				};
 
