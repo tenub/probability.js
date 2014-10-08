@@ -257,6 +257,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			i += inc;
 
+			console.log(value);
+
 		}
 
 		return distr;

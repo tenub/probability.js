@@ -36,11 +36,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [0, Infinity],
+			bounds: [-Infinity, Infinity],
 
 			params: [
-				{ id: 'a', title: 'Lower Bound', min: 0, max: 10000, step: 0.05, value: 0 },
-				{ id: 'b', title: 'Upper Bound', min: 0, max: 10000, step: 1, value: 10 }
+				{ id: 'a', title: 'Lower Bound', min: -1000, max: 1000, step: 0.01, value: 0 },
+				{ id: 'b', title: 'Upper Bound', min: -1000, max: 1000, step: 0.01, value: 10 }
 			],
 
 			mgf: function(params) {
@@ -102,7 +102,7 @@ Math.p = {
 			bounds: [0, Infinity],
 
 			params: [
-				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
+				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.01, value: 0.5 },
 				{ id: 'n', title: 'Trials', min: 0, max: 100, step: 1, value: 40 }
 			],
 
@@ -145,8 +145,7 @@ Math.p = {
 			bounds: [0, Infinity],
 
 			params: [
-				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.05, value: 0.5 },
-				{ id: 'n', title: 'Trials', min: 0, max: 100, step: 1, value: 40 }
+				{ id: 'p', title: 'Probability', min: 0.01, max: 1, step: 0.01, value: 0.5 }
 			],
 
 			mgf: function(params) {
@@ -188,7 +187,7 @@ Math.p = {
 			bounds: [1, Infinity],
 
 			params: [
-				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.01, value: 0.5 }
+				{ id: 'p', title: 'Probability', min: 0.01, max: 0.99, step: 0.01, value: 0.5 }
 			],
 
 			mgf: function(params) {
@@ -230,7 +229,7 @@ Math.p = {
 			bounds: [0, Infinity],
 
 			params: [
-				{ id: 'lambda', title: 'Lambda', min: 0, max: 20, step: 1, value: 1 }
+				{ id: 'lambda', title: 'Lambda', min: 0.01, max: 20, step: 0.01, value: 1 }
 			],
 
 			mgf: function(params) {
@@ -272,7 +271,7 @@ Math.p = {
 			bounds: [0, Infinity],
 
 			params: [
-				{ id: 'lambda', title: 'Lambda', min: 0, max: 3, step: 0.1, value: 0.5 }
+				{ id: 'lambda', title: 'Lambda', min: 0.01, max: 3, step: 0.01, value: 0.5 }
 			],
 
 			mgf: function(params) {
@@ -318,8 +317,8 @@ Math.p = {
 			bounds: [-Infinity, Infinity],
 
 			params: [
-				{ id: 'mean', title: 'Mean', min: -10000, max: 10000, step: 0.05, value: 100 },
-				{ id: 'std', title: 'Standard Deviation', min: -10000, max: 10000, step: 0.05, value: 50 }
+				{ id: 'mean', title: 'Mean', min: -10000, max: 10000, step: 0.01, value: 100 },
+				{ id: 'std', title: 'Standard Deviation', min: 0.01, max: 10000, step: 0.01, value: 50 }
 			],
 
 			mgf: function(params) {
@@ -361,8 +360,8 @@ Math.p = {
 			bounds: [0, 1],
 
 			params: [
-				{ id: 'a', title: 'Alpha', min: 0, max: 1000, step: 0.05, value: 2 },
-				{ id: 'b', title: 'Beta', min: 0, max: 1000, step: 0.05, value: 2 }
+				{ id: 'a', title: 'Alpha', min: 0.01, max: 1000, step: 0.01, value: 2 },
+				{ id: 'b', title: 'Beta', min: 0.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -420,8 +419,8 @@ Math.p = {
 			bounds: [0, Infinity],
 
 			params: [
-				{ id: 'k', title: 'k', min: 0, max: 1000, step: 0.05, value: 3 },
-				{ id: 'theta', title: 'Theta', min: 0, max: 1000, step: 0.05, value: 2 }
+				{ id: 'k', title: 'k', min: 0.01, max: 1000, step: 0.01, value: 3 },
+				{ id: 'theta', title: 'Theta', min: 0.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -463,7 +462,7 @@ Math.p = {
 			bounds: [0, Infinity],
 
 			params: [
-				{ id: 'sigma', title: 'Sigma', min: 0, max: 1000, step: 0.05, value: 2 }
+				{ id: 'sigma', title: 'Sigma', min: 0.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -505,8 +504,8 @@ Math.p = {
 			bounds: [-Infinity, Infinity],
 
 			params: [
-				{ id: 'mu', title: 'Location', min: -1000, max: 1000, step: 0.05, value: 1 },
-				{ id: 'beta', title: 'Scale', min: 0, max: 1000, step: 0.05, value: 2 }
+				{ id: 'mu', title: 'Location', min: -1000, max: 1000, step: 0.01, value: 1 },
+				{ id: 'beta', title: 'Scale', min: 0.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			mgf: function(params) {
