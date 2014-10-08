@@ -106,7 +106,17 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				distrIval = Math.p.distribution[distrType].interval,
 				params = self.getParams('#params'),
 				m_0 = Math.p.distribution[distrType].mgf(params),
-				moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) };
+				moments;
+
+				if (typeof m_0 === 'function') {
+
+					moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) };
+
+				} else if (typeof m_0 === 'object') {
+
+					moments = m_0;
+
+				}
 
 			distr = self.buildPDF(distrType, params, moments);
 
@@ -235,7 +245,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		while (i <= 10 * moments.variance) {
 
-			if (!self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value > 1.0 || value < 0))) {
+			if (!self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || /* value > 1.0 || */ value <= 0))) {
 				break;
 			}
 

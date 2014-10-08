@@ -34,7 +34,7 @@ Math.p = {
 
 		uniform: {
 
-			discrete: true,
+			discrete: false,
 
 			bounds: [0, Infinity],
 
@@ -45,19 +45,39 @@ Math.p = {
 
 			mgf: function(params) {
 
-				return function(t) {
+				return {
+
+					mean: 1 / 2 * (params.a + params.b),
+
+					variance: 1 / 12 * Math.pow(params.b - params.a, 2),
+
+					skewness: 0,
+
+					kurtosis: -6 / 5
+
+				};
+
+				/*return function(t) {
 
 					return (Math.exp(params.a * t) - Math.exp((params.b + 1) * t)) / ((params.b - params.a + 1) * (1 - Math.exp(t)));
 
-				};	// (e^(a*t)-e^((b+1)*t))/n*(1-e^t)
+				};*/	// (e^(a*t)-e^((b+1)*t))/n*(1-e^t)
 
 			},
 
 			pdf: function(params) {
 
-				return function() {
+				return function(x) {
 
-					return 1 / (params.b - params.a + 1);
+					if (x >= params.a && x <= params.b) {
+
+						return 1 / (params.b - params.a);
+
+					} else {
+
+						return 0;
+
+					}
 
 				};	// 1/n
 
@@ -347,7 +367,19 @@ Math.p = {
 
 			mgf: function(params) {
 
-				return function(t) {
+				return {
+
+					mean: params.a / (params.a + params.b),
+
+					variance: params.a * params.b / (Math.pow(params.a + params.b, 2) * (params.a + params.b + 1)),
+
+					skewness: 2 * (params.b - params.a) * Math.sqrt(params.a + params.b + 1) / ((params.a + params.b + 2) * Math.sqrt(params.a * params.b)),
+
+					kurtosis: 6 * (Math.pow(params.a - params.b, 2) * (params.a + params.b + 1) - params.a * params.b * (params.a + params.b + 2)) / (params.a * params.b * (params.a + params.b + 2) * (params.a + params.b + 3))
+
+				};
+
+				/*return function(t) {
 
 					return 1 + Math.h.sum(function(k) {
 						return Math.h.product_sum(function(r) {
@@ -355,7 +387,7 @@ Math.p = {
 						}, 0, k - 1) * Math.pow(t, k / Math.h.factorial(k), 1, Infinity);
 					});
 
-				};	// 1+sum_(k,1,inf)(prod_(r,0,k-1)((a+r)/(a+b+r))*t^k/k!)
+				};*/	// 1+sum_(k,1,inf)(prod_(r,0,k-1)((a+r)/(a+b+r))*t^k/k!)
 
 			},
 
