@@ -14,6 +14,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	// track number of distributions generated
 	self.n = 0;
 
+	// track plot data
+	self.data = [];
+
 	// mustache templates used for displaying generated statistics
 	self.templates = {
 
@@ -109,7 +112,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			e.preventDefault();
 
 			var i, inc, start, end,
-				distr = [],
 				distrType = $('select[name=distr-type]').val(),
 				distrIval = Math.p.distribution[distrType].interval,
 				params = self.getParams('#params'),
@@ -126,17 +128,17 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 				}
 
-			distr = self.buildPDF(distrType, params, moments);
+			self.data.push(self.buildPDF(distrType, params, moments));
 
 			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates.moments, moments);
-				html += mustache.render(self.templates.distr, { values: Math.h.arr_dump(distr, 'y'), id: 'graph-' + self.n });
+				//html += mustache.render(self.templates.distr, { values: Math.h.arr_dump(distr, 'y'), id: 'graph-' + self.n });
 
 			var $el = $('<div/>').addClass('result').html(html);
 
 			$('.container').append($el.hide().fadeIn(500));
 
-			self.plot(distr, '#graph-' + self.n, [Math.min.apply(Math, distr.map(function(el) { return el.x; })), Math.max.apply(Math, distr.map(function(el) { return el.x; }))]);
+			self.plot('#graph');
 
 			self.n += 1;
 
@@ -149,6 +151,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			e.preventDefault();
 
 			self.n = 0;
+			self.data = [];
 
 			$('.result').remove();
 
@@ -214,7 +217,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		moments.mean = moments.mean || 0;
 		moments.variance = moments.variance || 0;
 
-		pdf = self.generateDF(distrType, params, moments, -inc).concat(self.generateDF(distrType, params, moments, 1.5));
+		pdf = self.generateDF(distrType, params, moments, -inc).concat(self.generateDF(distrType, params, moments, inc));
 		//cdf = self.generateDF(distrType, params, moments, -inc, 'cdf').concat(self.generateDF(distrType, params, moments, inc, 'cdf'));
 
 		pdf.sort(function(a, b) {
@@ -259,7 +262,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				distr.push({ x: start - i, y: value });
 			}
 
-			if (isNaN(value) || !self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
+			if (isNaN(i / inc) || isNaN(value) || !self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
 				break;
 			}
 
@@ -295,50 +298,60 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 * @param {string} id - id of element to append plot to
 	 * @param {array} xr - two-element array of min/max x values
 	 */
-	self.plot = function(data, id, xr) {
+	self.plot = function(id) {
 
-		var m = [80, 80, 80, 80],
+		var i,
+			m = [80, 80, 80, 80],
 			w = 640 - m[1] - m[3],
-			h = 360 - m[0] - m[2],
-
-			x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]),
-			y = d3.scale.linear().domain([0, Math.max.apply(Math, data.map(function(v) { return v.y; }))]).range([h, 0]);
+			h = 360 - m[0] - m[2];
 
 		var line = d3.svg.line()
 			.x(function(d) { return x(d.x); })
 			.y(function(d) { return y(d.y); });
 
-			var graph = d3.select(id).append('svg:svg')
-						.attr('width', w + m[1] + m[3])
-						.attr('height', h + m[0] + m[2])
-					.append('svg:g')
-						.attr('transform', 'translate(' + m[3] + ', ' + m[0] + ')');
+		var graph = d3.select(id).append('svg:svg')
+			.attr('width', w + m[1] + m[3])
+			.attr('height', h + m[0] + m[2])
+			.append('svg:g')
+			.attr('transform', 'translate(' + m[3] + ', ' + m[0] + ')');
 
-			var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
+		var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
 
-			graph.append('svg:g')
-						.attr('class', 'x axis')
-						.attr('transform', 'translate(0, ' + h + ')')
-						.call(xAxis);
+		graph.append('svg:g')
+			.attr('class', 'x axis')
+			.attr('transform', 'translate(0, ' + h + ')')
+			.call(xAxis);
 
-			var yAxis = d3.svg.axis().scale(y).ticks(4).orient('left');
+		var yAxis = d3.svg.axis().scale(y).ticks(4).orient('left');
 
-			graph.append('svg:g')
-						.attr('class', 'y axis')
-						.attr('transform', 'translate(0, 0)')
-						.call(yAxis);
+		graph.append('svg:g')
+			.attr('class', 'y axis')
+			.attr('transform', 'translate(0, 0)')
+			.call(yAxis);
 
-			graph.append('svg:path').attr('d', line(data));
+		graph.append('text')
+			.attr('text-anchor', 'middle')
+			.attr('transform', 'translate(' + (-3 * m[0] / 4) + ',' + (h / 2) + ')rotate(-90)')
+			.text('p(x)');
 
-			graph.append('text')
-				.attr('text-anchor', 'middle')
-				.attr('transform', 'translate(' + (-3 * m[0] / 4) + ',' + (h / 2) + ')rotate(-90)')
-				.text('p(x)');
+		graph.append('text')
+			.attr('text-anchor', 'middle')
+			.attr('transform', 'translate(' + (w / 2) + ',' + (h + (m[1] / 2)) + ')')
+			.text('x');
 
-			graph.append('text')
-				.attr('text-anchor', 'middle')
-				.attr('transform', 'translate(' + (w / 2) + ',' + (h + (m[1] / 2)) + ')')
-				.text('x');
+		var getX = function(el) { return el.x; },
+			getY = function(el) { return el.y; };
+
+		for (i=0, l=self.data.length; i<l; i++) {
+
+			var xr = [Math.min.apply(Math, self.data[i].map(getX(el))), Math.max.apply(Math, self.data[i].map(getX(el)))],
+
+				x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]),
+				y = d3.scale.linear().domain([0, Math.max.apply(Math, self.data[i].map(getY(v)))]).range([h, 0]);
+
+			graph.append('svg:path').attr('d', line(self.data[i]));
+
+		}
 
 	};
 

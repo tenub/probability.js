@@ -314,7 +314,7 @@ Math.p = {
 			bounds: [0, Infinity],
 
 			params: [
-				{ id: 'lambda', title: 'Lambda', min: 0.01, max: 3, step: 0.01, value: 0.5 }
+				{ id: 'lambda', title: 'Lambda', min: 0.01, max: 50, step: 0.01, value: 0.5 }
 			],
 
 			mgf: function(params) {
