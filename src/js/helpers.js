@@ -217,6 +217,36 @@ Math.h = {
 	},
 
 	/**
+	 * estimates the value of the upper incomplete gamma function
+	 *
+	 * @param {number} a
+	 * @param {number} z
+	 * @return {number}
+	 */
+	uigamma: function(a, z) {
+
+		return Math.h.gamma(a) * (1 - Math.pow(z, a) * Math.exp(-z) * Math.h.sum(function(k) {
+			return Math.pow(z, k) / Math.h.gamma(a + k + 1);
+		}, 0, Infinity));
+
+	},
+
+	/**
+	 * estimates the value of the lower incomplete gamma function
+	 *
+	 * @param {number} a
+	 * @param {number} x
+	 * @return {number}
+	 */
+	ligamma: function(a, x) {
+
+		return Math.pow(x, a) * Math.h.gamma(a) * Math.exp(-x) * Math.h.sum(function(k) {
+			return Math.pow(x, k) / Math.h.gamma(a + k + 1);
+		}, 0, Infinity);
+
+	},
+
+	/**
 	 * calculate a generic sum using supplied function and parameters
 	 *
 	 * @param {function} f
@@ -226,26 +256,31 @@ Math.h = {
 	 */
 	sum: function(f, a, b) {
 
-		var v1,
-			v2,
-			i = a,
-			sum = 0;
+		var v = [0, 0],
+			s = [0, 0],
+			i = a;
 
 		while (i <= b) {
 
-			if ((typeof v1 !== 'undefined' && typeof v2 !== 'undefined' && Math.abs(v2 - v1) < 0.000000001) || i > 99999) {
-				break;
+			v = [f(i), f(i + 1)];
+
+			if (!isNaN(v[0])) {
+				s[0] += v[0];
 			}
 
-			v1 = f(i);
-			v2 = f(i + 1);
-			sum += v1;
+			if (!isNaN(v[1])) {
+				s[1] += v[1];
+			}
+
+			if (Math.abs(s[1] - s[0]) < 0.00001 || i > 99999) {
+				break;
+			}
 
 			i += 1;
 
 		}
 
-		return sum;
+		return s[0];
 
 	},
 

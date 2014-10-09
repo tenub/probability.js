@@ -231,13 +231,13 @@ Math.p = {
 				{ id: 'a', title: 'Alpha', min: 0.01, max: 1000, step: 0.01, value: 1 }
 			],
 
-			bounds: [Math.p.pareto.params.xm, Infinity],
+			bounds: [0, Infinity],
 
 			mgf: function(params) {
 
 				return function(t) {
 
-					return params.a * Math.pow(-params.xm * t, params.a) * Math.h.igamma(-params.a, -params.xm * t);
+					return params.a * Math.pow(-params.xm * t, params.a) * Math.h.uigamma(-params.a, -params.xm * t);
 
 				};	// a*(-xm*t)^a*gamma(-a,-xm*t), t<0
 
