@@ -222,6 +222,49 @@ Math.p = {
 
 		},
 
+		pareto: {
+
+			discrete: false,
+
+			params: [
+				{ id: 'xm', title: 'X_m', min: 0.01, max: 1000, step: 0.01, value: 1 },
+				{ id: 'a', title: 'Alpha', min: 0.01, max: 1000, step: 0.01, value: 1 }
+			],
+
+			bounds: [Math.p.pareto.params.xm, Infinity],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return params.a * Math.pow(-params.xm * t, params.a) * Math.h.igamma(-params.a, -params.xm * t);
+
+				};	// a*(-xm*t)^a*gamma(-a,-xm*t), t<0
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return params.a * Math.pow(params.xm, params.a) / Math.pow(x, params.a + 1);
+
+				};	// a*xm^a/x^(a+1)
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.pareto.pdf(params), 0, x);
+
+				};	// 1-(xm/x)^a, x>=xm
+
+			}
+
+		},
+
 		poisson: {
 
 			discrete: true,

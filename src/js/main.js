@@ -24,51 +24,55 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		distr: '<div id="{{ id }}"></div>',
 
 		uniform: {
-			title: '<h1>PMF<small>(a=<em>{{ a }}</em>, b=<em>{{ b }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(a=<em>{{ a }}</em>, b=<em>{{ b }}</em>)</small></h1>'
 		},
 
 		binomial: {
-			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
 		},
 
 		geometric: {
-			title: '<h1>PMF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
 		},
 
 		logarithmic: {
-			title: '<h1>PMF<small>(p=<em>{{ p }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(p=<em>{{ p }}</em>)</small></h1>'
 		},
 
 		exponential: {
-			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
+		},
+
+		pareto: {
+			title: '<h1>PDF<small>(x<sub>m</sub>=<em>{{ xm }}</em>, &alpha;=<em>{{ a }}</em>)</small></h1>'
 		},
 
 		poisson: {
-			title: '<h1>PMF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
 		},
 
 		gaussian: {
-			title: '<h1>PMF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
 		},
 
 		beta: {
-			title: '<h1>PMF<small>(&alpha;=<em>{{ a }}</em>, &beta;=<em>{{ b }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(&alpha;=<em>{{ a }}</em>, &beta;=<em>{{ b }}</em>)</small></h1>'
 		},
 
 		gamma: {
-			title: '<h1>PMF<small>(k=<em>{{ k }}</em>, &theta;=<em>{{ theta }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(k=<em>{{ k }}</em>, &theta;=<em>{{ theta }}</em>)</small></h1>'
 		},
 
 		rayleigh: {
-			title: '<h1>PMF<small>(&sigma;=<em>{{ sigma }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(&sigma;=<em>{{ sigma }}</em>)</small></h1>'
 		},
 
 		gumbel: {
-			title: '<h1>PMF<small>(&mu;=<em>{{ mu }}</em>, &beta;=<em>{{ beta }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(&mu;=<em>{{ mu }}</em>, &beta;=<em>{{ beta }}</em>)</small></h1>'
 		},
 
 		chi: {
-			title: '<h1>PMF<small>(k=<em>{{ k }}</em>)</small></h1>'
+			title: '<h1>PDF<small>(k=<em>{{ k }}</em>)</small></h1>'
 		}
 
 	};
@@ -210,7 +214,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		moments.mean = moments.mean || 0;
 		moments.variance = moments.variance || 0;
 
-		pdf = self.generateDF(distrType, params, moments, -inc).concat(self.generateDF(distrType, params, moments, inc));
+		pdf = self.generateDF(distrType, params, moments, -inc).concat(self.generateDF(distrType, params, moments, 1.5));
 		//cdf = self.generateDF(distrType, params, moments, -inc, 'cdf').concat(self.generateDF(distrType, params, moments, inc, 'cdf'));
 
 		pdf.sort(function(a, b) {
