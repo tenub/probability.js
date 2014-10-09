@@ -111,6 +111,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
+			$('#graph').html('');
+
 			var i, inc, start, end,
 				distrType = $('select[name=distr-type]').val(),
 				distrIval = Math.p.distribution[distrType].interval,
@@ -134,9 +136,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				html += mustache.render(self.templates.moments, moments);
 				//html += mustache.render(self.templates.distr, { values: Math.h.arr_dump(distr, 'y'), id: 'graph-' + self.n });
 
-			var $el = $('<div/>').addClass('result').html(html);
-
-			$('.container').append($el.hide().fadeIn(500));
+			$('#result').hide().append(html).fadeIn(500);
+			$('#graph').hide().fadeIn(500);
 
 			self.plot('#graph');
 
@@ -153,7 +154,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			self.n = 0;
 			self.data = [];
 
-			$('.result').remove();
+			$('#result, #graph').html('');
 
 		});
 
@@ -315,20 +316,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.append('svg:g')
 			.attr('transform', 'translate(' + m[3] + ', ' + m[0] + ')');
 
-		var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
-
-		graph.append('svg:g')
-			.attr('class', 'x axis')
-			.attr('transform', 'translate(0, ' + h + ')')
-			.call(xAxis);
-
-		var yAxis = d3.svg.axis().scale(y).ticks(4).orient('left');
-
-		graph.append('svg:g')
-			.attr('class', 'y axis')
-			.attr('transform', 'translate(0, 0)')
-			.call(yAxis);
-
 		graph.append('text')
 			.attr('text-anchor', 'middle')
 			.attr('transform', 'translate(' + (-3 * m[0] / 4) + ',' + (h / 2) + ')rotate(-90)')
@@ -339,15 +326,32 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.attr('transform', 'translate(' + (w / 2) + ',' + (h + (m[1] / 2)) + ')')
 			.text('x');
 
+		var xAxis = d3.svg.axis().tickSize(-h).tickSubdivide(true),
+			yAxis = d3.svg.axis().ticks(4).orient('left');
+
 		var getX = function(el) { return el.x; },
 			getY = function(el) { return el.y; };
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
-			var xr = [Math.min.apply(Math, self.data[i].map(getX(el))), Math.max.apply(Math, self.data[i].map(getX(el)))],
+			var xr = [Math.min.apply(Math, self.data[i].map(getX)), Math.max.apply(Math, self.data[i].map(getX))],
 
 				x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]),
-				y = d3.scale.linear().domain([0, Math.max.apply(Math, self.data[i].map(getY(v)))]).range([h, 0]);
+				y = d3.scale.linear().domain([0, Math.max.apply(Math, self.data[i].map(getY))]).range([h, 0]);
+
+			xAxis.scale(x);
+
+			graph.append('svg:g')
+				.attr('class', 'x axis')
+				.attr('transform', 'translate(0, ' + h + ')')
+				.call(xAxis);
+
+			yAxis.scale(y);
+
+			graph.append('svg:g')
+				.attr('class', 'y axis')
+				.attr('transform', 'translate(0, 0)')
+				.call(yAxis);
 
 			graph.append('svg:path').attr('d', line(self.data[i]));
 
