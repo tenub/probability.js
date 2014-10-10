@@ -302,6 +302,11 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	self.plot = function(id) {
 
 		var i,
+			x_l,
+			x_u,
+			y_u,
+			xr = [],
+			yr = [],
 			m = [80, 80, 80, 80],
 			w = 640 - m[1] - m[3],
 			h = 360 - m[0] - m[2];
@@ -329,28 +334,48 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		var xAxis = d3.svg.axis().tickSize(-h).tickSubdivide(true),
 			yAxis = d3.svg.axis().ticks(4).orient('left');
 
+		graph.append('svg:g')
+			.attr('class', 'x axis')
+			.attr('transform', 'translate(0, ' + h + ')');
+
+		graph.append('svg:g')
+			.attr('class', 'y axis')
+			.attr('transform', 'translate(0, 0)');
+
 		var getX = function(el) { return el.x; },
 			getY = function(el) { return el.y; };
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
-			var xr = [Math.min.apply(Math, self.data[i].map(getX)), Math.max.apply(Math, self.data[i].map(getX))],
+			x_l = Math.min.apply(Math, self.data[i].map(getX));
+			x_u = Math.max.apply(Math, self.data[i].map(getX));
+			y_u = Math.max.apply(Math, self.data[i].map(getY));
 
-				x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]),
-				y = d3.scale.linear().domain([0, Math.max.apply(Math, self.data[i].map(getY))]).range([h, 0]);
+			if (typeof xr[0] === 'undefined' || x_l < xr[0]) {
+				xr[0] = x_l;
+			}
+
+			if (typeof xr[1] === 'undefined' || x_u > xr[1]) {
+				xr[1] = x_u;
+			}
+
+			if (typeof yr[0] === 'undefined' || y_u > yr[0]) {
+				yr[0] = y_u;
+			}
+
+			console.log(xr, yr);
+
+			x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]);
+			y = d3.scale.linear().domain([0, yr[0]]).range([h, 0]);
 
 			xAxis.scale(x);
 
-			graph.append('svg:g')
-				.attr('class', 'x axis')
-				.attr('transform', 'translate(0, ' + h + ')')
+			graph.select('.x.axis')
 				.call(xAxis);
 
 			yAxis.scale(y);
 
-			graph.append('svg:g')
-				.attr('class', 'y axis')
-				.attr('transform', 'translate(0, 0)')
+			graph.select('.y.axis')
 				.call(yAxis);
 
 			graph.append('svg:path').attr('d', line(self.data[i]));
