@@ -120,15 +120,15 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				m_0 = Math.p.distribution[distrType].mgf(params),
 				moments;
 
-				if (typeof m_0 === 'function') {
+			if (typeof m_0 === 'function') {
 
-					moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) };
+				moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) };
 
-				} else if (typeof m_0 === 'object') {
+			} else if (typeof m_0 === 'object') {
 
-					moments = m_0;
+				moments = m_0;
 
-				}
+			}
 
 			self.data.push(self.buildPDF(distrType, params, moments));
 
@@ -211,7 +211,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			cdf = [],
 			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
 
-		if (isNaN(inc)) {
+		if (isNaN(inc) || inc > 99999) {
 			inc = 0.01;
 		}
 
@@ -263,7 +263,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				distr.push({ x: start - i, y: value });
 			}
 
-			if (isNaN(i / inc) || isNaN(value) || !self.inBounds(start - i, Math.p.distribution[distrType].bounds) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
+			if (isNaN(i / inc) || isNaN(value) || !self.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
 				break;
 			}
 

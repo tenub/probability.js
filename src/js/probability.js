@@ -36,7 +36,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [-Infinity, Infinity],
+			bounds: function(params) {
+
+				return [-Infinity, Infinity];
+
+			},
 
 			params: [
 				{ id: 'a', title: 'Lower Bound', min: -1000, max: 1000, step: 0.01, value: 0 },
@@ -99,7 +103,11 @@ Math.p = {
 
 			discrete: true,
 
-			bounds: [0, Infinity],
+			bounds: function(params) {
+
+				return [0, Infinity];
+
+			},
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.01, value: 0.5 },
@@ -142,7 +150,11 @@ Math.p = {
 
 			discrete: true,
 
-			bounds: [0, Infinity],
+			bounds: function(params) {
+
+				return [0, Infinity];
+
+			},
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0.01, max: 1, step: 0.01, value: 0.5 }
@@ -184,7 +196,11 @@ Math.p = {
 
 			discrete: true,
 
-			bounds: [1, Infinity],
+			bounds: function(params) {
+
+				return [1, Infinity];
+
+			},
 
 			params: [
 				{ id: 'p', title: 'Probability', min: 0.01, max: 0.99, step: 0.01, value: 0.5 }
@@ -231,15 +247,24 @@ Math.p = {
 				{ id: 'a', title: 'Alpha', min: 0.01, max: 1000, step: 0.01, value: 1 }
 			],
 
-			bounds: [0, Infinity],
+			bounds: function(params) {
+
+				return [params.xm, Infinity];
+
+			},
 
 			mgf: function(params) {
 
-				return function(t) {
+				var o = {};
 
-					return params.a * Math.pow(-params.xm * t, params.a) * Math.h.uigamma(-params.a, -params.xm * t);
+				o.mean = (params.a > 1) ? Math.h.round(params.a * params.xm / (params.a - 1), 3) : Infinity;
+				o.variance = (params.a > 2) ? Math.h.round(Math.pow(params.xm, 2) * params.a / (Math.pow(params.a - 1, 2) * (params.a - 2)), 3) : Infinity;
+				o.skewness = (params.a > 3) ? Math.h.round(2 * (1 + params.a) / (params.a - 3) * Math.sqrt((params.a - 2) / params.a), 3) : undefined;
+				o.kurtosis = (params.a > 4) ? Math.h.round(6 * (Math.pow(params.a, 3) + Math.pow(params.a, 2) - 6 * params.a - 2) / (params.a * (params.a - 3) * (params.a - 4)), 3) : undefined;
 
-				};	// a*(-xm*t)^a*gamma(-a,-xm*t), t<0
+				return o;
+
+				// a*(-xm*t)^a*gamma(-a,-xm*t), t<0
 
 			},
 
@@ -269,7 +294,11 @@ Math.p = {
 
 			discrete: true,
 
-			bounds: [0, Infinity],
+			bounds: function(params) {
+
+				return [0, Infinity];
+
+			},
 
 			params: [
 				{ id: 'lambda', title: 'Lambda', min: 0.01, max: 20, step: 0.01, value: 1 }
@@ -311,7 +340,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [0, Infinity],
+			bounds: function(params) {
+
+				return [0, Infinity];
+
+			},
 
 			params: [
 				{ id: 'lambda', title: 'Lambda', min: 0.01, max: 50, step: 0.01, value: 0.5 }
@@ -357,7 +390,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [-Infinity, Infinity],
+			bounds: function(params) {
+
+				return [-Infinity, Infinity];
+
+			},
 
 			params: [
 				{ id: 'mean', title: 'Mean', min: -10000, max: 10000, step: 0.01, value: 100 },
@@ -400,7 +437,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [0, 1],
+			bounds: function(params) {
+
+				return [0, 1];
+
+			},
 
 			params: [
 				{ id: 'a', title: 'Alpha', min: 0.01, max: 1000, step: 0.01, value: 2 },
@@ -459,7 +500,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [0, Infinity],
+			bounds: function(params) {
+
+				return [0, Infinity];
+
+			},
 
 			params: [
 				{ id: 'k', title: 'k', min: 0.01, max: 1000, step: 0.01, value: 3 },
@@ -502,7 +547,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [0, Infinity],
+			bounds: function(params) {
+
+				return [0, Infinity];
+
+			},
 
 			params: [
 				{ id: 'sigma', title: 'Sigma', min: 0.01, max: 1000, step: 0.01, value: 2 }
@@ -544,7 +593,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [-Infinity, Infinity],
+			bounds: function(params) {
+
+				return [-Infinity, Infinity];
+
+			},
 
 			params: [
 				{ id: 'mu', title: 'Location', min: -1000, max: 1000, step: 0.01, value: 1 },
@@ -589,7 +642,11 @@ Math.p = {
 
 			discrete: false,
 
-			bounds: [0, Infinity],
+			bounds: function(params) {
+
+				return [0, Infinity];
+
+			},
 
 			params: [
 				{ id: 'k', title: 'k', min: 0, max: 1000, step: 1, value: 1 },
