@@ -363,8 +363,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				yr[0] = y_u;
 			}
 
-			console.log(xr, yr);
-
 			x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]);
 			y = d3.scale.linear().domain([0, yr[0]]).range([h, 0]);
 
@@ -377,6 +375,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			graph.select('.y.axis')
 				.call(yAxis);
+
+		}
+
+		for (i=0, l=self.data.length; i<l; i++) {
 
 			graph.append('svg:path').attr('d', line(self.data[i]));
 
