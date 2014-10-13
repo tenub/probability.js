@@ -27,55 +27,55 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		distr: '<div id="{{ id }}"></div>',
 
 		uniform: {
-			title: '<h1>PDF<small>(a=<em>{{ a }}</em>, b=<em>{{ b }}</em>)</small></h1>'
+			title: '<h1>DF<small>(a=<em>{{ a }}</em>, b=<em>{{ b }}</em>)</small></h1>'
 		},
 
 		binomial: {
-			title: '<h1>PDF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
+			title: '<h1>DF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
 		},
 
 		geometric: {
-			title: '<h1>PDF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
+			title: '<h1>DF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
 		},
 
 		logarithmic: {
-			title: '<h1>PDF<small>(p=<em>{{ p }}</em>)</small></h1>'
+			title: '<h1>DF<small>(p=<em>{{ p }}</em>)</small></h1>'
 		},
 
 		exponential: {
-			title: '<h1>PDF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
+			title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
 		},
 
 		pareto: {
-			title: '<h1>PDF<small>(x<sub>m</sub>=<em>{{ xm }}</em>, &alpha;=<em>{{ a }}</em>)</small></h1>'
+			title: '<h1>DF<small>(x<sub>m</sub>=<em>{{ xm }}</em>, &alpha;=<em>{{ a }}</em>)</small></h1>'
 		},
 
 		poisson: {
-			title: '<h1>PDF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
+			title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
 		},
 
 		gaussian: {
-			title: '<h1>PDF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
+			title: '<h1>DF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
 		},
 
 		beta: {
-			title: '<h1>PDF<small>(&alpha;=<em>{{ a }}</em>, &beta;=<em>{{ b }}</em>)</small></h1>'
+			title: '<h1>DF<small>(&alpha;=<em>{{ a }}</em>, &beta;=<em>{{ b }}</em>)</small></h1>'
 		},
 
 		gamma: {
-			title: '<h1>PDF<small>(k=<em>{{ k }}</em>, &theta;=<em>{{ theta }}</em>)</small></h1>'
+			title: '<h1>DF<small>(k=<em>{{ k }}</em>, &theta;=<em>{{ theta }}</em>)</small></h1>'
 		},
 
 		rayleigh: {
-			title: '<h1>PDF<small>(&sigma;=<em>{{ sigma }}</em>)</small></h1>'
+			title: '<h1>DF<small>(&sigma;=<em>{{ sigma }}</em>)</small></h1>'
 		},
 
 		gumbel: {
-			title: '<h1>PDF<small>(&mu;=<em>{{ mu }}</em>, &beta;=<em>{{ beta }}</em>)</small></h1>'
+			title: '<h1>DF<small>(&mu;=<em>{{ mu }}</em>, &beta;=<em>{{ beta }}</em>)</small></h1>'
 		},
 
 		chi: {
-			title: '<h1>PDF<small>(k=<em>{{ k }}</em>)</small></h1>'
+			title: '<h1>DF<small>(k=<em>{{ k }}</em>)</small></h1>'
 		}
 
 	};
@@ -130,7 +130,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			}
 
-			self.data.push(self.buildPDF(distrType, params, moments));
+			self.data.push(self.buildDF(distrType, params, moments));
 
 			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates.moments, moments);
@@ -205,11 +205,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 * @param {object} moments - moments object generated via moment-generating function
 	 * @return {array} array of objects containing x-y value pairs
 	 */
-	self.buildPDF = function(distrType, params, moments) {
+	self.buildDF = function(distrType, params, moments) {
 
-		var distr = {},
-			lhs = {},
-			rhs = {},
+		var distr = { pdf: [], cdf: [] },
 			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
 
 		if (isNaN(inc) || inc > 99999) {
@@ -219,11 +217,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		moments.mean = moments.mean || 0;
 		moments.variance = moments.variance || 0;
 
-		lhs = self.generateDF(distrType, params, moments, -inc);
-		rhs = self.generateDF(distrType, params, moments, inc);
-
-		distr.pdf = lhs.pdf.concat(rhs.pdf);
-		distr.cdf = lhs.cdf.concat(rhs.cdf);
+		distr.pdf = self.generatePDF(distrType, params, moments, -inc).concat(self.generatePDF(distrType, params, moments, inc));
 
 		distr.pdf.sort(function(a, b) {
 			if (a.x < b.x) { return -1; }
@@ -231,61 +225,71 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			return 0;
 		});
 
-		distr.cdf.sort(function(a, b) {
-			if (a.x < b.x) { return -1; }
-			if (a.x > b.x) { return 1; }
-			return 0;
-		});
+		distr.cdf = self.generateCDF(distr.pdf, inc);
 
 		return distr;
 
 	};
 
 	/**
-	 * generate one side of distribution plot numerically until y value becomes negligible
+	 * generate one side of PDF numerically until y value becomes negligible
 	 * starts at the mean and moves outward in direction of the sign of increment
 	 *
 	 * @param {string} distrType - distribution type as string
 	 * @param {object} params - statistical parameters object
 	 * @param {object} moments - moments object generated via moment-generating function
 	 * @param {number} inc - increment to loop over
-	 * @param {string} [type] - cdf or pdf (defaults to pdf if not specified)
 	 * @return {array} array of objects containing x-y value pairs
 	 */
-	self.generateDF = function(distrType, params, moments, inc, type) {
+	self.generatePDF = function(distrType, params, moments, inc) {
 
 		var pdf = [],
-			cdf = [],
 			i = 0,
 			sum = 0,
-			start = moments.mean,
+			start = (inc < 0) ? moments.mean - inc : moments.mean,
 			value;
 
 		while (i <= 10 * moments.variance) {
 
 			value = Math.p.distribution[distrType].pdf(params)(start - i);
 
-			if (!isNaN(value)) {
-				pdf.push({ x: start - i, y: value });
+			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
+				break;
 			}
 
-			if (isNaN(i / inc) || isNaN(value) || !self.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
-				break;
+			if (self.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) {
+				pdf.push({ x: start - i, y: value });
 			}
 
 			i += inc;
 
 		}
 
+		return pdf;
+
+	};
+
+	/**
+	 * generate CDF based on PDF
+	 *
+	 * @param {array} pdf - distribution array
+	 * @return {array} array of objects containing x-y value pairs
+	 */
+	self.generateCDF = function(pdf, inc) {
+
+		var cdf = [],
+			i = 0,
+			sum = 0;
+
 		for (i=0, l=pdf.length; i<l; i++) {
 
 			sum += pdf[i].y;
 
-			cdf.push({ x: pdf[i].x, y: sum });
+			cdf.push({ x: pdf[i].x, y: sum * inc });
 
 		}
 
-		return { pdf: pdf, cdf: cdf };
+		return cdf;
 
 	};
 
@@ -307,6 +311,25 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	};
 
 	/**
+	 * remove duplicate values from array
+	 *
+	 * @param {number} value - any number to test
+	 * @param {array} bounds - two-element array of lower/upper bounds
+	 * @return {boolean}
+	 */
+	self.uniq = function(array) {
+
+		var seen = {};
+
+		return array.filter(function(item) {
+
+			return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+
+		});
+
+	};
+
+	/**
 	 * plot array data using d3
 	 *
 	 * @param {array} data - array of x-y key/value objects
@@ -316,18 +339,22 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	self.plot = function(id) {
 
 		var i,
-			x_l,
-			x_u,
-			y_u,
+			x, y1, y2,
+			x_l, x_u,
 			xr = [],
-			yr = [],
+			pdf_y_u, cdf_y_u,
+			pdf_yr = [], cdf_yr = [],
 			m = [80, 80, 80, 80],
 			w = 640 - m[1] - m[3],
 			h = 360 - m[0] - m[2];
 
-		var line = d3.svg.line()
+		var line1 = d3.svg.line()
 			.x(function(d) { return x(d.x); })
-			.y(function(d) { return y(d.y); });
+			.y(function(d) { return y1(d.y); });
+
+		var line2 = d3.svg.line()
+			.x(function(d) { return x(d.x); })
+			.y(function(d) { return y2(d.y); });
 
 		var graph = d3.select(id).append('svg:svg')
 			.attr('width', w + m[1] + m[3])
@@ -346,24 +373,30 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.text('x');
 
 		var xAxis = d3.svg.axis().tickSize(-h).tickSubdivide(true),
-			yAxis = d3.svg.axis().ticks(4).orient('left');
+			yAxisLeft = d3.svg.axis().ticks(4).orient('left'),
+			yAxisRight = d3.svg.axis().ticks(4).orient('right');
 
 		graph.append('svg:g')
 			.attr('class', 'x axis')
 			.attr('transform', 'translate(0, ' + h + ')');
 
 		graph.append('svg:g')
-			.attr('class', 'y axis')
+			.attr('class', 'y axis left')
 			.attr('transform', 'translate(0, 0)');
+
+		graph.append('svg:g')
+			.attr('class', 'y axis right')
+			.attr('transform', 'translate(' + w + ', 0)');
 
 		var getX = function(el) { return el.x; },
 			getY = function(el) { return el.y; };
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
-			x_l = Math.min.apply(Math, self.data[i].pdf.map(getX));
-			x_u = Math.max.apply(Math, self.data[i].pdf.map(getX));
-			y_u = Math.max.apply(Math, self.data[i].pdf.map(getY));
+			x_l = Math.min.apply(Math, self.data[i].cdf.map(getX));
+			x_u = Math.max.apply(Math, self.data[i].cdf.map(getX));
+			pdf_y_u = Math.max.apply(Math, self.data[i].pdf.map(getY));
+			cdf_y_u = Math.max.apply(Math, self.data[i].cdf.map(getY));
 
 			if (typeof xr[0] === 'undefined' || x_l < xr[0]) {
 				xr[0] = x_l;
@@ -373,28 +406,42 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				xr[1] = x_u;
 			}
 
-			if (typeof yr[0] === 'undefined' || y_u > yr[0]) {
-				yr[0] = y_u;
+			if (typeof pdf_yr[0] === 'undefined' || pdf_y_u > pdf_yr[0]) {
+				pdf_yr[0] = pdf_y_u;
+			}
+
+			if (typeof cdf_yr[0] === 'undefined' || cdf_y_u > cdf_yr[0]) {
+				cdf_yr[0] = cdf_y_u;
 			}
 
 			x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]);
-			y = d3.scale.linear().domain([0, yr[0]]).range([h, 0]);
+			y1 = d3.scale.linear().domain([0, pdf_yr[0]]).range([h, 0]);
+			y2 = d3.scale.linear().domain([0, cdf_yr[0]]).range([h, 0]);
 
 			xAxis.scale(x);
 
 			graph.select('.x.axis')
 				.call(xAxis);
 
-			yAxis.scale(y);
+			yAxisLeft.scale(y1);
+			yAxisRight.scale(y2);
 
-			graph.select('.y.axis')
-				.call(yAxis);
+			graph.select('.y.axis.left')
+				.call(yAxisLeft);
+
+			graph.select('.y.axis.right')
+				.call(yAxisRight);
 
 		}
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
-			graph.append('svg:path').attr('d', line(self.data[i].pdf));
+			graph.append('svg:path')
+				.attr('d', line1(self.data[i].pdf));
+
+			graph.append('svg:path')
+				.attr('d', line2(self.data[i].cdf))
+				.style('stroke', 'red');
 
 		}
 
