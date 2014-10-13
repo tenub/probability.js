@@ -207,8 +207,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 */
 	self.buildPDF = function(distrType, params, moments) {
 
-		var pdf = [],
-			cdf = [],
+		var distr = {},
+			lhs = {},
+			rhs = {},
 			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
 
 		if (isNaN(inc) || inc > 99999) {
@@ -218,22 +219,25 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		moments.mean = moments.mean || 0;
 		moments.variance = moments.variance || 0;
 
-		pdf = self.generateDF(distrType, params, moments, -inc).concat(self.generateDF(distrType, params, moments, inc));
-		//cdf = self.generateDF(distrType, params, moments, -inc, 'cdf').concat(self.generateDF(distrType, params, moments, inc, 'cdf'));
+		lhs = self.generateDF(distrType, params, moments, -inc);
+		rhs = self.generateDF(distrType, params, moments, inc);
 
-		pdf.sort(function(a, b) {
+		distr.pdf = lhs.pdf.concat(rhs.pdf);
+		distr.cdf = lhs.cdf.concat(rhs.cdf);
+
+		distr.pdf.sort(function(a, b) {
 			if (a.x < b.x) { return -1; }
 			if (a.x > b.x) { return 1; }
 			return 0;
 		});
 
-		/*cdf.sort(function(a, b) {
+		distr.cdf.sort(function(a, b) {
 			if (a.x < b.x) { return -1; }
 			if (a.x > b.x) { return 1; }
 			return 0;
-		});*/
+		});
 
-		return pdf;
+		return distr;
 
 	};
 
@@ -250,17 +254,19 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 */
 	self.generateDF = function(distrType, params, moments, inc, type) {
 
-		var distr = [],
+		var pdf = [],
+			cdf = [],
 			i = 0,
+			sum = 0,
 			start = moments.mean,
 			value;
 
 		while (i <= 10 * moments.variance) {
 
-			value = (typeof type !== 'undefined' && type === 'cdf') ? Math.p.distribution[distrType].cdf(params)(start - i) : Math.p.distribution[distrType].pdf(params)(start - i);
+			value = Math.p.distribution[distrType].pdf(params)(start - i);
 
 			if (!isNaN(value)) {
-				distr.push({ x: start - i, y: value });
+				pdf.push({ x: start - i, y: value });
 			}
 
 			if (isNaN(i / inc) || isNaN(value) || !self.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
@@ -271,7 +277,15 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		}
 
-		return distr;
+		for (i=0, l=pdf.length; i<l; i++) {
+
+			sum += pdf[i].y;
+
+			cdf.push({ x: pdf[i].x, y: sum });
+
+		}
+
+		return { pdf: pdf, cdf: cdf };
 
 	};
 
@@ -347,9 +361,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
-			x_l = Math.min.apply(Math, self.data[i].map(getX));
-			x_u = Math.max.apply(Math, self.data[i].map(getX));
-			y_u = Math.max.apply(Math, self.data[i].map(getY));
+			x_l = Math.min.apply(Math, self.data[i].pdf.map(getX));
+			x_u = Math.max.apply(Math, self.data[i].pdf.map(getX));
+			y_u = Math.max.apply(Math, self.data[i].pdf.map(getY));
 
 			if (typeof xr[0] === 'undefined' || x_l < xr[0]) {
 				xr[0] = x_l;
@@ -380,7 +394,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
-			graph.append('svg:path').attr('d', line(self.data[i]));
+			graph.append('svg:path').attr('d', line(self.data[i].pdf));
 
 		}
 
