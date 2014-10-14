@@ -364,13 +364,18 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		graph.append('text')
 			.attr('text-anchor', 'middle')
+			.attr('transform', 'translate(' + (w / 2) + ',' + (h + (m[1] / 2)) + ')')
+			.text('x');
+
+		graph.append('text')
+			.attr('text-anchor', 'middle')
 			.attr('transform', 'translate(' + (-3 * m[0] / 4) + ',' + (h / 2) + ')rotate(-90)')
 			.text('p(x)');
 
 		graph.append('text')
 			.attr('text-anchor', 'middle')
-			.attr('transform', 'translate(' + (w / 2) + ',' + (h + (m[1] / 2)) + ')')
-			.text('x');
+			.attr('transform', 'translate(' + (w + 3 * m[0] / 4) + ',' + (h / 2) + ')rotate(-90)')
+			.text('P(x)');
 
 		var xAxis = d3.svg.axis().tickSize(-h).tickSubdivide(true),
 			yAxisLeft = d3.svg.axis().ticks(4).orient('left'),
@@ -389,7 +394,13 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.attr('transform', 'translate(' + w + ', 0)');
 
 		var getX = function(el) { return el.x; },
-			getY = function(el) { return el.y; };
+			getY = function(el) { return el.y; },
+			genColor = function(i) {
+				var colors = ['blue', 'orange', 'purple', 'yellow', 'green', 'red'],
+					l = colors.length;
+				while (i > l) { i -= l; }
+				return colors[i];
+			};
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
@@ -436,12 +447,16 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
+			var color = genColor(i);
+
 			graph.append('svg:path')
-				.attr('d', line1(self.data[i].pdf));
+				.attr('d', line1(self.data[i].pdf))
+				.style('stroke', color);
 
 			graph.append('svg:path')
 				.attr('d', line2(self.data[i].cdf))
-				.style('stroke', 'red');
+				.style('stroke', color)
+				.style('stroke-dasharray', ('3, 3'));
 
 		}
 
