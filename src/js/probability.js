@@ -1,3 +1,20 @@
+/**
+ * @namespace
+ * @property {object} moments - standard moment definitions
+ * @property {function} moments.mean - first moment
+ * @property {function} moments.variance - second moment
+ * @property {function} moments.skewness - third moment
+ * @property {function} moments.kurtosis - fourth moment
+ *
+ * @property {object} distribution - defined commonly used distributions
+ * @property {object} distribution.(distribution) - contains standard statistics specified below for a particular distribution
+ * @property {boolean} distribution.distribution.discrete - determines if distribution is discrete or continuous
+ * @property {function} distribution.distribution.bounds - define distribution bounds for its variable
+ * @property {object} distribution.distribution.params - contains values used in generating html input
+ * @property {function|object} distribution.distribution.mgf - specified moment generating function returns a function of parameters or an object containing hard-coded standard moment equations
+ * @property {function} distribution.distribution.pdf - probability distribution function returns a function of its variable using specified distribution parameters
+ * @property {function} distribution.distribution.cdf - cumulative distribution function returns a function of its variable using specified distribution parameters and a numerical integration helper function
+ */
 Math.p = {
 
 	// define moments
@@ -61,12 +78,6 @@ Math.p = {
 
 				};
 
-				/*return function(t) {
-
-					return (Math.exp(params.a * t) - Math.exp((params.b + 1) * t)) / ((params.b - params.a + 1) * (1 - Math.exp(t)));
-
-				};*/	// (e^(a*t)-e^((b+1)*t))/n*(1-e^t)
-
 			},
 
 			pdf: function(params) {
@@ -83,7 +94,7 @@ Math.p = {
 
 					}
 
-				};	// 1/n
+				};
 
 			},
 
@@ -93,7 +104,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.uniform.pdf(params), params.a, params.b);
 
-				};	// (floor(k) - a + 1) / n
+				};
 
 			}
 
@@ -120,7 +131,7 @@ Math.p = {
 
 					return Math.pow((1 - params.p + params.p * Math.exp(t)), params.n);
 
-				};	// (1-p+p*e^t)^n
+				};
 
 			},
 
@@ -130,7 +141,7 @@ Math.p = {
 
 					return Math.h.choose(params.n, k) * Math.pow(params.p, k) * Math.pow((1 - params.p), (params.n - k));
 
-				};	// (n k)*p^k*(1-p)^(n-k)
+				};
 
 			},
 
@@ -140,7 +151,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.binomial.pdf(params), 0, k);
 
-				};	// I_(1-p)(n-k, 1+k)
+				};
 
 			}
 
@@ -166,7 +177,7 @@ Math.p = {
 
 					return params.p / (1 - (1 - params.p) * Math.exp(t));
 
-				};	// p/(1-(1-p)*e^t)
+				};
 
 			},
 
@@ -176,7 +187,7 @@ Math.p = {
 
 					return Math.pow(1 - params.p, k) * params.p;
 
-				};	// (1-p)^k*p
+				};
 
 			},
 
@@ -186,7 +197,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.geometric.pdf(params), 0, k);
 
-				};	// 1-(1-p)^(k+1)
+				};
 
 			}
 
@@ -212,7 +223,7 @@ Math.p = {
 
 					return Math.log(1 - params.p * Math.exp(t)) / Math.log(1 - params.p);
 
-				};	// ln(1-p*exp(t))/ln(1-p), t<-ln(p)
+				};
 
 			},
 
@@ -222,7 +233,7 @@ Math.p = {
 
 					return -1 / Math.log(1 - params.p) * Math.pow(params.p, k) / k;
 
-				};	// -1/ln(1-p)*p^k/k
+				};
 
 			},
 
@@ -232,7 +243,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.logarithmic.pdf(params), 0, k);
 
-				};	// 1+B(p;k+1,0)/ln(1-p)
+				};
 
 			}
 
@@ -264,8 +275,6 @@ Math.p = {
 
 				return o;
 
-				// a*(-xm*t)^a*gamma(-a,-xm*t), t<0
-
 			},
 
 			pdf: function(params) {
@@ -274,7 +283,7 @@ Math.p = {
 
 					return params.a * Math.pow(params.xm, params.a) / Math.pow(x, params.a + 1);
 
-				};	// a*xm^a/x^(a+1)
+				};
 
 			},
 
@@ -284,7 +293,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.pareto.pdf(params), 0, x);
 
-				};	// 1-(xm/x)^a, x>=xm
+				};
 
 			}
 
@@ -310,7 +319,7 @@ Math.p = {
 
 					return Math.exp(params.lambda * (Math.pow(Math.E, t) - 1));
 
-				};	// e^(l*(e^t-1))
+				};
 
 			},
 
@@ -320,7 +329,7 @@ Math.p = {
 
 					return Math.pow(params.lambda, k) / Math.h.factorial(k) * Math.exp(-params.lambda);
 
-				};	// l^k/k!*e^-l
+				};
 
 			},
 
@@ -330,7 +339,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.poisson.pdf(params), 0, k);
 
-				};	// r([k+1],l)/[k]!
+				};
 
 			}
 
@@ -360,7 +369,7 @@ Math.p = {
 
 					return 0;
 
-				};	// (1-t/l)^(-1), t<l
+				};
 
 			},
 
@@ -370,7 +379,7 @@ Math.p = {
 
 					return params.lambda * Math.exp(-params.lambda * x);
 
-				};	// l*e^(-l*x)
+				};
 
 			},
 
@@ -380,7 +389,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.exponential.pdf(params), 0, x);
 
-				};	// 1-e^(-l*x)
+				};
 
 			}
 
@@ -407,7 +416,7 @@ Math.p = {
 
 					return Math.exp(params.mean * t + 0.5 * Math.pow(params.std, 2) * Math.pow(t, 2));
 
-				};	// exp(u*t+.5*o^2*t^2)
+				};
 
 			},
 
@@ -417,7 +426,7 @@ Math.p = {
 
 					return 1 / (params.std * Math.pow(2 * Math.PI, 0.5)) * Math.exp(-Math.pow(x - params.mean, 2) / (2 * Math.pow(params.std, 2)));
 
-				};	// 1/(o*(2*pi)^.5)*exp(-(x-u)^2/(2*o^2))
+				};
 
 			},
 
@@ -462,16 +471,6 @@ Math.p = {
 
 				};
 
-				/*return function(t) {
-
-					return 1 + Math.h.sum(function(k) {
-						return Math.h.product_sum(function(r) {
-							return (params.a + r) / (params.a + params.b + r);
-						}, 0, k - 1) * Math.pow(t, k / Math.h.factorial(k), 1, Infinity);
-					});
-
-				};*/	// 1+sum_(k,1,inf)(prod_(r,0,k-1)((a+r)/(a+b+r))*t^k/k!)
-
 			},
 
 			pdf: function(params) {
@@ -480,7 +479,7 @@ Math.p = {
 
 					return Math.pow(x, params.a - 1) * Math.pow((1 - x), params.b - 1) / Math.h.beta(params.a, params.b);
 
-				};	// x^(a-1)*(1-x)^(b-1)/B(a,b)
+				};
 
 			},
 
@@ -490,7 +489,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.beta.pdf(params), 0, x);
 
-				};	// I_x(a,b)
+				};
 
 			}
 
@@ -517,7 +516,7 @@ Math.p = {
 
 					return Math.pow((1 - params.theta * t), -params.k);
 
-				};	// (1-th*t)^(-k), t<1/th
+				};
 
 			},
 
@@ -527,7 +526,7 @@ Math.p = {
 
 					return 1 / (Math.h.gamma(params.k) * Math.pow(params.theta, params.k)) * Math.pow(x, params.k - 1) * Math.exp(-x / params.theta);
 
-				};	// 1/(gamma(k)*th^k)*x^(k-1)*e^(-x/th)
+				};
 
 			},
 
@@ -563,7 +562,7 @@ Math.p = {
 
 					return 1 + params.sigma * t * Math.exp(Math.pow(params.sigma, 2) * Math.pow(t, 2) / 2) * Math.sqrt(Math.PI / 2) * (Math.h.erf(params.sigma * t / Math.sqrt(2)) + 1);
 
-				};	// 1+s*t*e^(-s^2*t^2/2)*(pi/2)^.5*(erf(s*t/2^.5)+1)
+				};
 
 			},
 
@@ -573,7 +572,7 @@ Math.p = {
 
 					return x / Math.pow(params.sigma, 2) * Math.exp(-Math.pow(x, 2) / (2 * Math.pow(params.sigma, 2)));
 
-				};	// x/s^2*exp(-x^2/(2*s^2))
+				};
 
 			},
 
@@ -610,7 +609,7 @@ Math.p = {
 
 					return Math.h.gamma(1 - params.beta * t) * Math.exp(params.mu * t);
 
-				};	// gamma(1-B*t)*e^(mu*t)
+				};
 
 			},
 
@@ -622,7 +621,7 @@ Math.p = {
 
 					return 1 / params.beta * Math.exp(-(z + Math.exp(-z)));
 
-				};	// 1/B*e^-(z+e^-z), z=(x-mu)/B
+				};
 
 			},
 
@@ -632,7 +631,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.rayleigh.pdf(params), 0, x);
 
-				};	// e^-e^-z
+				};
 
 			}
 
@@ -658,7 +657,7 @@ Math.p = {
 
 					return Math.pow(1 - 2 * t, -params.k / 2);
 
-				};	// (1-2*t)^(-k/2), t<.5
+				};
 
 			},
 
@@ -668,7 +667,7 @@ Math.p = {
 
 					return 1 / (Math.pow(2, params.k / 2) * Math.h.gamma(params.k / 2)) * Math.pow(x, params.k / 2 - 1) * Math.exp(-x / 2);
 
-				};	// 1/(2^(k/2)*gamma(k/2))*x^(k/2-1)*e^(-x/2)
+				};
 
 			},
 
@@ -678,7 +677,7 @@ Math.p = {
 
 					return Math.h.integral(Math.p.distribution.chi.pdf(params), 0, x);
 
-				};	// 1/gamma(k/2)*phi(k/2,x/2)
+				};
 
 			}
 

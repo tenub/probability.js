@@ -134,7 +134,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates.moments, moments);
-				//html += mustache.render(self.templates.distr, { values: Math.h.arr_dump(distr, 'y'), id: 'graph-' + self.n });
 
 			$('#result').hide().append(html).fadeIn(500);
 			$('#graph').hide().fadeIn(500);
@@ -198,12 +197,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	};
 
 	/**
-	 * call method to generate distribution plot based on parameters
+	 * call method to generate distribution plots based on parameters
 	 *
 	 * @param {string} distrType - distribution type as string
 	 * @param {object} params - statistical parameters object
 	 * @param {object} moments - moments object generated via moment-generating function
-	 * @return {array} array of objects containing x-y value pairs
+	 * @return {object} object of pdf and cdf arrays containing x-y value pairs for plotting
 	 */
 	self.buildDF = function(distrType, params, moments) {
 
@@ -270,7 +269,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	};
 
 	/**
-	 * generate CDF based on PDF
+	 * generate CDF based on summation of PDF values
 	 *
 	 * @param {array} pdf - distribution array
 	 * @return {array} array of objects containing x-y value pairs
@@ -311,30 +310,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	};
 
 	/**
-	 * remove duplicate values from array
-	 *
-	 * @param {number} value - any number to test
-	 * @param {array} bounds - two-element array of lower/upper bounds
-	 * @return {boolean}
-	 */
-	self.uniq = function(array) {
-
-		var seen = {};
-
-		return array.filter(function(item) {
-
-			return seen.hasOwnProperty(item) ? false : (seen[item] = true);
-
-		});
-
-	};
-
-	/**
 	 * plot array data using d3
 	 *
-	 * @param {array} data - array of x-y key/value objects
 	 * @param {string} id - id of element to append plot to
-	 * @param {array} xr - two-element array of min/max x values
 	 */
 	self.plot = function(id) {
 
@@ -459,6 +437,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				.style('stroke-dasharray', ('3, 3'));
 
 		}
+
+		return true;
 
 	};
 

@@ -2,7 +2,7 @@
 Math.h = {
 
 	/**
-	 * determines if a number is an integer
+	 * determines if a number is equivalent to an integer
 	 *
 	 * @param {number} n
 	 * @return {boolean}
@@ -14,10 +14,10 @@ Math.h = {
 	},
 
 	/**
-	 * round a number n to d decimal places
+	 * round a number to specified decimal places
 	 *
-	 * @param {number} n
-	 * @param {number} d
+	 * @param {number} n - any number
+	 * @param {number} d - number of decimal places
 	 * @return {number}
 	 */
 	round: function(n, d) {
@@ -25,39 +25,6 @@ Math.h = {
 		return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
 
 	},
-
-	/**
-	 * estimate the value of Euler's number using n series expansion terms
-	 *
-	 * @param {integer} n
-	 * @return {float}
-	 */
-	e: function(n) {
-
-		var s = 0;
-
-		if (typeof n === 'undefined' || !this.isInt(n)) {
-
-			n = 18; // lowest value that results in accurate float precision
-
-		}
-
-		for (var i=0; i<n; i++) {
-
-			s += 1 / this.factorial(i);
-
-		}
-
-		return s;
-
-	},
-
-	/**
-	 * calculate the exact value of pi using Machin's formula
-	 *
-	 * @return {float}
-	 */
-	pi: 16 * Math.atan(1 / 5) - 4 * Math.atan(1 / 239),
 
 	/**
 	 * computes the factorial of a number
@@ -116,7 +83,7 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the gamma function at a certain value
+	 * estimates the value of the error function at a certain value
 	 *
 	 * @param {number} x
 	 * @return {number}
@@ -141,10 +108,10 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the beta function at certain parameter values by using its relation to the gamma function
+	 * estimates the value of the beta function with specified parameters by using the beta function's relation to the gamma function
 	 *
-	 * @param {number} a
-	 * @param {number} b
+	 * @param {number} a - alpha
+	 * @param {number} b - beta
 	 * @return {number}
 	 */
 	beta: function(a, b) {
@@ -217,7 +184,7 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the upper incomplete gamma function
+	 * estimates the value of the upper incomplete gamma function with specified parameters
 	 *
 	 * @param {number} a
 	 * @param {number} z
@@ -232,7 +199,7 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the lower incomplete gamma function
+	 * estimates the value of the lower incomplete gamma function with specified parameters
 	 *
 	 * @param {number} a
 	 * @param {number} x
@@ -247,11 +214,11 @@ Math.h = {
 	},
 
 	/**
-	 * calculate a generic sum using supplied function and parameters
+	 * calculate a generic sum using supplied function and bounds
 	 *
-	 * @param {function} f
-	 * @param {integer} a
-	 * @param {integer} b
+	 * @param {function} f - function applied within sum
+	 * @param {integer} a - lower bound
+	 * @param {integer} b - upper bound
 	 * @return {number} sum
 	 */
 	sum: function(f, a, b) {
@@ -287,10 +254,10 @@ Math.h = {
 	/**
 	 * calculate a generic product-sum using supplied function and parameters
 	 *
-	 * @param {function} f
-	 * @param {integer} a
-	 * @param {integer} b
-	 * @return {number} sum
+	 * @param {function} f - function applied within product-sum
+	 * @param {integer} a - lower bound
+	 * @param {integer} b - upper bound
+	 * @return {number} sum - product-sum
 	 */
 	product_sum: function(f, a, b) {
 
