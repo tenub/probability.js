@@ -111,6 +111,12 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
+			if (self.n > 5) {
+
+				$(this).trigger('reset');
+
+			}
+
 			$('#graph').html('');
 
 			var i, inc, start, end,
