@@ -14,6 +14,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	// track number of distributions generated
 	self.n = 0;
 
+	// track busy
+	self.busy = false;
+
 	// track plot data
 	self.data = [];
 
@@ -111,6 +114,14 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
+			if (self.busy === true) {
+
+				return false;
+
+			}
+
+			self.busy = true;
+
 			if (self.n > 5) {
 
 				$(this).trigger('reset');
@@ -144,8 +155,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			$('#result').hide().append(html).fadeIn(500);
 			$('#graph').hide().fadeIn(500);
 
-			self.plot('#graph');
-
+			self.busy = self.plot('#graph');
 			self.n += 1;
 
 		});
@@ -158,8 +168,20 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			self.n = 0;
 			self.data = [];
+			self.busy = false;
 
 			$('#result, #graph').html('');
+
+		});
+
+		$(window).resize(function() {
+
+			var $g = $('#graph');
+
+			x = $g.width();
+			y = $g.height();
+
+    		$g.find('svg').attr("width", x).attr("height", y);
 
 		});
 
@@ -328,9 +350,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			xr = [],
 			pdf_y_u, cdf_y_u,
 			pdf_yr = [], cdf_yr = [],
-			m = [80, 80, 80, 80],
-			w = 640 - m[1] - m[3],
-			h = 360 - m[0] - m[2];
+			width = $(id).width(),
+			m = [0.125 * width, 0.125 * width, 0.125 * width, 0.125 * width],
+			w = width - m[1] - m[3],
+			h = w * 0.75 - m[0] - m[2];
 
 		var line1 = d3.svg.line()
 			.x(function(d) { return x(d.x); })
@@ -444,7 +467,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		}
 
-		return true;
+		return false;
 
 	};
 
