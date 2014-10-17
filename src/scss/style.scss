@@ -92,6 +92,13 @@ footer {
 	}
 }
 
+svg {
+	display: inline-block;
+	position: absolute;
+	top: 10px;
+	left: 0;
+}
+
 pre {
 	padding: 1em 4em 1em 1em;
 }
@@ -176,4 +183,13 @@ footer {
 small.ln {
 	color: #aaa;
 	transition: all 0.5s;
+}
+
+#graph {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	padding-bottom: 100%;
+	vertical-align: top;
+	overflow: hidden;
 }

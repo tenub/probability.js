@@ -176,12 +176,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		$(window).resize(function() {
 
-			var $g = $('#graph');
+			var $g = $('#graph'),
+				x = $g.width();
 
-			x = $g.width();
-			y = $g.height();
-
-    		$g.find('svg').attr("width", x).attr("height", y);
+    		//$g.find('svg').attr("width", x).attr("height", x * 0.75);
 
 		});
 
@@ -351,9 +349,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			pdf_y_u, cdf_y_u,
 			pdf_yr = [], cdf_yr = [],
 			width = $(id).width(),
-			m = [0.125 * width, 0.125 * width, 0.125 * width, 0.125 * width],
-			w = width - m[1] - m[3],
-			h = w * 0.75 - m[0] - m[2];
+			height = width * 0.75,
+			m = 0.125 * width,
+			w = width - 2 * m,
+			h = height - 2 * m;
 
 		var line1 = d3.svg.line()
 			.x(function(d) { return x(d.x); })
@@ -364,24 +363,26 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.y(function(d) { return y2(d.y); });
 
 		var graph = d3.select(id).append('svg:svg')
-			.attr('width', w + m[1] + m[3])
-			.attr('height', h + m[0] + m[2])
+			//.attr('width', width)
+			//.attr('height', height)
+			.attr('viewBox', '0 0 ' + width + ' ' + height)
+			.attr('preserveAspectRatio', 'xMinYMin meet')
 			.append('svg:g')
-			.attr('transform', 'translate(' + m[3] + ', ' + m[0] + ')');
+			.attr('transform', 'translate(' + m + ', ' + m + ')');
 
 		graph.append('text')
 			.attr('text-anchor', 'middle')
-			.attr('transform', 'translate(' + (w / 2) + ',' + (h + (m[1] / 2)) + ')')
+			.attr('transform', 'translate(' + (w / 2) + ',' + (h + (m / 2)) + ')')
 			.text('x');
 
 		graph.append('text')
 			.attr('text-anchor', 'middle')
-			.attr('transform', 'translate(' + (-3 * m[0] / 4) + ',' + (h / 2) + ')rotate(-90)')
+			.attr('transform', 'translate(' + (-3 * m / 4) + ',' + (h / 2) + ')rotate(-90)')
 			.text('p(x)');
 
 		graph.append('text')
 			.attr('text-anchor', 'middle')
-			.attr('transform', 'translate(' + (w + 3 * m[0] / 4) + ',' + (h / 2) + ')rotate(-90)')
+			.attr('transform', 'translate(' + (w + 3 * m / 4) + ',' + (h / 2) + ')rotate(-90)')
 			.text('P(x)');
 
 		var xAxis = d3.svg.axis().tickSize(-h).tickSubdivide(true),
