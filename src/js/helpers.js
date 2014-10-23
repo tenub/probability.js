@@ -37,22 +37,11 @@ Math.h = {
 
 		var i = 0;
 
-		if (!this.isInt(n)) {
-
-			return this.gamma(n - 1);
-
-		} else {
-
+		if (!this.isInt(n)) { return this.gamma(n - 1); }
+		else {
 			var f = (n < 0) ? undefined : 1;
-
-			for (i=n; i>1; --i) {
-
-				f *= i;
-
-			}
-
+			for (i=n; i>1; --i) { f *= i; }
 			return f;
-
 		}
 
 	},
@@ -94,9 +83,7 @@ Math.h = {
 			p = 0.3275911,
 			s = 1;
 
-		if (x < 0) {
-			s = -1;
-		}
+		if (x < 0) { s = -1; }
 
 		x = Math.abs(x);
 
@@ -133,15 +120,9 @@ Math.h = {
 			g_ln = 607 / 128,
 			p_ln = [0.99999999999999709182, 57.156235665862923517, -59.597960355475491248, 14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4, 0.46523628927048575665e-4, -0.98374475304879564677e-4, 0.15808870322491248884e-3, -0.21026444172410488319e-3, 0.21743961811521264320e-3, -0.16431810653676389022e-3, 0.84418223983852743293e-4, -0.26190838401581408670e-4, 0.36899182659531622704e-5];
 
-		if (n < 0.5) {
-
-			return Math.PI / (Math.sin(Math.PI * n) * this.gamma(1 - n));
-
-		} else if (n > 100) {
-
-			return Math.exp(lngamma(n));
-
-		} else {
+		if (n < 0.5) { return Math.PI / (Math.sin(Math.PI * n) * this.gamma(1 - n)); }
+		else if (n > 100) { return Math.exp(lngamma(n)); }
+		else {
 
 			n -= 1;
 
@@ -161,19 +142,11 @@ Math.h = {
 
 		function lngamma(n) {
 
-			if (n < 0) {
-
-				return Number('0/0');
-
-			}
+			if (n < 0) { return Number('0/0'); }
 
 			var x = p_ln[0];
 
-			for (var i=p_ln.length-1; i>0; --i) {
-
-				x += p_ln[i] / (n + i);
-
-			}
+			for (var i=p_ln.length-1; i>0; --i) { x += p_ln[i] / (n + i); }
 
 			var t = n + g_ln + 0.5;
 
@@ -231,17 +204,11 @@ Math.h = {
 
 			v = [f(i), f(i + 1)];
 
-			if (!isNaN(v[0])) {
-				s[0] += v[0];
-			}
+			if (!isNaN(v[0])) { s[0] += v[0]; }
 
-			if (!isNaN(v[1])) {
-				s[1] += v[1];
-			}
+			if (!isNaN(v[1])) { s[1] += v[1]; }
 
-			if (Math.abs(s[1] - s[0]) < 0.00001 || i > 99999) {
-				break;
-			}
+			if (Math.abs(s[1] - s[0]) < 0.00001 || i > 99999) { break; }
 
 			i += 1;
 
@@ -272,9 +239,7 @@ Math.h = {
 			v2 = f(i + 1);
 			sum *= v1;
 
-			if (i === b || Math.abs(v2 - v1) < 0.000000001 || i > 99999) {
-				break;
-			}
+			if (i === b || Math.abs(v2 - v1) < 0.000000001 || i > 99999) { break; }
 
 			i += 1;
 
@@ -339,15 +304,8 @@ Math.h = {
 			v2 = f1(x, h);
 			a[i] = { h: h, d: Math.abs(v1-v2), v1: v1, v2: v2 };
 
-			if ((!isNaN(v1) && !isNaN(v2) && (i > 0 && a[i].d > a[i - 1].d)) || i > 99999) {
-
-				return a[i - 1].v1; // prevent loss of significance and instability
-
-			} else {
-
-				i += 1;
-
-			}
+			if ((!isNaN(v1) && !isNaN(v2) && (i > 0 && a[i].d > a[i - 1].d)) || i > 99999) { return a[i - 1].v1; }
+			else { i += 1; }
 
 		}
 
@@ -377,24 +335,10 @@ Math.h = {
 
 		var m = Math.floor(Math.sqrt(n));
 
-		if (n % m === 0) {
-
+		if (n % m === 0) { return m; }
+		else {
+			for (var i=1; i<(m-1); i++) { if (n % (m - i) === 0) { return m - i; } }
 			return m;
-
-		} else {
-
-			for (var i=1; i<(m-1); i++) {
-
-				if (n % (m - i) === 0) {
-
-					return m - i;
-
-				}
-
-			}
-
-			return m;
-
 		}
 
 	},
@@ -411,21 +355,13 @@ Math.h = {
 
 		var l = array.length;
 
-		if (typeof rows === 'undefined') {
-
-			rows = this.sq_size(l);
-
-		}
+		if (typeof rows === 'undefined') { rows = this.sq_size(l); }
 
 		var str='[';
 
 		for (var i=0; i<l; i++) {
 
-			if (i % rows === 0) {
-
-				str += '\n';
-
-			}
+			if (i % rows === 0) { str += '\n'; }
 
 			str += (typeof key === 'undefined') ? '\t' + array[i] + ',' : '\t' + Math.round(array[i][key] * 10000) / 10000 + ',';
 

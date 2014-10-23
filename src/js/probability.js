@@ -84,15 +84,8 @@ Math.p = {
 
 				return function(x) {
 
-					if (x >= params.a && x <= params.b) {
-
-						return 1 / (params.b - params.a);
-
-					} else {
-
-						return 0;
-
-					}
+					if (x >= params.a && x <= params.b) { return 1 / (params.b - params.a); }
+					else { return 0; }
 
 				};
 
@@ -363,11 +356,8 @@ Math.p = {
 
 				return function(t) {
 
-					if (t < params.lambda) {
-						return Math.pow(1 - t / params.lambda, -1);
-					}
-
-					return 0;
+					if (t < params.lambda) { return Math.pow(1 - t / params.lambda, -1); }
+					else { return 0; }
 
 				};
 
@@ -681,7 +671,61 @@ Math.p = {
 
 			}
 
-		}
+		},
+
+		weibull : {
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return [0, Infinity];
+
+			},
+
+			params: [
+				{ id: 'lambda', title: 'Scale', min: -1000, max: 1000, step: 0.01, value: 1 },
+				{ id: 'k', title: 'Shape', min: 0.01, max: 1000, step: 0.01, value: 2 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					if (params.k >= 1) {
+						return Math.h.sum(function(n) {
+							return Math.pow(t, n) * Math.pow(params.lambda, n) / Math.h.factorial(n) * Math.h.gamma(1 + n / params.k);
+						}, 0, Infinity);
+					}
+					else { return 0; }
+
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					if (x >= 0) { return params.k / params.lambda * Math.pow(x / params.lambda, k - 1) * Math.exp(-Math.pow(x / params.lambda, k)); }
+					else { return 0; }
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					if (x >= 0) { return 1 - Math.exp(-Math.pow(x / params.lambda, k)); }
+					else { return 0; }
+
+				};
+
+			}
+
+		},
 
 	}
 

@@ -14,9 +14,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	// track number of distributions generated
 	self.n = 0;
 
-	// track busy
-	self.busy = false;
-
 	// track plot data
 	self.data = [];
 
@@ -79,7 +76,11 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		chi: {
 			title: '<h1>DF<small>(k=<em>{{ k }}</em>)</small></h1>'
-		}
+		},
+
+		weibull: {
+			title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>, k=<em>{{ k }}</em>)</small></h1>'
+		},
 
 	};
 
@@ -114,20 +115,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
-			if (self.busy === true) {
-
-				return false;
-
-			}
-
-			self.busy = true;
-
-			if (self.n > 5) {
-
-				$(this).trigger('reset');
-
-			}
-
 			$('#graph').html('');
 
 			var i, inc, start, end,
@@ -137,25 +124,18 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				m_0 = Math.p.distribution[distrType].mgf(params),
 				moments;
 
-			if (typeof m_0 === 'function') {
-
-				moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) };
-
-			} else if (typeof m_0 === 'object') {
-
-				moments = m_0;
-
-			}
+			if (typeof m_0 === 'function') { moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) }; }
+			else if (typeof m_0 === 'object') { moments = m_0; }
 
 			self.data.push(self.buildDF(distrType, params, moments));
 
 			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates.moments, moments);
 
-			$('#result').hide().append(html).fadeIn(500);
+			$('#result').hide().html(html).fadeIn(500);
 			$('#graph').hide().fadeIn(500);
 
-			self.busy = self.plot('#graph');
+			self.plot('#graph');
 			self.n += 1;
 
 		});
@@ -168,18 +148,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			self.n = 0;
 			self.data = [];
-			self.busy = false;
 
 			$('#result, #graph').html('');
-
-		});
-
-		$(window).resize(function() {
-
-			var $g = $('#graph'),
-				x = $g.width();
-
-    		//$g.find('svg').attr("width", x).attr("height", x * 0.75);
 
 		});
 
@@ -196,11 +166,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		var $el = $(id),
 			params = {};
 
-		$el.find('input').each(function() {
-
-			params[this.id] = parseFloat(this.value, 10);
-
-		});
+		$el.find('input').each(function() { params[this.id] = parseFloat(this.value, 10); });
 
 		return params;
 
@@ -214,11 +180,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 */
 	self.renderParams = function(distrType) {
 
-		if (typeof Math.p.distribution[distrType] !== 'undefined') {
-
-			return mustache.render(self.templates.params, Math.p.distribution[distrType].params);
-
-		}
+		if (typeof Math.p.distribution[distrType] !== 'undefined') { return mustache.render(self.templates.params, Math.p.distribution[distrType].params); }
 
 	};
 
@@ -235,9 +197,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		var distr = { pdf: [], cdf: [] },
 			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
 
-		if (isNaN(inc) || inc > 99999) {
-			inc = 0.01;
-		}
+		if (isNaN(inc) || inc > 99999) { inc = 0.01; }
 
 		moments.mean = moments.mean || 0;
 		moments.variance = moments.variance || 0;
@@ -278,13 +238,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			value = Math.p.distribution[distrType].pdf(params)(start - i);
 
-			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) {
-				break;
-			}
+			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) { break; }
 
-			if (self.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) {
-				pdf.push({ x: start - i, y: value });
-			}
+			if (self.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) { pdf.push({ x: start - i, y: value }); }
 
 			i += inc;
 
@@ -327,11 +283,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 */
 	self.inBounds = function(value, bounds) {
 
-		if (value >= bounds[0] && value <= bounds[1]) {
-			return true;
-		}
-
-		return false;
+		if (value >= bounds[0] && value <= bounds[1]) { return true; }
+		else { return false; }
 
 	};
 
@@ -349,10 +302,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			pdf_y_u, cdf_y_u,
 			pdf_yr = [], cdf_yr = [],
 			width = $(id).width(),
-			height = width * 0.75,
 			m = 0.125 * width,
-			w = width - 2 * m,
-			h = height - 2 * m;
+			w = width,
+			h = width * 0.75;
 
 		var line1 = d3.svg.line()
 			.x(function(d) { return x(d.x); })
@@ -362,13 +314,14 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.x(function(d) { return x(d.x); })
 			.y(function(d) { return y2(d.y); });
 
-		var graph = d3.select(id).append('svg:svg')
-			//.attr('width', width)
-			//.attr('height', height)
-			.attr('viewBox', '0 0 ' + width + ' ' + height)
-			.attr('preserveAspectRatio', 'xMinYMin meet')
+		var graph = d3.select(id)
+			.append('svg:svg')
+				.attr('xmlns', 'http://www.w3.org/2000/svg')
+				.attr('version', '1.1')
+				.attr('viewBox', '0 0 640 480')
+				.attr('preserveAspectRatio', 'xMinYMin meet')
 			.append('svg:g')
-			.attr('transform', 'translate(' + m + ', ' + m + ')');
+				.attr('transform', 'translate(' + m + ', ' + m + ')');
 
 		graph.append('text')
 			.attr('text-anchor', 'middle')
@@ -386,8 +339,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.text('P(x)');
 
 		var xAxis = d3.svg.axis().tickSize(-h).tickSubdivide(true),
-			yAxisLeft = d3.svg.axis().ticks(4).orient('left'),
-			yAxisRight = d3.svg.axis().ticks(4).orient('right');
+			yAxisL = d3.svg.axis().ticks(4).orient('left'),
+			yAxisR = d3.svg.axis().ticks(4).orient('right');
 
 		graph.append('svg:g')
 			.attr('class', 'x axis')
@@ -401,14 +354,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.attr('class', 'y axis right')
 			.attr('transform', 'translate(' + w + ', 0)');
 
-		var getX = function(el) { return el.x; },
-			getY = function(el) { return el.y; },
-			genColor = function(i) {
-				var colors = ['blue', 'orange', 'purple', 'yellow', 'green', 'red'],
-					l = colors.length;
-				while (i > l) { i -= l; }
-				return colors[i];
-			};
+		var getX = function(o) { return o.x; },
+			getY = function(o) { return o.y; };
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
@@ -417,21 +364,13 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			pdf_y_u = Math.max.apply(Math, self.data[i].pdf.map(getY));
 			cdf_y_u = Math.max.apply(Math, self.data[i].cdf.map(getY));
 
-			if (typeof xr[0] === 'undefined' || x_l < xr[0]) {
-				xr[0] = x_l;
-			}
+			if (typeof xr[0] === 'undefined' || x_l < xr[0]) { xr[0] = x_l; }
 
-			if (typeof xr[1] === 'undefined' || x_u > xr[1]) {
-				xr[1] = x_u;
-			}
+			if (typeof xr[1] === 'undefined' || x_u > xr[1]) { xr[1] = x_u; }
 
-			if (typeof pdf_yr[0] === 'undefined' || pdf_y_u > pdf_yr[0]) {
-				pdf_yr[0] = pdf_y_u;
-			}
+			if (typeof pdf_yr[0] === 'undefined' || pdf_y_u > pdf_yr[0]) { pdf_yr[0] = pdf_y_u; }
 
-			if (typeof cdf_yr[0] === 'undefined' || cdf_y_u > cdf_yr[0]) {
-				cdf_yr[0] = cdf_y_u;
-			}
+			if (typeof cdf_yr[0] === 'undefined' || cdf_y_u > cdf_yr[0]) { cdf_yr[0] = cdf_y_u; }
 
 			x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]);
 			y1 = d3.scale.linear().domain([0, pdf_yr[0]]).range([h, 0]);
@@ -442,28 +381,24 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			graph.select('.x.axis')
 				.call(xAxis);
 
-			yAxisLeft.scale(y1);
-			yAxisRight.scale(y2);
+			yAxisL.scale(y1);
+			yAxisR.scale(y2);
 
 			graph.select('.y.axis.left')
-				.call(yAxisLeft);
+				.call(yAxisL);
 
 			graph.select('.y.axis.right')
-				.call(yAxisRight);
+				.call(yAxisR);
 
 		}
 
 		for (i=0, l=self.data.length; i<l; i++) {
 
-			var color = genColor(i);
-
 			graph.append('svg:path')
-				.attr('d', line1(self.data[i].pdf))
-				.style('stroke', color);
+				.attr('d', line1(self.data[i].pdf));
 
 			graph.append('svg:path')
 				.attr('d', line2(self.data[i].cdf))
-				.style('stroke', color)
 				.style('stroke-dasharray', ('3, 3'));
 
 		}
