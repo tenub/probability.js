@@ -14,6 +14,19 @@ Math.h = {
 	},
 
 	/**
+	 * determines if a value is within bounds of two-element array
+	 *
+	 * @param {number} value - any number to test
+	 * @param {array} bounds - two-element array of lower/upper bounds
+	 * @return {boolean}
+	 */
+	inBounds: function(value, bounds) {
+
+		return (value >= bounds[0] && value <= bounds[1]) ? true : false;
+
+	},
+
+	/**
 	 * round a number to specified decimal places
 	 *
 	 * @param {number} n - any number
@@ -80,8 +93,7 @@ Math.h = {
 	erf: function(x) {
 
 		var c = [0.254829592, -0.284496736, 1.421413741, -1.453152027, 1.061405429],
-			p = 0.3275911,
-			s = 1;
+			p = 0.3275911, s = 1;
 
 		if (x < 0) { s = -1; }
 
@@ -128,11 +140,7 @@ Math.h = {
 
 			var x = p[0];
 
-			for (var i=1; i<g+2; i++) {
-
-				x += p[i] / (n + i);
-
-			}
+			for (var i=1; i<g+2; i++) { x += p[i] / (n + i); }
 
 			var t = n + g + 0.5;
 
@@ -205,10 +213,9 @@ Math.h = {
 			v = [f(i), f(i + 1)];
 
 			if (!isNaN(v[0])) { s[0] += v[0]; }
-
 			if (!isNaN(v[1])) { s[1] += v[1]; }
 
-			if (Math.abs(s[1] - s[0]) < 0.00001 || i > 99999) { break; }
+			if (Math.abs(s[1] - s[0]) < 0.00001 || (isNaN(v[0]) && isNaN(v[1])) || i > 99999) { break; }
 
 			i += 1;
 
@@ -228,18 +235,17 @@ Math.h = {
 	 */
 	product_sum: function(f, a, b) {
 
-		var v1,
-			v2,
+		var v1, v2,
 			i = a,
 			sum = 1;
 
-		while (true) {
+		while (i < b) {
 
 			v1 = f(i);
 			v2 = f(i + 1);
 			sum *= v1;
 
-			if (i === b || Math.abs(v2 - v1) < 0.000000001 || i > 99999) { break; }
+			if (Math.abs(v2 - v1) < 0.000000001 || i > 99999) { break; }
 
 			i += 1;
 
@@ -259,37 +265,27 @@ Math.h = {
 	 */
 	derivative: function(f, o, x) {
 
-		var h = 0.0001,
+		var v1, v2, f1,
+			h = 0.0001,
 			i = 0,
-			a = [],
-			v1,
-			v2,
-			f1;
+			a = [];
 
 		switch (o) {
 
 			case 1:
-				f1 = function(x, h) {
-					return (-f(x + 2 * h) + 8 * f(x + h) - 8 * f(x - h) + f(x - 2 * h)) / (12 * h);
-				};
+				f1 = function(x, h) { return (-f(x + 2 * h) + 8 * f(x + h) - 8 * f(x - h) + f(x - 2 * h)) / (12 * h); };
 				break;
 
 			case 2:
-				f1 = function(x, h) {
-					return (-f(x + 2 * h) + 16 * f(x + h) - 30 * f(x) + 16 * f(x - h) - f(x - 2 * h)) / (12 * Math.pow(h, 2));
-				};
+				f1 = function(x, h) { return (-f(x + 2 * h) + 16 * f(x + h) - 30 * f(x) + 16 * f(x - h) - f(x - 2 * h)) / (12 * Math.pow(h, 2)); };
 				break;
 
 			case 3:
-				f1 = function(x, h) {
-					return (f(x + 2 * h) - 2 * f(x + h) + 2 * f(x - h) - f(x - 2 * h)) / (2 * Math.pow(h, 3));
-				};
+				f1 = function(x, h) { return (f(x + 2 * h) - 2 * f(x + h) + 2 * f(x - h) - f(x - 2 * h)) / (2 * Math.pow(h, 3)); };
 				break;
 
 			case 4:
-				f1 = function(x,h) {
-					return (f(x + 2 * h) - 4 * f(x + h) + 6 * f(x) - 4 * f(x - h) + f(x - 2 * h)) / Math.pow(h, 4);
-				};
+				f1 = function(x,h) { return (f(x + 2 * h) - 4 * f(x + h) + 6 * f(x) - 4 * f(x - h) + f(x - 2 * h)) / Math.pow(h, 4); };
 				break;
 
 			default:
@@ -335,11 +331,13 @@ Math.h = {
 
 		var m = Math.floor(Math.sqrt(n));
 
-		if (n % m === 0) { return m; }
-		else {
-			for (var i=1; i<(m-1); i++) { if (n % (m - i) === 0) { return m - i; } }
-			return m;
+		if (n % m !== 0) {
+			for (var i=1; i<(m-1); i++) {
+				if (n % (m - i) === 0) { return m - i; }
+			}
 		}
+
+		return m;
 
 	},
 

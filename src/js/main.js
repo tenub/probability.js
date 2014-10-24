@@ -80,7 +80,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		weibull: {
 			title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>, k=<em>{{ k }}</em>)</small></h1>'
-		},
+		}
 
 	};
 
@@ -127,7 +127,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			if (typeof m_0 === 'function') { moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) }; }
 			else if (typeof m_0 === 'object') { moments = m_0; }
 
-			self.data.push(self.buildDF(distrType, params, moments));
+			self.data.push(Math.p.buildDF(distrType, params, moments));
 
 			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates.moments, moments);
@@ -159,7 +159,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 * build params object to send to other methods in the library
 	 *
 	 * @param {string} id - id of form element containing parameter inputs
-	 * @return {object} statistical parameters object
+	 * @return {object} parameters object
 	 */
 	self.getParams = function(id) {
 
@@ -181,109 +181,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	self.renderParams = function(distrType) {
 
 		if (typeof Math.p.distribution[distrType] !== 'undefined') { return mustache.render(self.templates.params, Math.p.distribution[distrType].params); }
-
-	};
-
-	/**
-	 * call method to generate distribution plots based on parameters
-	 *
-	 * @param {string} distrType - distribution type as string
-	 * @param {object} params - statistical parameters object
-	 * @param {object} moments - moments object generated via moment-generating function
-	 * @return {object} object of pdf and cdf arrays containing x-y value pairs for plotting
-	 */
-	self.buildDF = function(distrType, params, moments) {
-
-		var distr = { pdf: [], cdf: [] },
-			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
-
-		if (isNaN(inc) || inc > 99999) { inc = 0.01; }
-
-		moments.mean = moments.mean || 0;
-		moments.variance = moments.variance || 0;
-
-		distr.pdf = self.generatePDF(distrType, params, moments, -inc).concat(self.generatePDF(distrType, params, moments, inc));
-
-		distr.pdf.sort(function(a, b) {
-			if (a.x < b.x) { return -1; }
-			if (a.x > b.x) { return 1; }
-			return 0;
-		});
-
-		distr.cdf = self.generateCDF(distr.pdf, inc);
-
-		return distr;
-
-	};
-
-	/**
-	 * generate one side of PDF numerically until y value becomes negligible
-	 * starts at the mean and moves outward in direction of the sign of increment
-	 *
-	 * @param {string} distrType - distribution type as string
-	 * @param {object} params - statistical parameters object
-	 * @param {object} moments - moments object generated via moment-generating function
-	 * @param {number} inc - increment to loop over
-	 * @return {array} array of objects containing x-y value pairs
-	 */
-	self.generatePDF = function(distrType, params, moments, inc) {
-
-		var pdf = [],
-			i = 0,
-			sum = 0,
-			start = (inc < 0) ? moments.mean - inc : moments.mean,
-			value;
-
-		while (i <= 10 * moments.variance) {
-
-			value = Math.p.distribution[distrType].pdf(params)(start - i);
-
-			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) { break; }
-
-			if (self.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) { pdf.push({ x: start - i, y: value }); }
-
-			i += inc;
-
-		}
-
-		return pdf;
-
-	};
-
-	/**
-	 * generate CDF based on summation of PDF values
-	 *
-	 * @param {array} pdf - distribution array
-	 * @return {array} array of objects containing x-y value pairs
-	 */
-	self.generateCDF = function(pdf, inc) {
-
-		var cdf = [],
-			i = 0,
-			sum = 0;
-
-		for (i=0, l=pdf.length; i<l; i++) {
-
-			sum += pdf[i].y;
-
-			cdf.push({ x: pdf[i].x, y: sum * inc });
-
-		}
-
-		return cdf;
-
-	};
-
-	/**
-	 * determines if a value is within bounds of two-element array
-	 *
-	 * @param {number} value - any number to test
-	 * @param {array} bounds - two-element array of lower/upper bounds
-	 * @return {boolean}
-	 */
-	self.inBounds = function(value, bounds) {
-
-		if (value >= bounds[0] && value <= bounds[1]) { return true; }
 		else { return false; }
 
 	};

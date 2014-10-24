@@ -17,6 +17,96 @@
  */
 Math.p = {
 
+	/**
+	 * call method to generate distribution plots based on parameters
+	 *
+	 * @param {string} distrType - distribution type as string
+	 * @param {object} params - statistical parameters object
+	 * @param {object} moments - moments object generated via moment-generating function
+	 * @return {object} object of pdf and cdf arrays containing x-y value pairs for plotting
+	 */
+	buildDF: function(distrType, params, moments) {
+
+		var distr = { pdf: [], cdf: [] },
+			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
+
+		if (isNaN(inc) || inc > 99999) { inc = 0.01; }
+
+		moments.mean = moments.mean || 0;
+		moments.variance = moments.variance || 0;
+
+		distr.pdf = Math.p.generatePDF(distrType, params, moments, -inc).concat(Math.p.generatePDF(distrType, params, moments, inc));
+
+		distr.pdf.sort(function(a, b) {
+			if (a.x < b.x) { return -1; }
+			if (a.x > b.x) { return 1; }
+			return 0;
+		});
+
+		distr.cdf = Math.p.generateCDF(distr.pdf, inc);
+
+		return distr;
+
+	},
+
+	/**
+	 * generate one side of PDF numerically until y value becomes negligible
+	 * starts at the mean and moves outward in direction of the sign of increment
+	 *
+	 * @param {string} distrType - distribution type as string
+	 * @param {object} params - statistical parameters object
+	 * @param {object} moments - moments object generated via moment-generating function
+	 * @param {number} inc - increment to loop over
+	 * @return {array} array of objects containing x-y value pairs
+	 */
+	generatePDF: function(distrType, params, moments, inc) {
+
+		var pdf = [],
+			i = 0,
+			sum = 0,
+			start = (inc < 0) ? moments.mean - inc : moments.mean,
+			value;
+
+		while (i <= 10 * moments.variance) {
+
+			value = Math.p.distribution[distrType].pdf(params)(start - i);
+
+			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) { break; }
+
+			if (Math.h.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) { pdf.push({ x: start - i, y: value }); }
+
+			i += inc;
+
+		}
+
+		return pdf;
+
+	},
+
+	/**
+	 * generate CDF based on summation of PDF values
+	 *
+	 * @param {array} pdf - distribution array
+	 * @return {array} array of objects containing x-y value pairs
+	 */
+	generateCDF: function(pdf, inc) {
+
+		var cdf = [],
+			i = 0,
+			sum = 0;
+
+		for (i=0, l=pdf.length; i<l; i++) {
+
+			sum += pdf[i].y;
+
+			cdf.push({ x: pdf[i].x, y: sum * inc });
+
+		}
+
+		return cdf;
+
+	},
+
 	// define moments
 	moments: {
 
@@ -684,11 +774,23 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'lambda', title: 'Scale', min: -1000, max: 1000, step: 0.01, value: 1 },
-				{ id: 'k', title: 'Shape', min: 0.01, max: 1000, step: 0.01, value: 2 }
+				{ id: 'lambda', title: 'Scale', min: -1000, max: 1000, step: 0.01, value: 1.5 },
+				{ id: 'k', title: 'Shape', min: 0.01, max: 1000, step: 0.01, value: 1.75 }
 			],
 
 			mgf: function(params) {
+
+				/*return {
+
+					mean: params.lambda * Math.h.gamma(1 + 1 / params.k),
+
+					variance: Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2)),
+
+					skewness: (Math.h.gamma(1 + 3 / params.k) * Math.pow(params.lambda, 3) - 3 * params.lambda * Math.h.gamma(1 + 1 / params.k) * (Math.pow(Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2))), 2) - (Math.pow(params.lambda * Math.h.gamma(1 + 1 / params.k), 3))) / Math.pow(Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2)), 3),
+
+					kurtosis: 0
+
+				};*/
 
 				return function(t) {
 
