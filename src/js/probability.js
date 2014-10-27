@@ -774,25 +774,25 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'lambda', title: 'Scale', min: -1000, max: 1000, step: 0.01, value: 1.5 },
-				{ id: 'k', title: 'Shape', min: 0.01, max: 1000, step: 0.01, value: 1.75 }
+				{ id: 'lambda', title: 'Scale', min: -1000, max: 1000, step: 0.01, value: 1 },
+				{ id: 'k', title: 'Shape', min: 0.01, max: 1000, step: 0.01, value: 1.5 }
 			],
 
 			mgf: function(params) {
 
-				/*return {
+				return {
 
-					mean: params.lambda * Math.h.gamma(1 + 1 / params.k),
+					mean: Math.h.round(params.lambda * Math.h.gamma(1 + 1 / params.k), 3),
 
-					variance: Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2)),
+					variance: Math.h.round(Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2)), 3),
 
-					skewness: (Math.h.gamma(1 + 3 / params.k) * Math.pow(params.lambda, 3) - 3 * params.lambda * Math.h.gamma(1 + 1 / params.k) * (Math.pow(Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2))), 2) - (Math.pow(params.lambda * Math.h.gamma(1 + 1 / params.k), 3))) / Math.pow(Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2)), 3),
+					skewness: Math.h.round((Math.h.gamma(1 + 3 / params.k) * Math.pow(params.lambda, 3) - 3 * params.lambda * Math.h.gamma(1 + 1 / params.k) * (Math.pow(Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2))), 2) - (Math.pow(params.lambda * Math.h.gamma(1 + 1 / params.k), 3))) / Math.pow(Math.pow(params.lambda, 2) * (Math.h.gamma(1 + 2 / params.k) - Math.pow(Math.h.gamma(1 + 1 / params.k), 2)), 3), 3),
 
 					kurtosis: 0
 
-				};*/
+				};
 
-				return function(t) {
+				/*return function(t) {
 
 					if (params.k >= 1) {
 						return Math.h.sum(function(n) {
@@ -801,7 +801,7 @@ Math.p = {
 					}
 					else { return 0; }
 
-				};
+				};*/
 
 			},
 
@@ -809,7 +809,7 @@ Math.p = {
 
 				return function(x) {
 
-					if (x >= 0) { return params.k / params.lambda * Math.pow(x / params.lambda, k - 1) * Math.exp(-Math.pow(x / params.lambda, k)); }
+					if (x >= 0) { return params.k / params.lambda * Math.pow(x / params.lambda, params.k - 1) * Math.exp(-Math.pow(x / params.lambda, params.k)); }
 					else { return 0; }
 
 				};

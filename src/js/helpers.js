@@ -195,7 +195,7 @@ Math.h = {
 	},
 
 	/**
-	 * calculate a generic sum using supplied function and bounds
+	 * calculate a generic sum using supplied function of one variable and bounds
 	 *
 	 * @param {function} f - function applied within sum
 	 * @param {integer} a - lower bound
@@ -215,7 +215,8 @@ Math.h = {
 			if (!isNaN(v[0])) { s[0] += v[0]; }
 			if (!isNaN(v[1])) { s[1] += v[1]; }
 
-			if (Math.abs(s[1] - s[0]) < 0.00001 || (isNaN(v[0]) && isNaN(v[1])) || i > 99999) { break; }
+			if (Math.abs(s[1] - s[0]) < 0.00001 || (isNaN(v[0]) && isNaN(v[1]))) { break; }
+			if (i > 99999) { return false; }
 
 			i += 1;
 
@@ -256,7 +257,7 @@ Math.h = {
 	},
 
 	/**
-	 * numerically estimates the derivative of a function
+	 * numerically estimates the derivative of a function using the five-point stencil method
 	 *
 	 * @param {function} f - single-variable function to derive
 	 * @param {integer} o - order of derivative to compute
