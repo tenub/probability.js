@@ -44,7 +44,7 @@ Math.h = {
 
 	/**
 	 * computes the factorial of a number
-	 * handles integers exactly and approximates floats via numerical estimation of its gamma function value
+	 * approximates floats via the gamma function
 	 *
 	 * @param {number} n
 	 * @return {number}
