@@ -11,11 +11,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	var self = this;
 
-	// track number of distributions generated
-	self.n = 0;
-
 	// track plot data
-	self.data = [];
+	self.data = {};
+
+	self.svg = { width: 0, height: 0 };
 
 	// mustache templates used for displaying generated statistics
 	self.templates = {
@@ -127,7 +126,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			if (typeof m_0 === 'function') { moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) }; }
 			else if (typeof m_0 === 'object') { moments = m_0; }
 
-			self.data.push(Math.p.buildDF(distrType, params, moments));
+			self.data = Math.p.buildDF(distrType, params, moments);
 
 			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates.moments, moments);
@@ -135,8 +134,20 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			$('#result').hide().html(html).fadeIn(500);
 			$('#graph').hide().fadeIn(500);
 
-			self.plot('#graph');
+			self.redrawPlot();
 			self.n += 1;
+
+		});
+
+		$(window).on('resize', function(e) {
+
+			if (self.svg.width !== $('#graph').width()) {
+
+				$('#result, #graph').html('');
+
+				self.redrawPlot();
+
+			}
 
 		});
 
@@ -147,7 +158,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			e.preventDefault();
 
 			self.n = 0;
-			self.data = [];
+			self.data = {};
 
 			$('#result, #graph').html('');
 
@@ -199,9 +210,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			pdf_y_u, cdf_y_u,
 			pdf_yr = [], cdf_yr = [],
 			width = $(id).width(),
+			height = width * 0.75,
 			m = 0.125 * width,
-			w = width,
-			h = width * 0.75;
+			w = width - 2 * m,
+			h = height - 2 * m;
 
 		var line1 = d3.svg.line()
 			.x(function(d) { return x(d.x); })
@@ -215,10 +227,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.append('svg:svg')
 				.attr('xmlns', 'http://www.w3.org/2000/svg')
 				.attr('version', '1.1')
-				.attr('viewBox', '0 0 640 480')
+				.attr('viewBox', '0 0 ' + width + ' ' + height)
 				.attr('preserveAspectRatio', 'xMinYMin meet')
-			.append('svg:g')
-				.attr('transform', 'translate(' + m + ', ' + m + ')');
+				.append('svg:g')
+					.attr('transform', 'translate(' + m + ', ' + m + ')');
 
 		graph.append('text')
 			.attr('text-anchor', 'middle')
@@ -254,20 +266,20 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		var getX = function(o) { return o.x; },
 			getY = function(o) { return o.y; };
 
-		x_l = Math.min.apply(Math, self.data[i].cdf.map(getX));
-		x_u = Math.max.apply(Math, self.data[i].cdf.map(getX));
-		pdf_y_u = Math.max.apply(Math, self.data[i].pdf.map(getY));
-		cdf_y_u = Math.max.apply(Math, self.data[i].cdf.map(getY));
+		x_l = Math.min.apply(Math, self.data.cdf.map(getX));
+		x_u = Math.max.apply(Math, self.data.cdf.map(getX));
+
+		pdf_y_u = Math.max.apply(Math, self.data.pdf.map(getY));
+		cdf_y_u = Math.max.apply(Math, self.data.cdf.map(getY));
 
 		if (typeof xr[0] === 'undefined' || x_l < xr[0]) { xr[0] = x_l; }
-
 		if (typeof xr[1] === 'undefined' || x_u > xr[1]) { xr[1] = x_u; }
 
 		if (typeof pdf_yr[0] === 'undefined' || pdf_y_u > pdf_yr[0]) { pdf_yr[0] = pdf_y_u; }
-
 		if (typeof cdf_yr[0] === 'undefined' || cdf_y_u > cdf_yr[0]) { cdf_yr[0] = cdf_y_u; }
 
 		x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]);
+
 		y1 = d3.scale.linear().domain([0, pdf_yr[0]]).range([h, 0]);
 		y2 = d3.scale.linear().domain([0, cdf_yr[0]]).range([h, 0]);
 
@@ -286,13 +298,24 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			.call(yAxisR);
 
 		graph.append('svg:path')
-			.attr('d', line1(self.data[i].pdf));
+			.attr('d', line1(self.data.pdf));
 
 		graph.append('svg:path')
-			.attr('d', line2(self.data[i].cdf))
+			.attr('d', line2(self.data.cdf))
 			.style('stroke-dasharray', ('3, 3'));
 
 		return false;
+
+	};
+
+	self.redrawPlot = function() {
+
+		self.plot('#graph');
+
+		self.svg.width = $('#graph').width();
+		self.svg.height = $('#graph').height();
+
+		return true;
 
 	};
 
