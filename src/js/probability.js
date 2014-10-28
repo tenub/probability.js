@@ -145,7 +145,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [-Infinity, Infinity];
+				return { lower: { value: -Infinity, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -199,7 +199,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, Infinity];
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -246,7 +246,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, Infinity];
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -292,7 +292,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [1, Infinity];
+				return { lower: { value: 1, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -343,7 +343,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [params.xm, Infinity];
+				return { lower: { value: params.xm, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -388,7 +388,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, Infinity];
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -434,7 +434,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, Infinity];
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -481,7 +481,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [-Infinity, Infinity];
+				return { lower: { value: -Infinity, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -528,7 +528,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, 1];
+				return { lower: { value: 0, closed: true }, upper: { value: 1, closed: true } };
 
 			},
 
@@ -581,7 +581,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, Infinity];
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -628,7 +628,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, Infinity];
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -674,7 +674,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [-Infinity, Infinity];
+				return { lower: { value: -Infinity, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -723,7 +723,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, Infinity];
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 
@@ -769,7 +769,7 @@ Math.p = {
 
 			bounds: function(params) {
 
-				return [0, Infinity];
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: true } };
 
 			},
 

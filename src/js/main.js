@@ -115,7 +115,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
-			$('#graph').html('');
+			$('#result, #graph').html('');
 
 			var i, inc, start, end,
 				distrType = $('select[name=distr-type]').val(),
@@ -192,7 +192,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 */
 	self.plot = function(id) {
 
-		var i,
+		var i = self.n,
 			x, y1, y2,
 			x_l, x_u,
 			xr = [],
@@ -254,51 +254,43 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		var getX = function(o) { return o.x; },
 			getY = function(o) { return o.y; };
 
-		for (i=0, l=self.data.length; i<l; i++) {
+		x_l = Math.min.apply(Math, self.data[i].cdf.map(getX));
+		x_u = Math.max.apply(Math, self.data[i].cdf.map(getX));
+		pdf_y_u = Math.max.apply(Math, self.data[i].pdf.map(getY));
+		cdf_y_u = Math.max.apply(Math, self.data[i].cdf.map(getY));
 
-			x_l = Math.min.apply(Math, self.data[i].cdf.map(getX));
-			x_u = Math.max.apply(Math, self.data[i].cdf.map(getX));
-			pdf_y_u = Math.max.apply(Math, self.data[i].pdf.map(getY));
-			cdf_y_u = Math.max.apply(Math, self.data[i].cdf.map(getY));
+		if (typeof xr[0] === 'undefined' || x_l < xr[0]) { xr[0] = x_l; }
 
-			if (typeof xr[0] === 'undefined' || x_l < xr[0]) { xr[0] = x_l; }
+		if (typeof xr[1] === 'undefined' || x_u > xr[1]) { xr[1] = x_u; }
 
-			if (typeof xr[1] === 'undefined' || x_u > xr[1]) { xr[1] = x_u; }
+		if (typeof pdf_yr[0] === 'undefined' || pdf_y_u > pdf_yr[0]) { pdf_yr[0] = pdf_y_u; }
 
-			if (typeof pdf_yr[0] === 'undefined' || pdf_y_u > pdf_yr[0]) { pdf_yr[0] = pdf_y_u; }
+		if (typeof cdf_yr[0] === 'undefined' || cdf_y_u > cdf_yr[0]) { cdf_yr[0] = cdf_y_u; }
 
-			if (typeof cdf_yr[0] === 'undefined' || cdf_y_u > cdf_yr[0]) { cdf_yr[0] = cdf_y_u; }
+		x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]);
+		y1 = d3.scale.linear().domain([0, pdf_yr[0]]).range([h, 0]);
+		y2 = d3.scale.linear().domain([0, cdf_yr[0]]).range([h, 0]);
 
-			x = d3.scale.linear().domain([xr[0], xr[1]]).range([0, w]);
-			y1 = d3.scale.linear().domain([0, pdf_yr[0]]).range([h, 0]);
-			y2 = d3.scale.linear().domain([0, cdf_yr[0]]).range([h, 0]);
+		xAxis.scale(x);
 
-			xAxis.scale(x);
+		graph.select('.x.axis')
+			.call(xAxis);
 
-			graph.select('.x.axis')
-				.call(xAxis);
+		yAxisL.scale(y1);
+		yAxisR.scale(y2);
 
-			yAxisL.scale(y1);
-			yAxisR.scale(y2);
+		graph.select('.y.axis.left')
+			.call(yAxisL);
 
-			graph.select('.y.axis.left')
-				.call(yAxisL);
+		graph.select('.y.axis.right')
+			.call(yAxisR);
 
-			graph.select('.y.axis.right')
-				.call(yAxisR);
+		graph.append('svg:path')
+			.attr('d', line1(self.data[i].pdf));
 
-		}
-
-		for (i=0, l=self.data.length; i<l; i++) {
-
-			graph.append('svg:path')
-				.attr('d', line1(self.data[i].pdf));
-
-			graph.append('svg:path')
-				.attr('d', line2(self.data[i].cdf))
-				.style('stroke-dasharray', ('3, 3'));
-
-		}
+		graph.append('svg:path')
+			.attr('d', line2(self.data[i].cdf))
+			.style('stroke-dasharray', ('3, 3'));
 
 		return false;
 
