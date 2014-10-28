@@ -267,9 +267,8 @@ Math.h = {
 	derivative: function(f, o, x) {
 
 		var v1, v2, f1,
-			h = 0.0001,
-			i = 0,
-			a = [];
+			h = 1, i = 0,
+			d = [];
 
 		switch (o) {
 
@@ -286,7 +285,7 @@ Math.h = {
 				break;
 
 			case 4:
-				f1 = function(x,h) { return (f(x + 2 * h) - 4 * f(x + h) + 6 * f(x) - 4 * f(x - h) + f(x - 2 * h)) / Math.pow(h, 4); };
+				f1 = function(x, h) { return (f(x + 2 * h) - 4 * f(x + h) + 6 * f(x) - 4 * f(x - h) + f(x - 2 * h)) / Math.pow(h, 4); };
 				break;
 
 			default:
@@ -294,14 +293,14 @@ Math.h = {
 
 		}
 
-		while (true) {
+		while (i <= 99999) {
 
 			v1 = f1(x, h);
 			h -= h / 2;
 			v2 = f1(x, h);
-			a[i] = { h: h, d: Math.abs(v1-v2), v1: v1, v2: v2 };
+			d[i] = Math.abs(v1 - v2);
 
-			if ((!isNaN(v1) && !isNaN(v2) && (i > 0 && a[i].d > a[i - 1].d)) || i > 99999) { return a[i - 1].v1; }
+			if ((!isNaN(v1) && !isNaN(v2) && (i > 0 && d[i] >= d[i - 1]))) { return v1; }
 			else { i += 1; }
 
 		}

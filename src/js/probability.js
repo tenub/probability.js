@@ -780,7 +780,7 @@ Math.p = {
 
 			mgf: function(params) {
 
-				return {
+				/*return {
 
 					mean: Math.h.round(params.lambda * Math.h.gamma(1 + 1 / params.k), 3),
 
@@ -790,9 +790,9 @@ Math.p = {
 
 					kurtosis: 0
 
-				};
+				};*/
 
-				/*return function(t) {
+				return function(t) {
 
 					if (params.k >= 1) {
 						return Math.h.sum(function(n) {
@@ -801,7 +801,7 @@ Math.p = {
 					}
 					else { return 0; }
 
-				};*/
+				};
 
 			},
 
