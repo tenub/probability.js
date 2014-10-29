@@ -32,8 +32,8 @@ Math.p = {
 
 		if (isNaN(inc) || inc > 99999) { inc = 0.01; }
 
-		moments.mean = moments.mean || 0;
-		moments.variance = moments.variance || 0;
+		moments.mean = moments.mean || undefined;
+		moments.variance = moments.variance || undefined;
 
 		distr.pdf = Math.p.generatePDF(distrType, params, moments, -inc).concat(Math.p.generatePDF(distrType, params, moments, inc));
 
@@ -67,11 +67,13 @@ Math.p = {
 			start = (inc < 0) ? moments.mean - inc : moments.mean,
 			value;
 
-		while (i <= 10 * moments.variance) {
+		if (Math.p.distribution[distrType].discrete === true) { start = Math.floor(start); }
+
+		while (i <= 10 * moments.variance || i < 99999) {
 
 			value = Math.p.distribution[distrType].pdf(params)(start - i);
 
-			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 0.00001) || value <= 0))) { break; }
+			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 1E-5) || value <= 0))) { break; }
 
 			if (Math.h.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) { pdf.push({ x: start - i, y: value }); }
 
@@ -428,6 +430,53 @@ Math.p = {
 
 		},
 
+		skellam: {
+
+			discrete: true,
+
+			bounds: function(params) {
+
+				return { lower: { value: -Infinity, closed: false }, upper: { value: Infinity, closed: false } };
+
+			},
+
+			params: [
+				{ id: 'mean1', title: 'Mean 1', min: 0, max: 1000, step: 0.01, value: 1 },
+				{ id: 'mean2', title: 'Mean 2', min: 0, max: 1000, step: 0.01, value: 3 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return Math.exp(-(params.mean1 + params.mean2) + params.mean1 * Math.exp(t) + params.mean2 * Math.exp(-t));
+
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(k) {
+
+					return Math.exp(-(params.mean1 + params.mean2)) * Math.pow(params.mean1 / params.mean2, k / 2) * Math.h.bessel(k, 1)(2 * Math.sqrt(params.mean1 * params.mean2));
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(k) {
+
+					return Math.h.integral(Math.p.distribution.skellam.pdf(params), 0, k);
+
+				};
+
+			}
+
+		},
+
 		exponential: {
 
 			discrete: false,
@@ -515,6 +564,54 @@ Math.p = {
 				return function(x) {
 
 					return Math.h.integral(Math.p.distribution.gaussian.pdf(params), 0, x);
+
+				};
+
+			}
+
+		},
+
+		zeta: {
+
+			discrete: true,
+
+			bounds: function(params) {
+
+				return { lower: { value: 0, closed: false }, upper: { value: Infinity, closed: false } };
+
+			},
+
+			params: [
+				{ id: 's', title: 's', min: 0.01, max: 1000, step: 0.01, value: 2 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return 1 / Math.h.zeta(params.s) * Math.h.sum(function(k) {
+						return Math.exp(t * k) / Math.pow(k, params.s);
+					}, 1, Infinity);
+
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(k) {
+
+					return (1 / Math.pow(k, params.s)) / Math.h.zeta(params.s);
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(k) {
+
+					return Math.h.integral(Math.p.distribution.zeta.pdf(params), 0, k);
 
 				};
 
@@ -828,6 +925,51 @@ Math.p = {
 			}
 
 		},
+
+		cauchy : {
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return { lower: { value: -Infinity, closed: false }, upper: { value: Infinity, closed: false } };
+
+			},
+
+			params: [
+				{ id: 'x0', title: 'x0', min: -1000, max: 1000, step: 0.01, value: 0 },
+				{ id: 'gamma', title: 'y', min: 0.01, max: 1000, step: 0.01, value: 0.5 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+					return undefined;
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return 1 / (Math.PI * params.gamma * (1 + Math.pow((x - params.x0) / params.gamma, 2)));
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return 1 / Math.PI * Math.atan((x - params.x0) / params.gamma) + 0.5;
+
+				};
+
+			}
+
+		}
 
 	}
 

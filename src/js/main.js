@@ -53,8 +53,16 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
 		},
 
+		skellam: {
+			title: '<h1>DF<small>(&mu;<sub>1</sub>=<em>{{ mean1 }}</em>, &mu;<sub>2</sub>=<em>{{ mean2 }}</em>)</small></h1>'
+		},
+
 		gaussian: {
 			title: '<h1>DF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
+		},
+
+		zeta: {
+			title: '<h1>DF<small>(s=<em>{{ s }}</em>)</small></h1>'
 		},
 
 		beta: {
@@ -79,6 +87,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		weibull: {
 			title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>, k=<em>{{ k }}</em>)</small></h1>'
+		},
+
+		cauchy: {
+			title: '<h1>DF<small>(x<sub>0</sub>=<em>{{ x0 }}</em>, &gamma;=<em>{{ gamma }}</em>)</small></h1>'
 		}
 
 	};
@@ -141,7 +153,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		$(window).on('resize', function(e) {
 
-			if (self.svg.width !== $('#graph').width()) {
+			if (self.svg.width && self.svg.width !== $('#graph').width()) {
 
 				$('#result, #graph').html('');
 

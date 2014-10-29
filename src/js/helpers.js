@@ -110,6 +110,20 @@ Math.h = {
 	},
 
 	/**
+	 * estimates the value of the Riemann zeta function with specified s value
+	 *
+	 * @param {number} s - s
+	 * @return {number}
+	 */
+	zeta: function(s) {
+
+		return (s === 1) ? Infinity : Math.h.sum(function(n) {
+			return Math.pow(n, -s);
+		}, 1, Infinity);
+
+	},
+
+	/**
 	 * estimates the value of the beta function with specified parameters by using the beta function's relation to the gamma function
 	 *
 	 * @param {number} a - alpha
@@ -183,6 +197,37 @@ Math.h = {
 	},
 
 	/**
+	 * estimates the value of the modified bessel function
+	 *
+	 * @param {number} a
+	 * @param {integer} kind
+	 * @return {number}
+	 */
+	bessel: function(a, kind) {
+
+		if (kind === 1) {
+
+			return function(x) {
+				return Math.h.sum(function(m) {
+					return 1 / (Math.h.factorial(m) * Math.h.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a);
+				}, 0, Infinity);
+			};
+
+		}
+
+		if (kind === 2) {
+
+			return function(x) {
+				return Math.PI / 2 * (Math.h.bessel(-a, 1)(x) - Math.h.bessel(a, 1)(x)) / Math.sin(a * Math.PI);
+			};
+
+		}
+
+		return false;
+
+	},
+
+	/**
 	 * estimates the value of the lower incomplete gamma function with specified parameters
 	 *
 	 * @param {number} a
@@ -207,25 +252,22 @@ Math.h = {
 	 */
 	sum: function(f, a, b) {
 
-		var v = [0, 0],
-			s = [0, 0],
-			i = a;
+		var v1 = 0, v2 = 0, s = 0, i = a;
 
 		while (i <= b) {
 
-			v = [f(i), f(i + 1)];
+			v1 = f(i);
+			v2 = f(i + 1);
 
-			if (!isNaN(v[0])) { s[0] += v[0]; }
-			if (!isNaN(v[1])) { s[1] += v[1]; }
-
-			if (Math.abs(s[1] - s[0]) < 0.00001 || (isNaN(v[0]) && isNaN(v[1]))) { break; }
+			if (!isNaN(v1)) { s += v1; }
+			if (!isNaN(v1) && !isNaN(v2) && Math.abs(v1 - v2) < 1E-12) { break; }
 			if (i > 99999) { return false; }
 
 			i += 1;
 
 		}
 
-		return s[0];
+		return s;
 
 	},
 
@@ -249,7 +291,7 @@ Math.h = {
 			v2 = f(i + 1);
 			sum *= v1;
 
-			if (Math.abs(v2 - v1) < 0.000000001 || i > 99999) { break; }
+			if (Math.abs(v2 - v1) < 1E-12 || i > 99999) { break; }
 
 			i += 1;
 
