@@ -303,7 +303,7 @@ Math.h = {
 			v2 = f1(x, h);
 			d[i] = Math.abs(v1 - v2);
 
-			if ((!isNaN(v1) && !isNaN(v2) && (i > 0 && d[i] >= d[i - 1]))) { return v1; }
+			if ((!isNaN(v1) && !isNaN(v2)) && (Math.abs(v1) !== Infinity && Math.abs(v2) !== Infinity) && (i > 0 && d[i] >= d[i - 1])) { return v1; }
 			else { i += 1; }
 
 		}
