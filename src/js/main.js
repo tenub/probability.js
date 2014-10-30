@@ -91,6 +91,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		cauchy: {
 			title: '<h1>DF<small>(x<sub>0</sub>=<em>{{ x0 }}</em>, &gamma;=<em>{{ gamma }}</em>)</small></h1>'
+		},
+
+		fisher_snedecor: {
+			title: '<h1>DF<small>(d<sub>1</sub>=<em>{{ d1 }}</em>, d<sub>2</sub>=<em>{{ d2 }}</em>)</small></h1>'
 		}
 
 	};

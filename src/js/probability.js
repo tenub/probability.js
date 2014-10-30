@@ -32,8 +32,8 @@ Math.p = {
 
 		if (isNaN(inc) || inc > 99999) { inc = 0.01; }
 
-		moments.mean = moments.mean || undefined;
-		moments.variance = moments.variance || undefined;
+		//moments.mean = moments.mean || undefined;
+		//moments.variance = moments.variance || undefined;
 
 		distr.pdf = Math.p.generatePDF(distrType, params, moments, -inc).concat(Math.p.generatePDF(distrType, params, moments, inc));
 
@@ -68,12 +68,13 @@ Math.p = {
 			value;
 
 		if (Math.p.distribution[distrType].discrete === true) { start = Math.floor(start); }
+		if (typeof moments.mean === 'undefined') { start = 0; }
 
-		while (i <= 10 * moments.variance || i < 99999) {
+		while (Math.abs(start - i) <= 10 * moments.variance || i < 99999) {
 
 			value = Math.p.distribution[distrType].pdf(params)(start - i);
 
-			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 1E-5) || value <= 0))) { break; }
+			if (/*isNaN(i / inc) || isNaN(value) || */(!isNaN(value) && ((value !== 0 && value <= 1E-5) || value <= 0))) { break; }
 
 			if (Math.h.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) { pdf.push({ x: start - i, y: value }); }
 
@@ -719,7 +720,7 @@ Math.p = {
 
 		},
 
-		rayleigh : {
+		rayleigh: {
 
 			discrete: false,
 
@@ -765,7 +766,7 @@ Math.p = {
 
 		},
 
-		gumbel : {
+		gumbel: {
 
 			discrete: false,
 
@@ -814,7 +815,7 @@ Math.p = {
 
 		},
 
-		chi : {
+		chi: {
 
 			discrete: false,
 
@@ -860,7 +861,7 @@ Math.p = {
 
 		},
 
-		weibull : {
+		weibull: {
 
 			discrete: false,
 
@@ -926,7 +927,7 @@ Math.p = {
 
 		},
 
-		cauchy : {
+		cauchy: {
 
 			discrete: false,
 
@@ -943,8 +944,16 @@ Math.p = {
 
 			mgf: function(params) {
 
-				return function(t) {
-					return undefined;
+				return {
+
+					mean: undefined,
+
+					variance: undefined,
+
+					skewness: undefined,
+
+					kurtosis: undefined
+
 				};
 
 			},
@@ -964,6 +973,59 @@ Math.p = {
 				return function(x) {
 
 					return 1 / Math.PI * Math.atan((x - params.x0) / params.gamma) + 0.5;
+
+				};
+
+			}
+
+		},
+
+		fisher_snedecor: {
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: false } };
+
+			},
+
+			params: [
+				{ id: 'd1', title: 'd1', min: 0, max: 1000, step: 0.01, value: 10 },
+				{ id: 'd2', title: 'd2', min: 0, max: 1000, step: 0.01, value: 10 }
+			],
+
+			mgf: function(params) {
+
+				var o = {};
+
+				o.mean = (params.d2 > 2) ? params.d2 / (params.d2 - 2) : undefined;
+
+				o.variance = (params.d2 > 4) ? 2 * Math.pow(params.d2, 2) * (params.d1 + params.d2 -2) / (params.d1 * Math.pow(params.d2 - 2, 2) * (params.d2 - 4)) : undefined;
+
+				o.skewness = (params.d2 > 6) ? (2 * params.d1 + params.d2 - 2) * Math.sqrt(8 * (params.d2 - 4)) / ((params.d2 - 6) * Math.sqrt(params.d1 * (params.d1 + params.d2 - 2))) : undefined;
+
+				o.kurtosis = (params.d2 > 8) ? 12 * params.d1 * (5 * params.d2 - 22) * (params.d1 + params.d2 - 2) + (params.d2 - 4) * Math.pow(params.d2 - 2, 2) / (params.d1 * (params.d2 - 6) * (params.d2 - 8) * (params.d1 + params.d2 - 2)) : undefined;
+
+				return o;
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return Math.sqrt(Math.pow(params.d1 * x, params.d1) * Math.pow(params.d2, params.d2) / Math.pow(params.d1 * x + params.d2, params.d1 + params.d2)) / (x * Math.h.beta(params.d1 / 2, params.d2 / 2));
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.fisher_snedecor.pdf(params), 0, x);
 
 				};
 
