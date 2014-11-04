@@ -74,7 +74,7 @@ Math.p = {
 
 			value = Math.p.distribution[distrType].pdf(params)(start - i);
 
-			if (/*isNaN(i / inc) || isNaN(value) || */(!isNaN(value) && ((value !== 0 && value <= 1E-5) || value <= 0))) { break; }
+			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 1E-5) || value <= 0))) { break; }
 
 			if (Math.h.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) { pdf.push({ x: start - i, y: value }); }
 
@@ -113,27 +113,27 @@ Math.p = {
 	// define moments
 	moments: {
 
-		mean: function(f, t) {
+		mean: function(f) {
 
-			return Math.h.round(Math.h.derivative(f, 1, t), 3);
-
-		},
-
-		variance: function(f, t) {
-
-			return Math.h.round(((Math.h.derivative(f, 2, t) - Math.pow(Math.p.moments.mean(f, t), 2))), 3);
+			return Math.h.round(Math.h.derivative(f, 1, 0), 3);
 
 		},
 
-		skewness: function(f, t) {
+		variance: function(f) {
 
-			return Math.h.round(((Math.h.derivative(f, 3, t) - 3 * Math.p.moments.mean(f, t) * Math.p.moments.variance(f, t) - Math.pow(Math.p.moments.mean(f, t), 3)) / Math.pow(Math.p.moments.variance(f, t), 1.5)), 3);
+			return Math.h.round(((Math.h.derivative(f, 2, 0) - Math.pow(Math.p.moments.mean(f, 0), 2))), 3);
 
 		},
 
-		kurtosis: function(f, t) {
+		skewness: function(f) {
 
-			return Math.h.round((Math.h.derivative(f, 4, t) / Math.pow(Math.p.moments.variance(f, t), 2) - 3), 3);
+			return Math.h.round(((Math.h.derivative(f, 3, 0) - 3 * Math.p.moments.mean(f, 0) * Math.p.moments.variance(f, 0) - Math.pow(Math.p.moments.mean(f, 0), 3)) / Math.pow(Math.p.moments.variance(f, 0), 1.5)), 3);
+
+		},
+
+		kurtosis: function(f) {
+
+			return Math.h.round((Math.h.derivative(f, 4, 0) / Math.pow(Math.p.moments.variance(f, 0), 2) - 3), 3);
 
 		}
 
@@ -186,9 +186,9 @@ Math.p = {
 
 			cdf: function(params) {
 
-				return function() {
+				return function(x) {
 
-					return Math.h.integral(Math.p.distribution.uniform.pdf(params), params.a, params.b);
+					return Math.h.integral(Math.p.distribution.uniform.pdf(params), 0, x);
 
 				};
 
@@ -565,6 +565,55 @@ Math.p = {
 				return function(x) {
 
 					return Math.h.integral(Math.p.distribution.gaussian.pdf(params), 0, x);
+
+				};
+
+			}
+
+		},
+
+		inv_gaussian: {
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return { lower: { value: 0, closed: false }, upper: { value: Infinity, closed: true } };
+
+			},
+
+			params: [
+				{ id: 'shape', title: 'Shape', min: 0.01, max: 100, step: 0.01, value: 1 },
+				{ id: 'mean', title: 'Mean', min: 0.01, max: 100, step: 0.01, value: 1 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					console.log(params);
+
+					return Math.exp(params.shape / params.mean) * (1 - Math.sqrt(1 - 2 * Math.pow(params.mean, 2) * t / params.shape));
+
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return Math.sqrt(params.shape / (2 * Math.PI * Math.pow(x, 3))) * Math.exp(-params.shape * Math.pow(x - params.mean, 2) / (2 * Math.pow(params.mean, 2) * x));
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.inv_gaussian.pdf(params), 0, x);
 
 				};
 
@@ -999,13 +1048,13 @@ Math.p = {
 
 				var o = {};
 
-				o.mean = (params.d2 > 2) ? params.d2 / (params.d2 - 2) : undefined;
+				o.mean = (params.d2 > 2) ? Math.h.round(params.d2 / (params.d2 - 2), 3) : undefined;
 
-				o.variance = (params.d2 > 4) ? 2 * Math.pow(params.d2, 2) * (params.d1 + params.d2 -2) / (params.d1 * Math.pow(params.d2 - 2, 2) * (params.d2 - 4)) : undefined;
+				o.variance = (params.d2 > 4) ? Math.h.round(2 * Math.pow(params.d2, 2) * (params.d1 + params.d2 -2) / (params.d1 * Math.pow(params.d2 - 2, 2) * (params.d2 - 4)), 3) : undefined;
 
-				o.skewness = (params.d2 > 6) ? (2 * params.d1 + params.d2 - 2) * Math.sqrt(8 * (params.d2 - 4)) / ((params.d2 - 6) * Math.sqrt(params.d1 * (params.d1 + params.d2 - 2))) : undefined;
+				o.skewness = (params.d2 > 6) ? Math.h.round((2 * params.d1 + params.d2 - 2) * Math.sqrt(8 * (params.d2 - 4)) / ((params.d2 - 6) * Math.sqrt(params.d1 * (params.d1 + params.d2 - 2))), 3) : undefined;
 
-				o.kurtosis = (params.d2 > 8) ? 12 * params.d1 * (5 * params.d2 - 22) * (params.d1 + params.d2 - 2) + (params.d2 - 4) * Math.pow(params.d2 - 2, 2) / (params.d1 * (params.d2 - 6) * (params.d2 - 8) * (params.d1 + params.d2 - 2)) : undefined;
+				o.kurtosis = (params.d2 > 8) ? Math.h.round(12 * params.d1 * (5 * params.d2 - 22) * (params.d1 + params.d2 - 2) + (params.d2 - 4) * Math.pow(params.d2 - 2, 2) / (params.d1 * (params.d2 - 6) * (params.d2 - 8) * (params.d1 + params.d2 - 2)), 3) : undefined;
 
 				return o;
 
@@ -1026,6 +1075,210 @@ Math.p = {
 				return function(x) {
 
 					return Math.h.integral(Math.p.distribution.fisher_snedecor.pdf(params), 0, x);
+
+				};
+
+			}
+
+		},
+
+		irwin_hall: {
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return { lower: { value: 0, closed: true }, upper: { value: params.n, closed: true } };
+
+			},
+
+			params: [
+				{ id: 'n', title: 'n', min: 0, max: 1000, step: 1, value: 2 }
+			],
+
+			mgf: function(params) {
+
+				return {
+
+					mean: Math.h.round(params.n / 2, 3),
+
+					variance: Math.h.round(params.n / 12, 3),
+
+					skewness: 0,
+
+					kurtosis: Math.h.round(-6 / (5 * params.n), 3)
+
+				};
+
+				/*return function(t) {
+
+					return Math.pow((Math.exp(t) - 1) / t, params.n);
+
+				};*/
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return 1 / (2 * Math.h.factorial(params.n - 1)) * Math.h.sum(function(k) {
+						return Math.pow(-1, k) * Math.h.choose(params.n, k) * Math.pow(x - k, params.n - 1) * Math.h.sgn(x - k);
+					}, 0, params.n);
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.irwin_hall.pdf(params), 0, x);
+
+				};
+
+			}
+
+		},
+
+		wigner: {
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return { lower: { value: -params.r, closed: true }, upper: { value: params.r, closed: true } };
+
+			},
+
+			params: [
+				{ id: 'r', title: 'R', min: 0.01, max: 1000, step: 0.01, value: 1 },
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return 2 * Math.h.bessel(1, 1)(params.r * t) / (params.r * t);
+
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return 2 / (Math.PI * Math.pow(params.r, 2)) * Math.sqrt(Math.pow(params.r, 2) - Math.pow(x, 2));
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return Math.h.integral(Math.p.distribution.wigner.pdf(params), 0, x);
+
+				};
+
+			}
+
+		},
+
+		gompertz: {
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return { lower: { value: 0, closed: true }, upper: { value: Infinity, closed: false } };
+
+			},
+
+			params: [
+				{ id: 'n', title: 'n', min: 0.01, max: 1000, step: 0.001, value: 1 },
+				{ id: 'b', title: 'b', min: 0.01, max: 1000, step: 0.001, value: 2.322 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return params.n * Math.exp(params.n) * Math.h.sum(function(v) {
+						return Math.exp(-params.n * v) * Math.pow(v, -t / params.b);
+					}, 1, Infinity);
+
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return params.b * params.n * Math.exp(params.b * x) * Math.exp(params.n) * Math.exp(-params.n * Math.exp(params.b * x));
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return 1 - Math.exp(-params.n * (Math.exp(params.b * x) - 1));
+
+				};
+
+			}
+
+		},
+
+		laplace: {
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return { lower: { value: -Infinity, closed: false }, upper: { value: Infinity, closed: false } };
+
+			},
+
+			params: [
+				{ id: 'mean', title: 'Location', min: -1000, max: 1000, step: 0.01, value: 0 },
+				{ id: 'scale', title: 'Scale', min: 0.01, max: 1000, step: 0.01, value: 1 }
+			],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return (Math.abs(t) < 1 / params.scale) ? Math.exp(params.mean * t) / (1 + Math.pow(params.scale, 2) * Math.pow(t, 2)) : undefined;
+
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return 1 / (2 * params.scale) * Math.exp(-Math.abs(x - params.mean) / params.scale);
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					if (x < params.mean) { return 0.5 * Math.exp((x - params.mean) / params.scale); }
+					else if (x >= params.mean) { return 1 - 0.5 * Math.exp(-(x - params.mean) / params.scale); }
+					else { return undefined; }
 
 				};
 

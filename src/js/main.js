@@ -61,6 +61,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			title: '<h1>DF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
 		},
 
+		inv_gaussian: {
+			title: '<h1>DF<small>(&lambda;=<em>{{ shape }}</em>, &mu;=<em>{{ mean }}</em>)</small></h1>'
+		},
+
 		zeta: {
 			title: '<h1>DF<small>(s=<em>{{ s }}</em>)</small></h1>'
 		},
@@ -95,6 +99,22 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		fisher_snedecor: {
 			title: '<h1>DF<small>(d<sub>1</sub>=<em>{{ d1 }}</em>, d<sub>2</sub>=<em>{{ d2 }}</em>)</small></h1>'
+		},
+
+		irwin_hall: {
+			title: '<h1>DF<small>(n=<em>{{ n }}</em>)</small></h1>'
+		},
+
+		wigner: {
+			title: '<h1>DF<small>(R=<em>{{ r }}</em>)</small></h1>'
+		},
+
+		gompertz: {
+			title: '<h1>DF<small>(n=<em>{{ n }}</em>, b=<em>{{ b }}</em>)</small></h1>'
+		},
+
+		laplace: {
+			title: '<h1>DF<small>(&mu;=<em>{{ mean }}</em>, b=<em>{{ scale }}</em>)</small></h1>'
 		}
 
 	};
@@ -139,7 +159,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				m_0 = Math.p.distribution[distrType].mgf(params),
 				moments;
 
-			if (typeof m_0 === 'function') { moments = { mean: Math.p.moments.mean(m_0, 0), variance: Math.p.moments.variance(m_0, 0), skewness: Math.p.moments.skewness(m_0, 0), kurtosis: Math.p.moments.kurtosis(m_0, 0) }; }
+			if (typeof m_0 === 'function') { moments = { mean: Math.p.moments.mean(m_0), variance: Math.p.moments.variance(m_0), skewness: Math.p.moments.skewness(m_0), kurtosis: Math.p.moments.kurtosis(m_0) }; }
 			else if (typeof m_0 === 'object') { moments = m_0; }
 
 			self.data = Math.p.buildDF(distrType, params, moments);

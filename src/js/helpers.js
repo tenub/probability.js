@@ -43,6 +43,21 @@ Math.h = {
 	},
 
 	/**
+	 * determines the sign of a real number
+	 *
+	 * @param {number} x
+	 * @return {integer} sign
+	 */
+	sgn: function(x) {
+
+		if (x < 0) { return -1; }
+		else if (x === 0) { return 0; }
+		else if (x > 0) { return 1; }
+		else { return false; }
+
+	},
+
+	/**
 	 * computes the factorial of a number
 	 * approximates floats via the gamma function
 	 *
@@ -197,13 +212,13 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the modified bessel function
+	 * estimates the modified bessel function as a function of variable x
 	 *
 	 * @param {number} a
 	 * @param {integer} kind
 	 * @return {number}
 	 */
-	bessel: function(a, kind) {
+	bessel: function(a, kind, x) {
 
 		if (kind === 1) {
 
@@ -311,9 +326,9 @@ Math.h = {
 	 */
 	derivative: function(f, o, x) {
 
-		var v1, v2, f1,
-			h = 1, i = 0,
-			d = [];
+		var f1, h = 0.01,
+			i = 0,
+			v = [], d = [];
 
 		switch (o) {
 
@@ -340,13 +355,18 @@ Math.h = {
 
 		while (i <= 99999) {
 
-			v1 = f1(x, h);
 			h -= h / 2;
-			v2 = f1(x, h);
-			d[i] = Math.abs(v1 - v2);
+			v[i] = f1(x, h);
 
-			if ((!isNaN(v1) && !isNaN(v2)) && (Math.abs(v1) !== Infinity && Math.abs(v2) !== Infinity) && (i > 0 && d[i] >= d[i - 1])) { return v1; }
-			else { i += 1; }
+			if (i !== 0) {
+
+				d[i] = Math.abs(v[i] - v[i - 1]);
+
+				if (!isNaN(v[i]) && !isNaN(v[i - 1]) && (Math.abs(v[i]) !== Infinity && Math.abs(v[i - 1]) !== Infinity) && (d[i] >= d[i - 1])) { return v[i - 1]; }
+
+			}
+
+			i += 1;
 
 		}
 
@@ -410,11 +430,67 @@ Math.h = {
 
 		}
 
-		str = str.slice(0,-1);
+		str = str.slice(0, -1);
 
 		str += '\n]';
 
 		return str;
+
+	},
+
+	/**
+	 * parses a function as a string and outputs html
+	 *
+	 * @param {function} f
+	 * @return {string} html
+	 */
+	parse_func: function(f) {
+
+		var i,
+			c = '',
+			s_p = 0,
+			s_b = 0,
+			html = '',
+			keywords = [
+
+				'function',
+				'if',
+				'else',
+				'params',
+
+				'Math.PI',
+
+				'Math.exp',
+				'Math.log',
+				'Math.pow',
+				'Math.sqrt',
+
+				'Math.h.bessel',
+				'Math.h.beta',
+				'Math.h.choose',
+				'Math.h.factorial',
+				'Math.h.gamma',
+				'Math.h.zeta'
+
+			];
+
+		f = f.toString();
+
+		for (i=0, l=f.length; i<l; i++) {
+
+			c = f.charAt(i);
+
+			if (c === '(') { s_p += 1; }
+
+			if (c === ')') { s_p -= 1; }
+
+			if (c === '{') { s_b += 1; }
+
+			if (c === '}') { s_b -= 1; }
+
+		}
+
+		return html;
 
 	}
 
