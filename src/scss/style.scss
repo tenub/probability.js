@@ -120,6 +120,10 @@ textarea {
 	}
 }
 
+select {
+	margin-top: .5em;
+}
+
 input {
 	&[type=submit],
 	&[type=reset] {
@@ -127,8 +131,22 @@ input {
 	}
 }
 
-label {
+#calc {
+	label {
+		display: block;
+	}
+	#params {
+		label {
+			display: inline;
+		}
+	}
+}
 
+legend {
+	display: block;
+	width: 100%;
+	font-size: 1.6rem;
+	font-weight: bold;
 }
 
 var {
@@ -191,7 +209,10 @@ small.ln {
 	transition: all 0.5s;
 }
 
-#graph {
-	display: inline-block;
-	margin: 0 auto;
+#results {
+	display: none;
+	#plot {
+		display: inline-block;
+		margin: 0 auto;
+	}
 }

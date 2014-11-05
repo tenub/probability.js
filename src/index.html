@@ -14,40 +14,45 @@
 </head>
 <body>
 	<div class="container">
-		<form id="calc">
-			<select name="distr-type">
-				<optgroup label="Distribution Type">
-					<option value="uniform">Uniform</option>
-					<option value="binomial">Binomial</option>
-					<option value="geometric">Geometric</option>
-					<option value="logarithmic">Logarithmic</option>
-					<option value="pareto">Pareto</option>
-					<option value="poisson">Poisson</option>
-					<option value="skellam">Skellam</option>
-					<option value="exponential">Exponential</option>
-					<option value="gaussian">Gaussian</option>
-					<option value="inv_gaussian">Inverse Gaussian</option>
-					<option value="zeta">Zeta</option>
-					<option value="beta">Beta</option>
-					<option value="gamma">Gamma</option>
-					<option value="rayleigh">Rayleigh</option>
-					<option value="gumbel">Gumbel</option>
-					<option value="chi">Chi-squared</option>
-					<option value="weibull">Weibull</option>
-					<option value="cauchy">Cauchy</option>
-					<option value="fisher_snedecor">Fisher-Snedecor</option>
-					<option value="irwin_hall">Irwin-Hall</option>
-					<option value="wigner">Wigner semicircle</option>
-					<option value="gompertz">Gompertz</option>
-					<option value="laplace">Laplace</option>
-				</optgroup>
-			</select>
-			<fieldset id="params"></fieldset>
-			<input type="reset" value="Reset">
-			<input type="submit" value="Calculate">
-		</form>
-		<div id="result"></div>
-		<div id="graph"></div>
+		<section id="distr-list">
+			<form id="calc">
+				<label for="distr-type">Distribution Type:</label>
+				<select name="distr-type" id="distr-type">
+					<optgroup label="Distribution Type">
+						<option value="uniform">Uniform</option>
+						<option value="binomial">Binomial</option>
+						<option value="geometric">Geometric</option>
+						<option value="logarithmic">Logarithmic</option>
+						<option value="pareto">Pareto</option>
+						<option value="poisson">Poisson</option>
+						<option value="skellam">Skellam</option>
+						<option value="exponential">Exponential</option>
+						<option value="gaussian">Gaussian</option>
+						<option value="inv_gaussian">Inverse Gaussian</option>
+						<option value="zeta">Zeta</option>
+						<option value="beta">Beta</option>
+						<option value="gamma">Gamma</option>
+						<option value="rayleigh">Rayleigh</option>
+						<option value="gumbel">Gumbel</option>
+						<option value="chi">Chi-squared</option>
+						<option value="weibull">Weibull</option>
+						<option value="cauchy">Cauchy</option>
+						<option value="fisher_snedecor">Fisher-Snedecor</option>
+						<option value="irwin_hall">Irwin-Hall</option>
+						<option value="wigner">Wigner semicircle</option>
+						<option value="gompertz">Gompertz</option>
+						<option value="laplace">Laplace</option>
+					</optgroup>
+				</select>
+				<legend>Parameters</legend>
+				<fieldset id="params"></fieldset>
+				<input type="reset" value="Reset">
+				<input type="submit" value="Calculate">
+			</form>
+		<section id="results">
+			<div id="stats"></div>
+			<div id="plot"></div>
+		</section>
 		<footer>
 			<section>
 				<h1>Legend</h1>

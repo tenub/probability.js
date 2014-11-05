@@ -1,4 +1,8 @@
 /**
+ * issues: pareto (param range), skellam (var range), inverse gaussian, zeta, rayleigh (kurtosis)
+ */
+
+/**
  * @namespace
  * @property {object} moments - standard moment definitions
  * @property {function} moments.mean - first moment
@@ -98,7 +102,7 @@ Math.p = {
 			i = 0,
 			sum = 0;
 
-		for (i=0, l=pdf.length; i<l; i++) {
+		for (i = 0, l = pdf.length; i < l; i++) {
 
 			sum += pdf[i].y;
 
@@ -121,19 +125,19 @@ Math.p = {
 
 		variance: function(f) {
 
-			return Math.h.round(((Math.h.derivative(f, 2, 0) - Math.pow(Math.p.moments.mean(f, 0), 2))), 3);
+			return Math.h.round(Math.h.derivative(f, 2, 0) - Math.pow(Math.h.derivative(f, 1, 0), 2), 3);
 
 		},
 
 		skewness: function(f) {
 
-			return Math.h.round(((Math.h.derivative(f, 3, 0) - 3 * Math.p.moments.mean(f, 0) * Math.p.moments.variance(f, 0) - Math.pow(Math.p.moments.mean(f, 0), 3)) / Math.pow(Math.p.moments.variance(f, 0), 1.5)), 3);
+			return Math.h.round((Math.h.derivative(f, 3, 0) - 3 * Math.h.derivative(f, 1, 0) * Math.h.derivative(f, 2, 0) + 2 * Math.pow(Math.h.derivative(f, 1, 0), 3)) / Math.pow(Math.h.derivative(f, 2, 0) - Math.pow(Math.h.derivative(f, 1, 0), 2), 1.5), 3);
 
 		},
 
 		kurtosis: function(f) {
 
-			return Math.h.round((Math.h.derivative(f, 4, 0) / Math.pow(Math.p.moments.variance(f, 0), 2) - 3), 3);
+			return Math.h.round((Math.h.derivative(f, 4, 0) - 4 * Math.h.derivative(f, 1, 0) * Math.h.derivative(f, 3, 0) + 6 * Math.h.derivative(f, 2, 0) * Math.pow(Math.h.derivative(f, 1, 0), 2) - 3 * Math.pow(Math.h.derivative(f, 1, 0), 4)) / Math.pow(Math.h.derivative(f, 2, 0) - Math.pow(Math.h.derivative(f, 1, 0), 2), 2) - 3, 3);
 
 		}
 
@@ -153,21 +157,15 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'a', title: 'Lower Bound', min: -1000, max: 1000, step: 0.01, value: 0 },
-				{ id: 'b', title: 'Upper Bound', min: -1000, max: 1000, step: 0.01, value: 10 }
+				{ id: 'a', symbol: 'a', title: 'Lower Bound', min: -1000, max: 1000, step: 0.01, value: 0 },
+				{ id: 'b', symbol: 'b', title: 'Upper Bound', min: -1000, max: 1000, step: 0.01, value: 10 }
 			],
 
 			mgf: function(params) {
 
-				return {
+				return function(t) {
 
-					mean: Math.h.round(1 / 2 * (params.a + params.b), 3),
-
-					variance: Math.h.round(1 / 12 * Math.pow(params.b - params.a, 2), 3),
-
-					skewness: 0,
-
-					kurtosis: -6 / 5
+					return (t === 0) ? 1 : (Math.exp(t * params.b) - Math.exp(t * params.a)) / (t * (params.b - params.a));
 
 				};
 
@@ -207,8 +205,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'p', title: 'Probability', min: 0, max: 1, step: 0.01, value: 0.5 },
-				{ id: 'n', title: 'Trials', min: 0, max: 1000, step: 1, value: 40 }
+				{ id: 'p', symbol: 'p', title: 'Probability', min: 0, max: 1, step: 0.01, value: 0.5 },
+				{ id: 'n', symbol: 'n', title: 'Trials', min: 0, max: 1000, step: 1, value: 40 }
 			],
 
 			mgf: function(params) {
@@ -254,7 +252,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'p', title: 'Probability', min: 0.01, max: 1, step: 0.01, value: 0.5 }
+				{ id: 'p', symbol: 'p', title: 'Probability', min: 0.01, max: 1, step: 0.01, value: 0.5 }
 			],
 
 			mgf: function(params) {
@@ -300,7 +298,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'p', title: 'Probability', min: 0.01, max: 0.99, step: 0.01, value: 0.5 }
+				{ id: 'p', symbol: 'p', title: 'Probability', min: 0.01, max: 0.99, step: 0.01, value: 0.5 }
 			],
 
 			mgf: function(params) {
@@ -340,8 +338,8 @@ Math.p = {
 			discrete: false,
 
 			params: [
-				{ id: 'xm', title: 'X_m', min: 0.01, max: 1000, step: 0.01, value: 1 },
-				{ id: 'a', title: 'Alpha', min: 0.01, max: 1000, step: 0.01, value: 1 }
+				{ id: 'xm', symbol: '', title: 'X_m', min: 0.01, max: 1000, step: 0.01, value: 1 },
+				{ id: 'a', symbol: '', title: 'Alpha', min: 1.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			bounds: function(params) {
@@ -396,7 +394,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'lambda', title: 'Lambda', min: 0.01, max: 20, step: 0.01, value: 1 }
+				{ id: 'lambda', symbol: 'u{03BB}', title: 'Lambda', min: 0.01, max: 20, step: 0.01, value: 1 }
 			],
 
 			mgf: function(params) {
@@ -442,8 +440,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'mean1', title: 'Mean 1', min: 0, max: 1000, step: 0.01, value: 1 },
-				{ id: 'mean2', title: 'Mean 2', min: 0, max: 1000, step: 0.01, value: 3 }
+				{ id: 'mean1', symbol: 'u{03BC}_1', title: 'Mean 1', min: 0, max: 1000, step: 0.01, value: 1 },
+				{ id: 'mean2', symbol: 'u{03BC}_2', title: 'Mean 2', min: 0, max: 1000, step: 0.01, value: 3 }
 			],
 
 			mgf: function(params) {
@@ -489,7 +487,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'lambda', title: 'Lambda', min: 0.01, max: 50, step: 0.01, value: 0.5 }
+				{ id: 'lambda', symbol: 'u{03BB}', title: 'Lambda', min: 0.01, max: 50, step: 0.01, value: 0.5 }
 			],
 
 			mgf: function(params) {
@@ -536,8 +534,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'mean', title: 'Mean', min: -10000, max: 10000, step: 0.01, value: 100 },
-				{ id: 'std', title: 'Standard Deviation', min: 0.01, max: 10000, step: 0.01, value: 50 }
+				{ id: 'mean', symbol: 'u{03BC}', title: 'Mean', min: -10000, max: 10000, step: 0.01, value: 100 },
+				{ id: 'std', symbol: 'u{03C3}', title: 'Standard Deviation', min: 0.01, max: 10000, step: 0.01, value: 50 }
 			],
 
 			mgf: function(params) {
@@ -583,15 +581,13 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'shape', title: 'Shape', min: 0.01, max: 100, step: 0.01, value: 1 },
-				{ id: 'mean', title: 'Mean', min: 0.01, max: 100, step: 0.01, value: 1 }
+				{ id: 'shape', symbol: 'u{03BB}', title: 'Shape', min: 0.01, max: 100, step: 0.01, value: 1 },
+				{ id: 'mean', symbol: 'u{03BC}', title: 'Mean', min: 0.01, max: 100, step: 0.01, value: 1 }
 			],
 
 			mgf: function(params) {
 
 				return function(t) {
-
-					console.log(params);
 
 					return Math.exp(params.shape / params.mean) * (1 - Math.sqrt(1 - 2 * Math.pow(params.mean, 2) * t / params.shape));
 
@@ -632,7 +628,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 's', title: 's', min: 0.01, max: 1000, step: 0.01, value: 2 }
+				{ id: 's', symbol: 's', title: 's', min: 2, max: 1000, step: 1, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -680,8 +676,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'a', title: 'Alpha', min: 0.01, max: 1000, step: 0.01, value: 2 },
-				{ id: 'b', title: 'Beta', min: 0.01, max: 1000, step: 0.01, value: 2 }
+				{ id: 'a', symbol: 'u{0251}', title: 'Alpha', min: 0.01, max: 1000, step: 0.01, value: 2 },
+				{ id: 'b', symbol: 'u{03B2}', title: 'Beta', min: 0.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -733,8 +729,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'k', title: 'k', min: 0.01, max: 1000, step: 0.01, value: 3 },
-				{ id: 'theta', title: 'Theta', min: 0.01, max: 1000, step: 0.01, value: 2 }
+				{ id: 'k', symbol: 'k', title: 'k', min: 0.01, max: 1000, step: 0.01, value: 3 },
+				{ id: 'theta', symbol: 'u{03B8}', title: 'Theta', min: 0.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -780,7 +776,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'sigma', title: 'Sigma', min: 0.01, max: 1000, step: 0.01, value: 2 }
+				{ id: 'sigma', symbol: 'u{03C3}', title: 'Sigma', min: 0.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -826,8 +822,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'mu', title: 'Location', min: -1000, max: 1000, step: 0.01, value: 1 },
-				{ id: 'beta', title: 'Scale', min: 0.01, max: 1000, step: 0.01, value: 2 }
+				{ id: 'mu', symbol: 'u{03BC}', title: 'Location', min: -1000, max: 1000, step: 0.01, value: 1 },
+				{ id: 'beta', symbol: 'u{03B2}', title: 'Scale', min: 0.01, max: 1000, step: 0.01, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -875,7 +871,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'k', title: 'k', min: 0, max: 1000, step: 1, value: 1 },
+				{ id: 'k', symbol: 'k', title: 'k', min: 0, max: 1000, step: 1, value: 1 },
 			],
 
 			mgf: function(params) {
@@ -921,8 +917,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'lambda', title: 'Scale', min: -1000, max: 1000, step: 0.01, value: 1 },
-				{ id: 'k', title: 'Shape', min: 0.01, max: 1000, step: 0.01, value: 1.5 }
+				{ id: 'lambda', symbol: 'u{03BB}', title: 'Scale', min: -1000, max: 1000, step: 0.01, value: 1 },
+				{ id: 'k', symbol: 'k', title: 'Shape', min: 0.01, max: 1000, step: 0.01, value: 1.5 }
 			],
 
 			mgf: function(params) {
@@ -987,8 +983,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'x0', title: 'x0', min: -1000, max: 1000, step: 0.01, value: 0 },
-				{ id: 'gamma', title: 'y', min: 0.01, max: 1000, step: 0.01, value: 0.5 }
+				{ id: 'x0', symbol: 'x_0', title: 'x0', min: -1000, max: 1000, step: 0.01, value: 0 },
+				{ id: 'gamma', symbol: 'u{03B3}', title: 'y', min: 0.01, max: 1000, step: 0.01, value: 0.5 }
 			],
 
 			mgf: function(params) {
@@ -1040,8 +1036,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'd1', title: 'd1', min: 0, max: 1000, step: 0.01, value: 10 },
-				{ id: 'd2', title: 'd2', min: 0, max: 1000, step: 0.01, value: 10 }
+				{ id: 'd1', symbol: 'd_1', title: 'd1', min: 0, max: 1000, step: 0.01, value: 10 },
+				{ id: 'd2', symbol: 'd_2', title: 'd2', min: 0, max: 1000, step: 0.01, value: 10 }
 			],
 
 			mgf: function(params) {
@@ -1093,7 +1089,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'n', title: 'n', min: 0, max: 1000, step: 1, value: 2 }
+				{ id: 'n', symbol: 'n', title: 'n', min: 0, max: 1000, step: 1, value: 2 }
 			],
 
 			mgf: function(params) {
@@ -1153,7 +1149,7 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'r', title: 'R', min: 0.01, max: 1000, step: 0.01, value: 1 },
+				{ id: 'r', symbol: 'R', title: 'R', min: 0.01, max: 1000, step: 0.01, value: 1 },
 			],
 
 			mgf: function(params) {
@@ -1199,8 +1195,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'n', title: 'n', min: 0.01, max: 1000, step: 0.001, value: 1 },
-				{ id: 'b', title: 'b', min: 0.01, max: 1000, step: 0.001, value: 2.322 }
+				{ id: 'n', symbol: 'u{03B7}', title: 'n', min: 0.01, max: 1000, step: 0.001, value: 1 },
+				{ id: 'b', symbol: 'b', title: 'b', min: 0.01, max: 1000, step: 0.001, value: 2.322 }
 			],
 
 			mgf: function(params) {
@@ -1248,8 +1244,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'mean', title: 'Location', min: -1000, max: 1000, step: 0.01, value: 0 },
-				{ id: 'scale', title: 'Scale', min: 0.01, max: 1000, step: 0.01, value: 1 }
+				{ id: 'mean', symbol: 'u{03BC}', title: 'Location', min: -1000, max: 1000, step: 0.01, value: 0 },
+				{ id: 'scale', symbol: 'b', title: 'Scale', min: 0.01, max: 1000, step: 0.01, value: 1 }
 			],
 
 			mgf: function(params) {

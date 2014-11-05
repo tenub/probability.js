@@ -150,7 +150,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
-			$('#result, #graph').html('');
+			$('#stats, #plot').html('');
 
 			var i, inc, start, end,
 				distrType = $('select[name=distr-type]').val(),
@@ -167,8 +167,8 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			var html = mustache.render(self.templates[distrType].title, params);
 				html += mustache.render(self.templates.moments, moments);
 
-			$('#result').hide().html(html).fadeIn(500);
-			$('#graph').hide().fadeIn(500);
+			$('#stats').html(html);
+			$('#results').fadeIn(500);
 
 			self.redrawPlot();
 			self.n += 1;
@@ -177,9 +177,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		$(window).on('resize', function(e) {
 
-			if (self.svg.width && self.svg.width !== $('#graph').width()) {
+			if (self.svg.width && self.svg.width !== $('#plot').width()) {
 
-				$('#result, #graph').html('');
+				$('#stats, #plot').html('');
 
 				self.redrawPlot();
 
@@ -188,7 +188,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		});
 
 		// reset number of distributions tracked
-		// remove all generated results
+		// remove all generated statss
 		$('#calc').on('reset', function(e) {
 
 			e.preventDefault();
@@ -196,7 +196,9 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			self.n = 0;
 			self.data = {};
 
-			$('#result, #graph').html('');
+			$('#results').fadeOut(500, function() {
+				$('#stats, #plot').html('');
+			});
 
 		});
 
@@ -346,10 +348,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 	self.redrawPlot = function() {
 
-		self.plot('#graph');
+		self.plot('#plot');
 
-		self.svg.width = $('#graph').width();
-		self.svg.height = $('#graph').height();
+		self.svg.width = $('#plot').width();
+		self.svg.height = $('#plot').height();
 
 		return true;
 

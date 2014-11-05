@@ -2,6 +2,11 @@
 Math.h = {
 
 	/**
+	 * Euler–Mascheroni constant
+	 */
+	EM: 0.5772156649015329,
+
+	/**
 	 * determines if a number is equivalent to an integer
 	 *
 	 * @param {number} n
@@ -71,7 +76,7 @@ Math.h = {
 		if (!this.isInt(n)) { return this.gamma(n - 1); }
 		else {
 			var f = (n < 0) ? undefined : 1;
-			for (i=n; i>1; --i) { f *= i; }
+			for (i = n; i > 1; --i) { f *= i; }
 			return f;
 		}
 
@@ -172,7 +177,7 @@ Math.h = {
 
 			var x = p[0];
 
-			for (var i=1; i<g+2; i++) { x += p[i] / (n + i); }
+			for (var i = 1; i < g + 2; i++) { x += p[i] / (n + i); }
 
 			var t = n + g + 0.5;
 
@@ -186,13 +191,28 @@ Math.h = {
 
 			var x = p_ln[0];
 
-			for (var i=p_ln.length-1; i>0; --i) { x += p_ln[i] / (n + i); }
+			for (var i = p_ln.length - 1; i > 0; --i) { x += p_ln[i] / (n + i); }
 
 			var t = n + g_ln + 0.5;
 
 			return 0.5 * Math.log(2 * Math.PI) + (n + 0.5) * Math.log(t) - t + Math.log(x) - Math.log(n);
 
 		}
+
+	},
+
+	/**
+	 * estimates the value of the lower incomplete gamma function with specified parameters
+	 *
+	 * @param {number} a
+	 * @param {number} x
+	 * @return {number}
+	 */
+	ligamma: function(a, x) {
+
+		return Math.pow(x, a) * Math.h.gamma(a) * Math.exp(-x) * Math.h.sum(function(k) {
+			return Math.pow(x, k) / Math.h.gamma(a + k + 1);
+		}, 0, Infinity);
 
 	},
 
@@ -243,21 +263,6 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the lower incomplete gamma function with specified parameters
-	 *
-	 * @param {number} a
-	 * @param {number} x
-	 * @return {number}
-	 */
-	ligamma: function(a, x) {
-
-		return Math.pow(x, a) * Math.h.gamma(a) * Math.exp(-x) * Math.h.sum(function(k) {
-			return Math.pow(x, k) / Math.h.gamma(a + k + 1);
-		}, 0, Infinity);
-
-	},
-
-	/**
 	 * calculate a generic sum using supplied function of one variable and bounds
 	 *
 	 * @param {function} f - function applied within sum
@@ -300,7 +305,7 @@ Math.h = {
 			i = a,
 			sum = 1;
 
-		while (i < b) {
+		while (i <= b) {
 
 			v1 = f(i);
 			v2 = f(i + 1);
@@ -330,7 +335,7 @@ Math.h = {
 			i = 0,
 			v = [], d = [];
 
-		switch (o) {
+		/*switch (o) {
 
 			case 1:
 				f1 = function(x, h) { return (-f(x + 2 * h) + 8 * f(x + h) - 8 * f(x - h) + f(x - 2 * h)) / (12 * h); };
@@ -351,7 +356,13 @@ Math.h = {
 			default:
 				return false;
 
-		}
+		}*/
+
+		f1 = function(x, h) {
+			return Math.h.sum(function(i) {
+				return Math.pow(-1, i) * Math.h.choose(o, i) * f(x + (o / 2 - i) * h) / Math.pow(h, o);
+			}, 0, o);
+		};
 
 		while (i <= 99999) {
 
@@ -397,7 +408,7 @@ Math.h = {
 		var m = Math.floor(Math.sqrt(n));
 
 		if (n % m !== 0) {
-			for (var i=1; i<(m-1); i++) {
+			for (var i = 1; i < (m - 1); i++) {
 				if (n % (m - i) === 0) { return m - i; }
 			}
 		}
@@ -422,7 +433,7 @@ Math.h = {
 
 		var str='[';
 
-		for (var i=0; i<l; i++) {
+		for (var i = 0; i < l; i++) {
 
 			if (i % rows === 0) { str += '\n'; }
 
@@ -435,6 +446,31 @@ Math.h = {
 		str += '\n]';
 
 		return str;
+
+	},
+
+	/**
+	 * parses a string as a symbol and outputs html
+	 *
+	 * @param {function} string
+	 * @return {string} html
+	 */
+	parse_symbol: function(string) {
+
+		var i, c,
+			d = 0,
+			s = '',
+			html = '';
+
+		html = string.replace(/\u\{([0-9a-f]{4})\}/g, function(m, p1) {
+			return '&#' + parseInt(p1, 16) + ';';
+		});
+
+		html = html.replace(/_(.+)/, function(m, p1) {
+			return '<sub>' + p1 + '</sub>';
+		});
+
+		return html;
 
 	},
 
@@ -476,7 +512,7 @@ Math.h = {
 
 		f = f.toString();
 
-		for (i=0, l=f.length; i<l; i++) {
+		for (i = 0, l = f.length; i < l; i++) {
 
 			c = f.charAt(i);
 
