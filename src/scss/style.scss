@@ -131,17 +131,6 @@ input {
 	}
 }
 
-#calc {
-	label {
-		display: block;
-	}
-	#params {
-		label {
-			display: inline;
-		}
-	}
-}
-
 legend {
 	display: block;
 	width: 100%;
@@ -209,6 +198,25 @@ footer {
 small.ln {
 	color: #aaa;
 	transition: all 0.5s;
+}
+
+#desc {
+	margin: 0 1em;
+	p {
+		display: inline-block;
+		text-align: left;
+	}
+}
+
+#calc {
+	label {
+		display: block;
+	}
+	#params {
+		label {
+			display: inline;
+		}
+	}
 }
 
 #results {

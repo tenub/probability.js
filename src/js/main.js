@@ -43,7 +43,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 		},
 
 		geometric: {
-			title: '<h1>DF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>',
+			title: '<h1>DF<small>(p=<em>{{ p }}</em>)</small></h1>',
 			description: [
 				'The geometric distribution is either of two discrete probability distributions. The definition used here is: the probability distribution of the number Y = X − 1 of failures before the first success, supported on the set { 0, 1, 2, 3, ... }.'
 			]
