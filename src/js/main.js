@@ -71,6 +71,10 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			title: '<h1>DF<small>(&mu;=<em>{{ mu }}</em>, s=<em>{{ s }}</em>)</small></h1>'
 		},
 
+		hyp_secant: {
+			title: '<h1>DF</h1>'
+		},
+
 		students_t: {
 			title: '<h1>DF<small>(v=<em>{{ v }}</em>)</small></h1>'
 		},

@@ -718,6 +718,54 @@ Math.p = {
 
 		},
 
+		hyp_secant: {
+
+			description: [
+				'The hyperbolic secant distribution is a continuous probability distribution whose probability density function and characteristic function are proportional to the hyperbolic secant function. The hyperbolic secant function is equivalent to the inverse hyperbolic cosine, and thus this distribution is also called the inverse-cosh distribution.'
+			],
+
+			discrete: false,
+
+			bounds: function(params) {
+
+				return { lower: { value: -Infinity, closed: false }, upper: { value: Infinity, closed: false } };
+
+			},
+
+			params: [],
+
+			mgf: function(params) {
+
+				return function(t) {
+
+					return (Math.abs(t) < Math.PI / 2) ? Math.h.sec(t) : undefined;
+
+				};
+
+			},
+
+			pdf: function(params) {
+
+				return function(x) {
+
+					return 0.5 * 1 / Math.h.cosh(Math.PI / 2 * x);
+
+				};
+
+			},
+
+			cdf: function(params) {
+
+				return function(x) {
+
+					return 2 / Math.PI * Math.atan(Math.exp(Math.PI / 2 * x));
+
+				};
+
+			}
+
+		},
+
 		students_t: {
 
 			description: [

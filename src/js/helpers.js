@@ -7,6 +7,92 @@ Math.h = {
 	EM: 0.5772156649015329,
 
 	/**
+	 * define secant
+	 *
+	 * @param {number} x
+	 * @return {number}
+	 */
+	sec: function(x) {
+
+		return 1 / Math.cos(x);
+
+	},
+
+	/**
+	 * define cosecant
+	 *
+	 * @param {number} x
+	 * @return {number}
+	 */
+	csc: function(x) {
+
+		return 1 / Math.sin(x);
+
+	},
+
+	/**
+	 * define cotangent
+	 *
+	 * @param {number} x
+	 * @return {number}
+	 */
+	cot: function(x) {
+
+		return 1 / Math.tan(x);
+
+	},
+
+	/**
+	 * define hyperbolic sine
+	 *
+	 * @param {number} x
+	 * @return {number}
+	 */
+	sinh: function(x) {
+
+	    var y = Math.exp(x);
+
+	    return (y - 1 / y) / 2;
+
+	},
+
+	/**
+	 * define hyperbolic cosine
+	 *
+	 * @param {number} x
+	 * @return {number}
+	 */
+	cosh: function(x) {
+
+		var y = Math.exp(x);
+
+		return (y + 1 / y) / 2;
+
+	},
+
+	/**
+	 * define hyperbolic tangent
+	 *
+	 * @param {number} x
+	 * @return {number}
+	 */
+	tanh: function(x) {
+
+		if (x === Infinity) { return 1; }
+
+		else if (x === -Infinity) { return -1; }
+
+		else {
+
+			var y = Math.exp(2 * x);
+
+			return (y - 1) / (y + 1);
+
+		}
+
+	},
+
+	/**
 	 * determines if a number is equivalent to an integer
 	 *
 	 * @param {number} n
