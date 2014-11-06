@@ -1,5 +1,5 @@
 /**
- * issues: pareto (param range), skellam (var range), inverse gaussian, zeta, rayleigh (kurtosis)
+ * issues: pareto (param range), skellam (var range), inverse gaussian, zeta, rayleigh (kurtosis), fisher snedecor
  */
 
 /**
@@ -68,6 +68,7 @@ Math.p = {
 		var pdf = [],
 			i = 0,
 			sum = 0,
+			v = 0,
 			start = (inc < 0) ? moments.mean - inc : moments.mean,
 			value;
 
@@ -78,7 +79,9 @@ Math.p = {
 
 			value = Math.p.distribution[distrType].pdf(params)(start - i);
 
-			if (isNaN(i / inc) || isNaN(value) || (!isNaN(value) && ((value !== 0 && value <= 1E-5) || value <= 0))) { break; }
+			if (isNaN(value) || value <= 0) { v += 1; }
+
+			if (v > 10 || isNaN(i / inc) || (!isNaN(value) && ((value >= 0 && value <= 1E-5)))) { break; }
 
 			if (Math.h.inBounds(start - i, Math.p.distribution[distrType].bounds(params)) && !isNaN(value)) { pdf.push({ x: start - i, y: value }); }
 
@@ -458,7 +461,7 @@ Math.p = {
 
 				return function(k) {
 
-					return Math.exp(-(params.mean1 + params.mean2)) * Math.pow(params.mean1 / params.mean2, k / 2) * Math.h.bessel(k, 1)(2 * Math.sqrt(params.mean1 * params.mean2));
+					return Math.exp(-(params.mean1 + params.mean2)) * Math.pow(params.mean1 / params.mean2, k / 2) * Math.h.bessel(1, k)(2 * Math.sqrt(params.mean1 * params.mean2));
 
 				};
 
@@ -1154,11 +1157,23 @@ Math.p = {
 
 			mgf: function(params) {
 
-				return function(t) {
+				return {
+
+					mean: 0,
+
+					variance: Math.pow(params.r, 2) / 4,
+
+					skewness: 0,
+
+					kurtosis: -1
+
+				};
+
+				/*return function(t) {
 
 					return 2 * Math.h.bessel(1, 1)(params.r * t) / (params.r * t);
 
-				};
+				};*/
 
 			},
 
@@ -1252,7 +1267,7 @@ Math.p = {
 
 				return function(t) {
 
-					return (Math.abs(t) < 1 / params.scale) ? Math.exp(params.mean * t) / (1 + Math.pow(params.scale, 2) * Math.pow(t, 2)) : undefined;
+					return (Math.abs(t) < 1 / params.scale) ? Math.exp(params.mean * t) / (1 - Math.pow(params.scale, 2) * Math.pow(t, 2)) : undefined;
 
 				};
 

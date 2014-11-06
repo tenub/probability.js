@@ -238,7 +238,7 @@ Math.h = {
 	 * @param {integer} kind
 	 * @return {number}
 	 */
-	bessel: function(a, kind, x) {
+	bessel: function(kind, a) {
 
 		if (kind === 1) {
 
@@ -253,7 +253,7 @@ Math.h = {
 		if (kind === 2) {
 
 			return function(x) {
-				return Math.PI / 2 * (Math.h.bessel(-a, 1)(x) - Math.h.bessel(a, 1)(x)) / Math.sin(a * Math.PI);
+				return Math.PI / 2 * (Math.h.bessel(1, -a)(x) - Math.h.bessel(1, a)(x)) / Math.sin(a * Math.PI);
 			};
 
 		}
