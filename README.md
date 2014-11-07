@@ -1,5 +1,4 @@
-probability.js
-==============
+# probability.js
 
 Requirements to build: [node.js](http://nodejs.org/download), [Ruby](https://www.ruby-lang.org/en/installation), [SASS](http://sass-lang.com/install)
 
@@ -9,4 +8,13 @@ Build steps:
 2. Navigate to the local directory in your CLI.
 3. `npm install`
 4. `grunt build`
-5. `src` dir to edit, `dist` dir for built files.
+5. `src` dir to edit, `dist` dir to use.
+
+## Current issues
+
+1. pareto (parameter range)
+2. skellam (variable range)
+3. inverse gaussian
+4. zeta
+5. rayleigh (kurtosis value)
+6. fisher snedecor

@@ -1,5 +1,9 @@
 @media (min-width: 1280px) {
 
+	.container {
+		width: 1280px;
+	}
+
 	#plot {
 		width: 640px;
 		height: 480px;
@@ -9,6 +13,10 @@
 
 @media (min-width: 720px) and (max-width: 1279px) {
 
+	.container {
+		width: 720px;
+	}
+
 	#plot {
 		width: 480px;
 		height: 320px;
@@ -17,6 +25,10 @@
 }
 
 @media (max-width: 719px) {
+
+	.container {
+		width: 480px;
+	}
 
 	#plot {
 		width: 320px;

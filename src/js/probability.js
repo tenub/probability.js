@@ -1,8 +1,4 @@
 /**
- * issues: pareto (param range), skellam (var range), inverse gaussian, zeta, rayleigh (kurtosis), fisher snedecor
- */
-
-/**
  * @namespace
  * @property {object} moments - standard moment definitions
  * @property {function} moments.mean - first moment
