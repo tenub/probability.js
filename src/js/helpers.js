@@ -536,31 +536,6 @@ Math.h = {
 	},
 
 	/**
-	 * parses a string as a symbol and outputs html
-	 *
-	 * @param {function} string
-	 * @return {string} html
-	 */
-	parse_symbol: function(string) {
-
-		var i, c,
-			d = 0,
-			s = '',
-			html = '';
-
-		html = string.replace(/\u\{([0-9a-f]{4})\}/g, function(m, p1) {
-			return '&#' + parseInt(p1, 16) + ';';
-		});
-
-		html = html.replace(/_(.+)/, function(m, p1) {
-			return '<sub>' + p1 + '</sub>';
-		});
-
-		return html;
-
-	},
-
-	/**
 	 * parses a function as a string and outputs html
 	 *
 	 * @param {function} f

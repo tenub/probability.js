@@ -21,117 +21,11 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		desc: '<h1>Description</h1>{{#description}}<p>{{.}}</p>{{/description}}',
 
-		params: '{{#.}}<label>{{ title }}:<input type="number" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ value }}" id="{{ id }}"/></label>{{/.}}',
+		params: '{{#.}}<label>{{ title }} (<var>{{{ symbol }}}</var>):<input type="number" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ value }}" id="{{ id }}" data-symbol="{{{ symbol }}}"/></label>{{/.}}',
 
 		moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
 
-		distr: {
-
-			beta: {
-				title: '<h1>DF<small>(&alpha;=<em>{{ a }}</em>, &beta;=<em>{{ b }}</em>)</small></h1>'
-			},
-
-			binomial: {
-				title: '<h1>DF<small>(n=<em>{{ n }}</em>, p=<em>{{ p }}</em>)</small></h1>'
-			},
-
-			cauchy: {
-				title: '<h1>DF<small>(x<sub>0</sub>=<em>{{ x0 }}</em>, &gamma;=<em>{{ gamma }}</em>)</small></h1>'
-			},
-
-			chi_squared: {
-				title: '<h1>DF<small>(k=<em>{{ k }}</em>)</small></h1>'
-			},
-
-			exponential: {
-				title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
-			},
-
-			fisher_snedecor: {
-				title: '<h1>DF<small>(d<sub>1</sub>=<em>{{ d1 }}</em>, d<sub>2</sub>=<em>{{ d2 }}</em>)</small></h1>'
-			},
-
-			gamma: {
-				title: '<h1>DF<small>(k=<em>{{ k }}</em>, &theta;=<em>{{ theta }}</em>)</small></h1>'
-			},
-
-			gaussian: {
-				title: '<h1>DF<small>(&mu;=<em>{{ mean }}</em>, &sigma;=<em>{{ std }}</em>)</small></h1>'
-			},
-
-			geometric: {
-				title: '<h1>DF<small>(p=<em>{{ p }}</em>)</small></h1>'
-			},
-
-			gompertz: {
-				title: '<h1>DF<small>(n=<em>{{ n }}</em>, b=<em>{{ b }}</em>)</small></h1>'
-			},
-
-			gumbel: {
-				title: '<h1>DF<small>(&mu;=<em>{{ mu }}</em>, &beta;=<em>{{ beta }}</em>)</small></h1>'
-			},
-
-			hyp_secant: {
-				title: '<h1>DF</h1>'
-			},
-
-			inv_gaussian: {
-				title: '<h1>DF<small>(&lambda;=<em>{{ shape }}</em>, &mu;=<em>{{ mean }}</em>)</small></h1>'
-			},
-
-			irwin_hall: {
-				title: '<h1>DF<small>(n=<em>{{ n }}</em>)</small></h1>'
-			},
-
-			laplace: {
-				title: '<h1>DF<small>(&mu;=<em>{{ mean }}</em>, b=<em>{{ scale }}</em>)</small></h1>'
-			},
-
-			logarithmic: {
-				title: '<h1>DF<small>(p=<em>{{ p }}</em>)</small></h1>'
-			},
-
-			logistic: {
-				title: '<h1>DF<small>(&mu;=<em>{{ mu }}</em>, s=<em>{{ s }}</em>)</small></h1>'
-			},
-
-			pareto: {
-				title: '<h1>DF<small>(x<sub>m</sub>=<em>{{ xm }}</em>, &alpha;=<em>{{ a }}</em>)</small></h1>'
-			},
-
-			poisson: {
-				title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>)</small></h1>'
-			},
-
-			rayleigh: {
-				title: '<h1>DF<small>(&sigma;=<em>{{ sigma }}</em>)</small></h1>'
-			},
-
-			skellam: {
-				title: '<h1>DF<small>(&mu;<sub>1</sub>=<em>{{ mean1 }}</em>, &mu;<sub>2</sub>=<em>{{ mean2 }}</em>)</small></h1>'
-			},
-
-			students_t: {
-				title: '<h1>DF<small>(v=<em>{{ v }}</em>)</small></h1>'
-			},
-
-			uniform: {
-				title: '<h1>DF<small>(a=<em>{{ a }}</em>, b=<em>{{ b }}</em>)</small></h1>'
-			},
-
-			weibull: {
-				title: '<h1>DF<small>(&lambda;=<em>{{ lambda }}</em>, k=<em>{{ k }}</em>)</small></h1>'
-			},
-
-			wigner: {
-				title: '<h1>DF<small>(R=<em>{{ r }}</em>)</small></h1>'
-			},
-
-			zeta: {
-				title: '<h1>DF<small>(s=<em>{{ s }}</em>)</small></h1>'
-			}
-
-		}
+		distr: '<h1>DF<sub>({{#.}}<var class="param">{{{ symbol }}}=<em>{{ value }}</em></var>{{/.}})</sub></h1>',
 
 	};
 
@@ -176,15 +70,16 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 				distrType = $('select[name=distr-type]').val(),
 				distrIval = Math.p.distribution[distrType].interval,
 				params = self.getParams('#params'),
-				m_0 = Math.p.distribution[distrType].mgf(params),
+				p_vals = self.getParamVals('#params'),
+				m_0 = Math.p.distribution[distrType].mgf(p_vals),
 				moments;
 
 			if (typeof m_0 === 'function') { moments = { mean: Math.p.moments.mean(m_0), variance: Math.p.moments.variance(m_0), skewness: Math.p.moments.skewness(m_0), kurtosis: Math.p.moments.kurtosis(m_0) }; }
 			else if (typeof m_0 === 'object') { moments = m_0; }
 
-			self.data = Math.p.buildDF(distrType, params, moments);
+			self.data = Math.p.buildDF(distrType, p_vals, moments);
 
-			var html = mustache.render(self.templates.distr[distrType].title, params);
+			var html = mustache.render(self.templates.distr, params);
 				html += mustache.render(self.templates.moments, moments);
 
 			$('#stats').html(html);
@@ -192,6 +87,14 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			self.redrawPlot();
 			self.n += 1;
+
+		});
+
+		$('#user-data').on('submit', function(e) {
+
+			e.preventDefault();
+
+			console.log(self.parseCSV($('#data-csv').val()));
 
 		});
 
@@ -233,6 +136,29 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	self.getParams = function(id) {
 
 		var $el = $(id),
+			params = [];
+
+		$el.find('input').each(function() {
+			params.push({
+				id: this.id,
+				symbol: $(this).data('symbol'),
+				value: parseFloat(this.value, 10)
+			});
+		});
+
+		return params;
+
+	};
+
+	/**
+	 * build params object to send to other methods in the library
+	 *
+	 * @param {string} id - id of form element containing parameter inputs
+	 * @return {object} parameters object
+	 */
+	self.getParamVals = function(id) {
+
+		var $el = $(id),
 			params = {};
 
 		$el.find('input').each(function() { params[this.id] = parseFloat(this.value, 10); });
@@ -251,6 +177,34 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 		if (typeof Math.p.distribution[distrType] !== 'undefined') { return mustache.render(self.templates.params, Math.p.distribution[distrType].params); }
 		else { return false; }
+
+	};
+
+	/**
+	 * parses a string as CSV format and outputs as array
+	 *
+	 * @param {string} string
+	 * @return {array} data
+	 */
+	self.parseCSV = function(string) {
+
+		var m,
+			re_valid = /^(?:(?:\d+(?:\.\d+)?), *(?:\d+(?:\.\d+)?)(?:\n|$))+/,
+			re_value = /(\d+(?:\.\d+)?), *(\d+(?:\.\d+)?)/g;
+
+		string = $.trim(string);
+
+		if (!re_valid.test(string)) { return false; }
+
+		var data = [];
+
+		while ((m = re_value.exec(string)) !== null) {
+
+			data.push([parseFloat(m[1], 10), parseFloat(m[2], 10)]);
+
+		}
+
+		return data;
 
 	};
 

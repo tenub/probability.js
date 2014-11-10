@@ -14,9 +14,16 @@
 </head>
 <body>
 	<div class="container">
+		<section id="data">
+			<form id="user-data">
+				<label for="user-file">Data (CSV format)</label>
+				<textarea id="data-csv" name="data-csv" placeholder="Paste CSV data here."></textarea>
+				<input type="submit" value="Parse">
+			</form>
+		</section>
 		<section id="distr-list">
 			<form id="calc">
-				<label for="distr-type">Distribution Type:</label>
+				<label for="distr-type">Distribution type</label>
 				<select name="distr-type" id="distr-type">
 					<optgroup label="Discrete">
 						<option value="binomial">Binomial</option>
@@ -50,6 +57,7 @@
 					</optgroup>
 				</select>
 				<div id="desc"></div>
+				<h1>Generate distribution</h1>
 				<legend>Parameters</legend>
 				<fieldset id="params"></fieldset>
 				<input type="reset" value="Reset">

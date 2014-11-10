@@ -97,6 +97,13 @@ pre {
 	padding: 1em 4em 1em 1em;
 }
 
+sub {
+	position: static;
+	bottom: auto;
+	line-height: 1.5;
+	vertical-align: text-bottom;
+}
+
 svg {
 	width: 100%;
 	height: 100%;
@@ -195,6 +202,17 @@ footer {
 	}
 }
 
+.param {
+	&:after {
+		content: ', ';
+	}
+	&:last-child {
+		&:after {
+			content: '';
+		}
+	}
+}
+
 small.ln {
 	color: #aaa;
 	transition: all 0.5s;
@@ -224,5 +242,19 @@ small.ln {
 	#plot {
 		display: inline-block;
 		margin: 0 auto;
+	}
+}
+
+#user-data {
+	text-align: center;
+	label {
+		display: block;
+	}
+	textarea {
+		display: block;
+		width: 320px;
+		height: 180px;
+		margin: .5em auto;
+		overflow-y: auto;
 	}
 }
