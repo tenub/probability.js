@@ -17,6 +17,20 @@
  */
 Math.p = {
 
+	mean: function(array) {
+
+		return 1 / array.length * Math.h.s_sum(array, function(el) { return el.y; });
+
+	},
+
+	variance: function(array) {
+
+		var mean = Math.p.mean(array);
+
+		return 1 / (array.length - 1) * Math.h.s_sum(array, function(el) { return Math.pow(el.y - mean, 2); });
+
+	},
+
 	/**
 	 * call method to generate distribution plots based on parameters
 	 *

@@ -50,9 +50,9 @@ Math.h = {
 	 */
 	sinh: function(x) {
 
-	    var y = Math.exp(x);
+		var y = Math.exp(x);
 
-	    return (y - 1 / y) / 2;
+		return (y - 1 / y) / 2;
 
 	},
 
@@ -89,6 +89,117 @@ Math.h = {
 			return (y - 1) / (y + 1);
 
 		}
+
+	},
+
+	/**
+	 * The WELL19937c PRNG, brought to Javascript.
+	 *
+	 * This generator is part of the WELL (Well Equidistributed Long-period Linear)
+	 * family of state-of-the-art linear generators, developed by François Panneton,
+	 * Pierre l’Ecuyer and Makoto Matsumoto. Like the ubiquitous Mersenne Twister,
+	 * the WELL19937c has a period of 2^19937-1, but it has slightly better
+	 * statistical properties, and recovers quicker from bad initialization. In
+	 * particular, unlike the Mersenne Twister, the WELL19937c is "maximally
+	 * equidistributed".
+	 *
+	 * Most of this code is from the Apache Commons Math WELL19937c generator at
+	 * http://svn.apache.org/viewvc/commons/proper/math/trunk/src/main/java/org/apache/commons/math3/random/Well19937c.java
+	 * which is subject to the Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
+	 * The major difference is the initialization procedure: the Commons Math version
+	 * uses the same initialization procedure as the 2002 C implementation of the
+	 * Mersenne Twister, while this one uses a linear congruential generator.
+	 *
+	 * WELL19937c can be used as drop-in replacement for Math.random:
+	 *
+	 * Math.random = function() {return WELL19937c.random();};
+	 */
+	random: function() {
+
+		var r = 624, //state size
+			M1 = 70, //first parameter
+			M2 = 179, //second parameter
+			M3 = 449, //third parameter
+			index = 0, //index
+			v = [], //state
+			iRm1 = [], //indirection array for (i + r - 1) % r
+			iRm2 = [], //indirection array for (i + r - 2) % r
+			i1 = [], //indirection array for (i + M1) % r
+			i2 = [], //indirection array for (i + M2) % r
+			i3 = []; //indirection array for (i + M3) % r
+
+		/**
+		 * Seed the generator with an array of 32-bit unsigned values.
+		 * If 624 values are provided, these values become the internal state (625, 626... are discarded).
+		 * If less, the rest of the state is initialized with an algorithm that is based on a linear congruential generator from Numerical Recipes.
+		 */
+		function seedArray(array) {
+
+			v = array.slice(0, r);
+
+			for (var i = array.length; i < r; i++) { v[i] = ((1664525 * v[i - array.length]) + 1013904223) >>> 0; }
+
+		}
+
+		// Seed the generator with a single unsigned 32-bit value. Equivalent to seedArray([value]).
+		function seed(value) {
+
+			seedArray([value]);
+
+		}
+
+		// Generate a single random 32-bit float from 0 (inclusive) to 1 (exclusive).
+		function random() {
+
+			var indexRm1 = iRm1[index],
+				indexRm2 = iRm2[index],
+
+				v0 = v[index],
+				vM1 = v[i1[index]],
+				vM2 = v[i2[index]],
+				vM3 = v[i3[index]],
+
+				z0 = (0x80000000 & v[indexRm1]) ^ (0x7FFFFFFF & v[indexRm2]),
+				z1 = (v0 ^ (v0 << 25)) ^ (vM1 ^ (vM1 >>> 27)),
+				z2 = (vM2 >>> 9) ^ (vM3 ^ (vM3 >>> 1)),
+				z3 = z1 ^ z2,
+				z4 = z0 ^ (z1 ^ (z1 << 9)) ^ (z2 ^ (z2 << 21)) ^ (z3 ^ (z3 >>> 21));
+
+			v[index] = z3;
+			v[indexRm1] = z4;
+			v[indexRm2] &= 0x80000000;
+			index = indexRm1;
+
+			//add Matsumoto-Kurita tempering to get a maximally equidistributed generator
+			z4 ^= (z4 << 7) & 0xe46e1700;
+			z4 ^= (z4 << 15) & 0x9b868000;
+
+			//return 32-bit float
+			return (z4 >>> 0) / 0x100000000;
+
+		}
+
+		//pre-compute indirection tables
+		for (var i = 0; i < r; i++) {
+
+			iRm1.push((i + r - 1) % r);
+			iRm2.push((i + r - 2) % r);
+			i1.push((i + M1) % r);
+			i2.push((i + M2) % r);
+			i3.push((i + M3) % r);
+
+		}
+
+		//seed with date
+		seed(+new Date());
+
+		/*return {
+			random: random,
+			seed: seed,
+			seedArray: seedArray
+		};*/
+
+		return random();
 
 	},
 
@@ -370,6 +481,28 @@ Math.h = {
 			if (i > 99999) { return false; }
 
 			i += 1;
+
+		}
+
+		return s;
+
+	},
+
+	/**
+	 * calculate a generic sum using supplied function of one variable and bounds
+	 *
+	 * @param {array} array - array of sample data
+	 * @param {function} callback - function to apply to array when reading values
+	 * @return {number} sum
+	 */
+	s_sum: function(array, callback) {
+
+		var i, l,
+			s = 0;
+
+		for (i = 0, l = array.length; i < l; i++) {
+
+			s += callback(array[i]);
 
 		}
 

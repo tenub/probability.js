@@ -86,7 +86,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 			$('#results').fadeIn(500);
 
 			self.redrawPlot();
-			self.n += 1;
 
 		});
 
@@ -94,7 +93,13 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
-			console.log(self.parseCSV($('#data-csv').val()));
+			var data = [];
+
+			for (var i = 0; i < 100; i++) { data.push({ x: i, y: Math.h.random() }); }
+
+			//var data = self.parseCSV($('#data-csv').val());
+
+			console.log(Math.p.mean(data), Math.p.variance(data));
 
 		});
 
@@ -116,7 +121,6 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
-			self.n = 0;
 			self.data = {};
 
 			$('#results').fadeOut(500, function() {
@@ -189,22 +193,43 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	self.parseCSV = function(string) {
 
 		var m,
-			re_valid = /^(?:(?:\d+(?:\.\d+)?), *(?:\d+(?:\.\d+)?)(?:\n|$))+/,
-			re_value = /(\d+(?:\.\d+)?), *(\d+(?:\.\d+)?)/g;
+			re_valid_1 = /^(?:(?:\d+(?:\.\d+)?), *(?:\d+(?:\.\d+)?)(?:\n|$))+/,
+			re_valid_2 = /^(?:(?:\d+(?:\.\d+)?)(?:\n|$))+/,
+			re_v_1 = /(\d+(?:\.\d+)?), *(\d+(?:\.\d+)?)/g,
+			re_v_2 = /(\d+(?:\.\d+)?)/g,
+			data = [];
 
 		string = $.trim(string);
 
-		if (!re_valid.test(string)) { return false; }
+		if (re_valid_1.test(string)) {
 
-		var data = [];
+			while ((m = re_v_1.exec(string)) !== null) {
 
-		while ((m = re_value.exec(string)) !== null) {
+				data.push({ x: parseFloat(m[1], 10), y: parseFloat(m[2], 10) });
 
-			data.push([parseFloat(m[1], 10), parseFloat(m[2], 10)]);
+			}
+
+			return data;
 
 		}
 
-		return data;
+		if (re_valid_2.test(string)) {
+
+			var i = 0;
+
+			while ((m = re_v_2.exec(string)) !== null) {
+
+				data.push({ x: i, y: parseFloat(m[1], 10) });
+
+				i += 1;
+
+			}
+
+			return data;
+
+		}
+
+		return false;
 
 	};
 
@@ -215,8 +240,7 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 	 */
 	self.plot = function(id) {
 
-		var i = self.n,
-			x, y1, y2,
+		var x, y1, y2,
 			x_l, x_u,
 			xr = [],
 			pdf_y_u, cdf_y_u,
