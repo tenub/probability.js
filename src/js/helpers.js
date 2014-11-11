@@ -489,7 +489,7 @@ Math.h = {
 	},
 
 	/**
-	 * calculate a generic sum using supplied function of one variable and bounds
+	 * calculate a sum using supplied sample data and a callback
 	 *
 	 * @param {array} array - array of sample data
 	 * @param {function} callback - function to apply to array when reading values
