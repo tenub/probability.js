@@ -1,28 +1,31 @@
 /**
  * @namespace
+ * @description define probability methods
  * @property {object} moments - standard moment definitions
- * @property {function} moments.mean - first moment
- * @property {function} moments.variance - second moment
- * @property {function} moments.skewness - third moment
- * @property {function} moments.kurtosis - fourth moment
  *
  * @property {object} distribution - defined commonly used distributions
  * @property {object} distribution.(distribution) - contains standard statistics specified below for a particular distribution
- * @property {boolean} distribution.distribution.discrete - determines if distribution is discrete or continuous
- * @property {function} distribution.distribution.bounds - define distribution bounds for its variable
- * @property {object} distribution.distribution.params - contains values used in generating html input
- * @property {function|object} distribution.distribution.mgf - specified moment generating function returns a function of parameters or an object containing hard-coded standard moment equations
- * @property {function} distribution.distribution.pdf - probability distribution function returns a function of its variable using specified distribution parameters
- * @property {function} distribution.distribution.cdf - cumulative distribution function returns a function of its variable using specified distribution parameters and a numerical integration helper function
  */
 Math.p = {
 
+	/**
+	 * calculate sample mean
+	 *
+	 * @param {array} array - sample array of objects with x and y coordinate properties
+	 * @return {number} mean
+	 */
 	mean: function(array) {
 
 		return 1 / array.length * Math.h.s_sum(array, function(el) { return el.y; });
 
 	},
 
+	/**
+	 * calculate sample variance
+	 *
+	 * @param {array} array - sample array of objects with x and y coordinate properties
+	 * @return {number} variance
+	 */
 	variance: function(array) {
 
 		var mean = Math.p.mean(array);
@@ -124,27 +127,54 @@ Math.p = {
 
 	},
 
-	// define moments
+	/**
+	 * @namespace
+	 * @description define moments
+	 */
 	moments: {
 
+		/**
+		 * calculate the mean of a moment generating function via numerical derivation
+		 *
+		 * @param {function} f - single-variable function
+		 * @return {number} mean
+		 */
 		mean: function(f) {
 
 			return Math.h.round(Math.h.derivative(f, 1, 0), 3);
 
 		},
 
+		/**
+		 * calculate the variance of a moment generating function via numerical derivation
+		 *
+		 * @param {function} f - single-variable function
+		 * @return {number} variance
+		 */
 		variance: function(f) {
 
 			return Math.h.round(Math.h.derivative(f, 2, 0) - Math.pow(Math.h.derivative(f, 1, 0), 2), 3);
 
 		},
 
+		/**
+		 * calculate the skewness of a moment generating function via numerical derivation
+		 *
+		 * @param {function} f - single-variable function
+		 * @return {number} skewness
+		 */
 		skewness: function(f) {
 
 			return Math.h.round((Math.h.derivative(f, 3, 0) - 3 * Math.h.derivative(f, 1, 0) * Math.h.derivative(f, 2, 0) + 2 * Math.pow(Math.h.derivative(f, 1, 0), 3)) / Math.pow(Math.h.derivative(f, 2, 0) - Math.pow(Math.h.derivative(f, 1, 0), 2), 1.5), 3);
 
 		},
 
+		/**
+		 * calculate the kurtosis of a moment generating function via numerical derivation
+		 *
+		 * @param {function} f - single-variable function
+		 * @return {number} kurtosis
+		 */
 		kurtosis: function(f) {
 
 			return Math.h.round((Math.h.derivative(f, 4, 0) - 4 * Math.h.derivative(f, 1, 0) * Math.h.derivative(f, 3, 0) + 6 * Math.h.derivative(f, 2, 0) * Math.pow(Math.h.derivative(f, 1, 0), 2) - 3 * Math.pow(Math.h.derivative(f, 1, 0), 4)) / Math.pow(Math.h.derivative(f, 2, 0) - Math.pow(Math.h.derivative(f, 1, 0), 2), 2) - 3, 3);
@@ -153,7 +183,17 @@ Math.p = {
 
 	},
 
-	// define distributions
+	/**
+	 * @namespace
+	 * @description define distributions
+	 * @property {array} (distribution).description - array of paragraphs describing a particular distribution
+	 * @property {boolean} (distribution).discrete - determines if distribution is discrete or continuous
+	 * @property {function} (distribution).bounds - define distribution bounds for its variable
+	 * @property {object} (distribution).params - contains values used in generating html input
+	 * @property {function|object} (distribution).mgf - specified moment generating function returns a function of parameters or an object containing hard-coded standard moment equations
+	 * @property {function} (distribution).pdf - probability distribution function returns a function of its variable using specified distribution parameters
+	 * @property {function} (distribution).cdf - cumulative distribution function returns a function of its variable using specified distribution parameters
+	 */
 	distribution: {
 
 		beta: {
@@ -781,7 +821,7 @@ Math.p = {
 
 				return function(x) {
 
-					return 0.5 * 1 / Math.h.cosh(Math.PI / 2 * x);
+					return 0.5 * Math.h.sech(Math.PI / 2 * x);
 
 				};
 

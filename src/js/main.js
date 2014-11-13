@@ -1,7 +1,7 @@
 require.config({
 	baseUrl: 'assets/js',
 	paths: {
-		d3: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min',
+		d3: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min',
 		jquery: 'http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min',
 		mustache: 'http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min'
 	}
@@ -93,11 +93,11 @@ define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function(
 
 			e.preventDefault();
 
-			var data = [];
+			//var data = [];
 
-			for (var i = 0; i < 100; i++) { data.push({ x: i, y: Math.h.random() }); }
+			//for (var i = 0; i < 100; i++) { data.push({ x: i, y: Math.h.random() }); }
 
-			//var data = self.parseCSV($('#data-csv').val());
+			var data = self.parseCSV($('#data-csv').val());
 
 			console.log(Math.p.mean(data), Math.p.variance(data));
 

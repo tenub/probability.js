@@ -1,8 +1,15 @@
-// Define helper functions
+/**
+ * @namespace
+ * @description defines helper methods
+ */
 Math.h = {
 
 	/**
 	 * Euler–Mascheroni constant
+	 *
+	 * @constant
+	 * @type {number}
+	 * @default
 	 */
 	EM: 0.5772156649015329,
 
@@ -93,26 +100,44 @@ Math.h = {
 	},
 
 	/**
-	 * The WELL19937c PRNG, brought to Javascript.
+	 * define hyperbolic cosecant
 	 *
-	 * This generator is part of the WELL (Well Equidistributed Long-period Linear)
-	 * family of state-of-the-art linear generators, developed by François Panneton,
-	 * Pierre l’Ecuyer and Makoto Matsumoto. Like the ubiquitous Mersenne Twister,
-	 * the WELL19937c has a period of 2^19937-1, but it has slightly better
-	 * statistical properties, and recovers quicker from bad initialization. In
-	 * particular, unlike the Mersenne Twister, the WELL19937c is "maximally
-	 * equidistributed".
+	 * @param {number} x
+	 * @return {number}
+	 */
+	csch: function(x) {
+
+		return 1 / this.sinh(x);
+
+	},
+
+	/**
+	 * define hyperbolic secant
 	 *
-	 * Most of this code is from the Apache Commons Math WELL19937c generator at
-	 * http://svn.apache.org/viewvc/commons/proper/math/trunk/src/main/java/org/apache/commons/math3/random/Well19937c.java
-	 * which is subject to the Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
-	 * The major difference is the initialization procedure: the Commons Math version
-	 * uses the same initialization procedure as the 2002 C implementation of the
-	 * Mersenne Twister, while this one uses a linear congruential generator.
+	 * @param {number} x
+	 * @return {number}
+	 */
+	sech: function(x) {
+
+		return 1 / this.cosh(x);
+
+	},
+
+	/**
+	 * define hyperbolic cotangent
 	 *
-	 * WELL19937c can be used as drop-in replacement for Math.random:
-	 *
-	 * Math.random = function() {return WELL19937c.random();};
+	 * @param {number} x
+	 * @return {number}
+	 */
+	coth: function(x) {
+
+		return 1 / this.tanh(x);
+
+	},
+
+	/**
+	 * generate a better pseudo random number using WELL19937c PRNG
+	 * @return {number} random number between 0 and 1
 	 */
 	random: function() {
 
@@ -170,7 +195,7 @@ Math.h = {
 			v[indexRm2] &= 0x80000000;
 			index = indexRm1;
 
-			//add Matsumoto-Kurita tempering to get a maximally equidistributed generator
+			// add Matsumoto-Kurita tempering to get a maximally equidistributed generator
 			z4 ^= (z4 << 7) & 0xe46e1700;
 			z4 ^= (z4 << 15) & 0x9b868000;
 
@@ -179,7 +204,7 @@ Math.h = {
 
 		}
 
-		//pre-compute indirection tables
+		// pre-compute indirection tables
 		for (var i = 0; i < r; i++) {
 
 			iRm1.push((i + r - 1) % r);
@@ -190,7 +215,7 @@ Math.h = {
 
 		}
 
-		//seed with date
+		// seed with date
 		seed(+new Date());
 
 		/*return {
@@ -280,7 +305,7 @@ Math.h = {
 	},
 
 	/**
-	 * computes the combination of a number
+	 * computes the combination or binomial coefficient of a number
 	 *
 	 * @param {number} n
 	 * @param {number} k
@@ -327,16 +352,42 @@ Math.h = {
 	},
 
 	/**
+	 * calculate the nth harmonic number
+	 *
+	 * @param {number} n
+	 * @return {number}
+	 */
+	harmonic: function(n) {
+
+		return (n < 0) ? Infinity : this.sum(function(k) { return 1 / k; }, 1, n);
+
+	},
+
+	/**
+	 * estimates the value of the polylogarithmic function with specified s and z values
+	 *
+	 * @param {number} s - s
+	 * @param {number} z - z
+	 * @return {number}
+	 */
+	polylogarithm: function(s, z) {
+
+		return (s === 1) ? Infinity : this.sum(function(k) {
+			return Math.pow(z, k) / Math.pow(k, s);
+		}, 1, Infinity);
+
+	},
+
+	/**
 	 * estimates the value of the Riemann zeta function with specified s value
+	 * this is a special case of a polylogarithm with z value of 1
 	 *
 	 * @param {number} s - s
 	 * @return {number}
 	 */
 	zeta: function(s) {
 
-		return (s === 1) ? Infinity : Math.h.sum(function(n) {
-			return Math.pow(n, -s);
-		}, 1, Infinity);
+		return this.polylogarithm(s, 1);
 
 	},
 
@@ -407,8 +458,10 @@ Math.h = {
 	 */
 	ligamma: function(a, x) {
 
-		return Math.pow(x, a) * Math.h.gamma(a) * Math.exp(-x) * Math.h.sum(function(k) {
-			return Math.pow(x, k) / Math.h.gamma(a + k + 1);
+		var self = this;
+
+		return Math.pow(x, a) * this.gamma(a) * Math.exp(-x) * this.sum(function(k) {
+			return Math.pow(x, k) / self.gamma(a + k + 1);
 		}, 0, Infinity);
 
 	},
@@ -422,9 +475,25 @@ Math.h = {
 	 */
 	uigamma: function(a, z) {
 
-		return Math.h.gamma(a) * (1 - Math.pow(z, a) * Math.exp(-z) * Math.h.sum(function(k) {
-			return Math.pow(z, k) / Math.h.gamma(a + k + 1);
+		var self = this;
+
+		return this.gamma(a) * (1 - Math.pow(z, a) * Math.exp(-z) * this.sum(function(k) {
+			return Math.pow(z, k) / self.gamma(a + k + 1);
 		}, 0, Infinity));
+
+	},
+
+	/**
+	 * estimates the value of the digamma function at a certain value
+	 *
+	 * @param {number} n
+	 * @return {number}
+	 */
+	digamma: function(n) {
+
+		var self = this;
+
+		return (n > 0) ? Math.h.derivative(function(x) { return self.gamma(x); }, 1, n) / this.gamma(n) : Infinity;
 
 	},
 
@@ -437,11 +506,13 @@ Math.h = {
 	 */
 	bessel: function(kind, a) {
 
+		var self = this;
+
 		if (kind === 1) {
 
 			return function(x) {
-				return Math.h.sum(function(m) {
-					return 1 / (Math.h.factorial(m) * Math.h.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a);
+				return self.sum(function(m) {
+					return 1 / (self.factorial(m) * self.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a);
 				}, 0, Infinity);
 			};
 
@@ -450,7 +521,7 @@ Math.h = {
 		if (kind === 2) {
 
 			return function(x) {
-				return Math.PI / 2 * (Math.h.bessel(1, -a)(x) - Math.h.bessel(1, a)(x)) / Math.sin(a * Math.PI);
+				return Math.PI / 2 * (self.bessel(1, -a)(x) - self.bessel(1, a)(x)) / Math.sin(a * Math.PI);
 			};
 
 		}
@@ -489,7 +560,7 @@ Math.h = {
 	},
 
 	/**
-	 * calculate a sum using supplied sample data and a callback
+	 * calculate a sample sum using supplied data and a callback
 	 *
 	 * @param {array} array - array of sample data
 	 * @param {function} callback - function to apply to array when reading values
@@ -541,7 +612,7 @@ Math.h = {
 	},
 
 	/**
-	 * numerically estimates the derivative of a function using the five-point stencil method
+	 * numerically estimates the derivative of a function using the central finite difference method
 	 *
 	 * @param {function} f - single-variable function to derive
 	 * @param {integer} o - order of derivative to compute
@@ -550,7 +621,8 @@ Math.h = {
 	 */
 	derivative: function(f, o, x) {
 
-		var f1, h = 0.01,
+		var self = this,
+			f1, h = 0.01,
 			i = 0,
 			v = [], d = [];
 
@@ -578,8 +650,8 @@ Math.h = {
 		}*/
 
 		f1 = function(x, h) {
-			return Math.h.sum(function(i) {
-				return Math.pow(-1, i) * Math.h.choose(o, i) * f(x + (o / 2 - i) * h) / Math.pow(h, o);
+			return self.sum(function(i) {
+				return Math.pow(-1, i) * self.choose(o, i) * f(x + (o / 2 - i) * h) / Math.pow(h, o);
 			}, 0, o);
 		};
 
