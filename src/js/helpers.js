@@ -1,12 +1,13 @@
 /**
  * @namespace
- * @description defines helper methods
+ * @desc Defines helper methods
  */
 Math.h = {
 
 	/**
-	 * Euler–Mascheroni constant
+	 * Euler–Mascheroni constant.
 	 *
+	 * @desc The Euler–Mascheroni constant (also called Euler's constant) is a mathematical constant recurring in analysis and number theory, usually denoted by the lowercase Greek letter gamma. It is defined as the limiting difference between the harmonic series and the natural logarithm.
 	 * @constant
 	 * @type {number}
 	 * @default
@@ -14,20 +15,9 @@ Math.h = {
 	EM: 0.5772156649015329,
 
 	/**
-	 * define secant
+	 * Define cosecant.
 	 *
-	 * @param {number} x
-	 * @return {number}
-	 */
-	sec: function(x) {
-
-		return 1 / Math.cos(x);
-
-	},
-
-	/**
-	 * define cosecant
-	 *
+	 * @desc The cosecant is the reciprocal of sine; i.e. the ratio of the length of the hypotenuse to the length of the opposite side.
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -38,8 +28,22 @@ Math.h = {
 	},
 
 	/**
-	 * define cotangent
+	 * Define secant.
 	 *
+	 * @desc The secant is the reciprocal of cosine; i.e. the ratio of the length of the hypotenuse to the length of the adjacent side.
+	 * @param {number} x
+	 * @return {number}
+	 */
+	sec: function(x) {
+
+		return 1 / Math.cos(x);
+
+	},
+
+	/**
+	 * Define cotangent.
+	 *
+	 * @desc The cotangent is the reciprocal of tangent; i.e. the ratio of the length of the adjacent side to the length of the opposite side.
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -50,8 +54,9 @@ Math.h = {
 	},
 
 	/**
-	 * define hyperbolic sine
+	 * Define hyperbolic sine.
 	 *
+	 * @desc <code>(1 - e^(-2x)) / 2e^(-x)</code>
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -64,8 +69,9 @@ Math.h = {
 	},
 
 	/**
-	 * define hyperbolic cosine
+	 * Define hyperbolic cosine.
 	 *
+	 * @desc <code>(1 + e^(-2x)) / 2e^(-x)</code>
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -78,8 +84,9 @@ Math.h = {
 	},
 
 	/**
-	 * define hyperbolic tangent
+	 * Define hyperbolic tangent.
 	 *
+	 * @desc <code>(1 - e^(-2x)) / (1 + e^(-2x))</code>
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -100,8 +107,9 @@ Math.h = {
 	},
 
 	/**
-	 * define hyperbolic cosecant
+	 * Define hyperbolic cosecant.
 	 *
+	 * @desc <code>2e^(-x) / (1 - e^(-2x))</code>
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -112,8 +120,9 @@ Math.h = {
 	},
 
 	/**
-	 * define hyperbolic secant
+	 * Define hyperbolic secant.
 	 *
+	 * @desc <code>2e^(-x) / (1 + e^(-2x))</code>
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -124,8 +133,9 @@ Math.h = {
 	},
 
 	/**
-	 * define hyperbolic cotangent
+	 * Define hyperbolic cotangent.
 	 *
+	 * @desc <code>(1 + e^(-2x)) / (1 - e^(-2x))</code>
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -136,7 +146,12 @@ Math.h = {
 	},
 
 	/**
-	 * generate a better pseudo random number using WELL19937c PRNG
+	 * Generate a random number between 0 and 1.
+	 *
+	 * @desc Generate a better pseudo random number using the WELL19937c PRNG method
+	 * @example
+	 * Math.h.random()
+	 * // returns 0.7079318668693304
 	 * @return {number} random number between 0 and 1
 	 */
 	random: function() {
@@ -229,8 +244,14 @@ Math.h = {
 	},
 
 	/**
-	 * determines if a number is equivalent to an integer
+	 * Determines if a number is equivalent to an integer.
 	 *
+	 * @example
+	 * Math.h.isInt(1.0)
+	 * // returns true
+	 * @example
+	 * Math.h.isInt(1.000000000000001)
+	 * // returns false
 	 * @param {number} n
 	 * @return {boolean}
 	 */
@@ -241,8 +262,20 @@ Math.h = {
 	},
 
 	/**
-	 * determines if a value is within bounds of two-element array
+	 * Determines if a value is within bounds of two-element array.
 	 *
+	 * @example
+	 * Math.h.inBounds(1.0, {
+	 *   lower: { closed: false, value: 0 },
+	 *   upper: { closed: true, value: 1 }
+	 * })
+	 * // returns true
+	 * @example
+	 * Math.h.inBounds(1.0, {
+	 *   lower: { closed: false, value: 0 },
+	 *   upper: { closed: false, value: 1 }
+	 * })
+	 * // returns false
 	 * @param {number} value - any number to test
 	 * @param {array} bounds - two-element array of lower/upper bounds
 	 * @return {boolean}
@@ -257,8 +290,11 @@ Math.h = {
 	},
 
 	/**
-	 * round a number to specified decimal places
+	 * Round a number to specified decimal places.
 	 *
+	 * @example
+	 * Math.h.round(0.8819197530392557, 3)
+	 * // returns 0.882
 	 * @param {number} n - any number
 	 * @param {number} d - number of decimal places
 	 * @return {number}
@@ -270,8 +306,17 @@ Math.h = {
 	},
 
 	/**
-	 * determines the sign of a real number
+	 * Determines the sign of a real number.
 	 *
+	 * @example
+	 * Math.h.sgn(2)
+	 * // returns 1
+	 * @example
+	 * Math.h.sgn(0)
+	 * // returns 0
+	 * @example
+	 * Math.h.sgn(-3)
+	 * // returns -1
 	 * @param {number} x
 	 * @return {integer} sign
 	 */
@@ -285,19 +330,26 @@ Math.h = {
 	},
 
 	/**
-	 * computes the factorial of a number
-	 * approximates floats via the gamma function
+	 * Computes the factorial of a number. Approximates non-integers via the gamma function. The factorial is most basically defined as the product of all positive integers less than or equal to the specified number but may be extended to all numbers via the gamma function.
 	 *
+	 * @example
+	 * Math.h.factorial(5)
+	 * // returns 120
+	 * @example
+	 * Math.h.factorial(1.5)
+	 * // returns 1.3293403881791386
+	 * @example
+	 * Math.h.factorial(-1)
+	 * // returns Infinity
 	 * @param {number} n
 	 * @return {number}
 	 */
 	factorial: function(n) {
 
-		var i = 0;
-
-		if (!this.isInt(n)) { return this.gamma(n - 1); }
+		if (!this.isInt(n) || n < 0) { return this.gamma(n + 1); }
 		else {
-			var f = (n < 0) ? undefined : 1;
+			var i = 0,
+				f = 1;
 			for (i = n; i > 1; --i) { f *= i; }
 			return f;
 		}
@@ -305,21 +357,27 @@ Math.h = {
 	},
 
 	/**
-	 * computes the combination or binomial coefficient of a number
+	 * Computes the combination or binomial coefficient of a number; i.e. if the set has n elements, the number of k-combinations is equal to the binomial coefficient. A combination is a way of selecting members from a grouping, such that the order of selection does not matter.
 	 *
+	 * @example
+	 * Math.h.choose(5, 2)
+	 * // returns 10
 	 * @param {number} n
 	 * @param {number} k
 	 * @return {number}
 	 */
 	choose: function(n, k) {
 
-		return this.factorial(n) / (this.factorial(n - k) * this.factorial(k));
+		return (this.isInt(n) && this.isInt(k) && n > 0 && k >= 0) ? this.factorial(n) / (this.factorial(n - k) * this.factorial(k)) : false;
 
 	},
 
 	/**
-	 * computes the sum of all values less than or equal to a number
+	 * Computes the sum of all values less than or equal to a number. A triangular number counts the objects that can form an equilateral triangle. The nth triangle number is the number of dots composing a triangle with n dots on a side, and is equal to the sum of the n natural numbers from 1 to n.
 	 *
+	 * @example
+	 * Math.h.triangular(4)
+	 * // returns 10
 	 * @param {number} n
 	 * @return {number}
 	 */
@@ -330,8 +388,11 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the error function at a certain value
+	 * Estimates the value of the error function at a certain value. The error function is a special function of sigmoid shape that occurs in probability, statistics, and partial differential equations describing diffusion.
 	 *
+	 * @example
+	 * Math.h.erf(1)
+	 * // returns 0.8427006897475899
 	 * @param {number} x
 	 * @return {number}
 	 */
@@ -352,8 +413,11 @@ Math.h = {
 	},
 
 	/**
-	 * calculate the nth harmonic number
+	 * Calculates the nth harmonic number. The nth harmonic number is the sum of the reciprocals of the first n natural numbers.
 	 *
+	 * @example
+	 * Math.h.harmonic(9)
+	 * // returns 2.8289682539682537
 	 * @param {number} n
 	 * @return {number}
 	 */
@@ -364,10 +428,13 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the polylogarithmic function with specified s and z values
+	 * Estimates the value of the polylogarithmic function with specified s and z values. The polylogarithm is a special function Li_s(z) of order s and argument z. The name of the function comes from the fact that it may also be defined as the repeated integral of itself.
 	 *
-	 * @param {number} s - s
-	 * @param {number} z - z
+	 * @example
+	 * Math.h.polylogarithm(-3, 0.5)
+	 * // returns 25.99999999999857
+	 * @param {number} s - order s
+	 * @param {number} z - argument z
 	 * @return {number}
 	 */
 	polylogarithm: function(s, z) {
@@ -379,10 +446,12 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the Riemann zeta function with specified s value
-	 * this is a special case of a polylogarithm with z value of 1
+	 * Estimates the value of the Riemann zeta function with specified s value. This is a special case of a polylogarithm with z value of 1. The Riemann zeta function plays a pivotal role in analytic number theory and has applications in physics, probability theory, and applied statistics.
 	 *
-	 * @param {number} s - s
+	 * @example
+	 * Math.h.zeta(2)
+	 * // returns 1.644854698619374
+	 * @param {number} s - order s
 	 * @return {number}
 	 */
 	zeta: function(s) {
@@ -392,8 +461,11 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the beta function with specified parameters by using the beta function's relation to the gamma function
+	 * Estimates the value of the beta function with specified parameters by using the beta function's relation to the gamma function. The beta function, also called the Euler integral of the first kind, is a special function with a wide variety of applications.
 	 *
+	 * @example
+	 * Math.h.beta(2, 1.6)
+	 * // returns 0.24038461538461522
 	 * @param {number} a - alpha
 	 * @param {number} b - beta
 	 * @return {number}
@@ -405,8 +477,14 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the gamma function at a certain value
+	 * Estimates the value of the gamma function at a certain value. The gamma function is an extension of the factorial function, with its argument shifted down by 1, to real and complex numbers. The gamma function is a component in various probability-distribution functions, and as such it is applicable in the fields of probability and statistics, as well as combinatorics.
 	 *
+	 * @example
+	 * Math.h.gamma(0.1)
+	 * // returns 9.513507698668736
+	 * @example
+	 * Math.h.gamma(6)
+	 * // returns 120.00000000000014
 	 * @param {number} n
 	 * @return {number}
 	 */
@@ -450,8 +528,11 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the lower incomplete gamma function with specified parameters
+	 * Estimates the value of the lower incomplete gamma function with specified parameters. The lower incomplete gamma function is a type of special function, which arises as a solution to various mathematical problems such as certain integrals. The lower incomplete gamma function is defined as an integral from zero to a variable upper limit.
 	 *
+	 * @example
+	 * Math.h.ligamma(1, 1)
+	 * // returns 0.6321205588282578
 	 * @param {number} a
 	 * @param {number} x
 	 * @return {number}
@@ -467,8 +548,11 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the upper incomplete gamma function with specified parameters
+	 * Estimates the value of the upper incomplete gamma function with specified parameters. The upper incomplete gamma function is a type of special function, which arises as a solution to various mathematical problems such as certain integrals. The upper incomplete gamma function is defined as an integral from a variable lower limit to infinity.
 	 *
+	 * @example
+	 * Math.h.uigamma(1, 1)
+	 * // returns 0.3678794411717422
 	 * @param {number} a
 	 * @param {number} z
 	 * @return {number}
@@ -484,8 +568,11 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the value of the digamma function at a certain value
+	 * Estimates the value of the digamma function at a certain value. The digamma function is defined as the logarithmic derivative of the gamma function.
 	 *
+	 * @example
+	 * Math.h.digamma(1)
+	 * // returns -0.5772156649179256
 	 * @param {number} n
 	 * @return {number}
 	 */
@@ -493,40 +580,24 @@ Math.h = {
 
 		var self = this;
 
-		return (n > 0) ? Math.h.derivative(function(x) { return self.gamma(x); }, 1, n) / this.gamma(n) : Infinity;
+		return (n > 0) ? this.derivative(function(x) { return Math.log(self.gamma(x)); }, 1, n) : Infinity;
 
 	},
 
 	/**
-	 * estimates the modified bessel function as a function of variable x
+	 * estimates the modified bessel function of the first kind at a value of x
 	 *
-	 * @param {number} a
 	 * @param {integer} kind
+	 * @param {number} a
 	 * @return {number}
 	 */
-	bessel: function(kind, a) {
+	besselI: function(a, x) {
 
 		var self = this;
 
-		if (kind === 1) {
-
-			return function(x) {
-				return self.sum(function(m) {
-					return 1 / (self.factorial(m) * self.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a);
-				}, 0, Infinity);
-			};
-
-		}
-
-		if (kind === 2) {
-
-			return function(x) {
-				return Math.PI / 2 * (self.bessel(1, -a)(x) - self.bessel(1, a)(x)) / Math.sin(a * Math.PI);
-			};
-
-		}
-
-		return false;
+		return self.sum(function(m) {
+			return 1 / (self.factorial(m) * self.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a);
+		}, 0, Infinity);
 
 	},
 
@@ -536,26 +607,61 @@ Math.h = {
 	 * @param {function} f - function applied within sum
 	 * @param {integer} a - lower bound
 	 * @param {integer} b - upper bound
+	 * @param {integer} [tol] - sum difference tolerance
+	 * @param {integer} [max] - number of terms after which to truncate summation
 	 * @return {number} sum
 	 */
-	sum: function(f, a, b) {
+	sum: function(f, a, b, tol, max) {
 
-		var v1 = 0, v2 = 0, s = 0, i = a;
+		var v1 = 0, v2 = 0, s1 = 0, s2 = 0, i = a;
 
-		while (i <= b) {
+		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return inf_sum(f, a, b, tol, max); }
+		else { return fin_sum(f, a, b); }
 
-			v1 = f(i);
-			v2 = f(i + 1);
+		function inf_sum(f, a, b, tol, max) {
 
-			if (!isNaN(v1)) { s += v1; }
-			if (!isNaN(v1) && !isNaN(v2) && Math.abs(v1 - v2) < 1E-12) { break; }
-			if (i > 99999) { return false; }
+			if (typeof tol === 'undefined') { tol = 1E-12; }
+			if (typeof max === 'undefined') { max = 1E6; }
 
-			i += 1;
+			while (i <= b) {
+
+				v1 = f(i);
+				v2 = f(i + 1);
+
+				if (!isNaN(v1) && !isNaN(v2)) {
+
+					s1 += v1;
+					s2 = s1 + f(i + 1);
+
+					if (Math.abs(s1 - s2) < tol) { break; }
+
+				}
+
+				if (i > max) { return undefined; }
+
+				i += 1;
+
+			}
+
+			return s1;
 
 		}
 
-		return s;
+		function fin_sum(f, a, b) {
+
+			while (i <= b) {
+
+				v1 = f(i);
+
+				if (!isNaN(v1)) { s1 += v1; }
+
+				i += 1;
+
+			}
+
+			return s1;
+
+		}
 
 	},
 
@@ -651,8 +757,8 @@ Math.h = {
 
 		f1 = function(x, h) {
 			return self.sum(function(i) {
-				return Math.pow(-1, i) * self.choose(o, i) * f(x + (o / 2 - i) * h) / Math.pow(h, o);
-			}, 0, o);
+				return Math.pow(-1, i) * self.choose(o, i) * f(x + (o / 2 - i) * h);
+			}, 0, o) / Math.pow(h, o);
 		};
 
 		while (i <= 99999) {

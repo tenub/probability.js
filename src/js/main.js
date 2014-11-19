@@ -7,7 +7,7 @@ require.config({
 	}
 });
 
-define(['jquery', 'mustache', 'd3', 'helpers.min', 'probability.min'], function($, mustache, d3) {
+define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, mustache, d3) {
 
 	var self = this;
 

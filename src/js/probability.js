@@ -1299,7 +1299,7 @@ Math.p = {
 
 				return function(k) {
 
-					return Math.exp(-(params.mean1 + params.mean2)) * Math.pow(params.mean1 / params.mean2, k / 2) * Math.h.bessel(1, k)(2 * Math.sqrt(params.mean1 * params.mean2));
+					return Math.exp(-(params.mean1 + params.mean2)) * Math.pow(params.mean1 / params.mean2, k / 2) * Math.h.besselI(Math.abs(k), 2 * Math.sqrt(params.mean1 * params.mean2));
 
 				};
 
@@ -1534,7 +1534,7 @@ Math.p = {
 
 				/*return function(t) {
 
-					return 2 * Math.h.bessel(1, 1)(params.r * t) / (params.r * t);
+					return 2 * Math.h.besselI(1, params.r * t) / (params.r * t);
 
 				};*/
 

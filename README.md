@@ -13,7 +13,6 @@ Build steps:
 ## Current issues
 
 1. pareto (parameter range)
-2. skellam (variable range)
 3. inverse gaussian
 4. zeta
 5. rayleigh (kurtosis value)

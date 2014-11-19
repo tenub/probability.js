@@ -124,7 +124,7 @@ module.exports = function (grunt) {
 		'cssmin': {
 			css: {
 				files: {
-					'dist/assets/css/main.min.css': [
+					'dist/assets/css/main.css': [
 						'build/css/main.css'
 					]
 				}
@@ -141,7 +141,7 @@ module.exports = function (grunt) {
 					cwd: 'src/js',
 					src: ['**/*.js'],
 					dest: 'dist/assets/js',
-					ext: '.min.js'
+					ext: '.js'
 				}]
 			}
 		},
