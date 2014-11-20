@@ -461,6 +461,21 @@ Math.h = {
 	},
 
 	/**
+	 * Estimates the value of the Riemann Xi function with specified s value. It is a variant of the Riemann zeta function, and is defined so as to have a particularly simple functional equation.
+	 *
+	 * @example
+	 * Math.h.xi(5)
+	 * // returns 0.7879706062229069
+	 * @param {number} s - parameter s
+	 * @return {number}
+	 */
+	xi: function(s) {
+
+		return 0.5 * s * (s - 1) * Math.pow(Math.PI, -s / 2) * this.gamma(0.5 * s) * this.zeta(s);
+
+	},
+
+	/**
 	 * Estimates the value of the beta function with specified parameters by using the beta function's relation to the gamma function. The beta function, also called the Euler integral of the first kind, is a special function with a wide variety of applications.
 	 *
 	 * @example
@@ -585,25 +600,31 @@ Math.h = {
 	},
 
 	/**
-	 * estimates the modified bessel function of the first kind at a value of x
+	 * Estimates the modified bessel function of the first kind at a value of x. The Bessel functions are valid even for complex arguments x, and an important special case is that of a purely imaginary argument. In this case, the solutions to the Bessel equation are called the modified Bessel functions of the first and second kind.
 	 *
-	 * @param {integer} kind
-	 * @param {number} a
+	 * @example
+	 * Math.h.besselI(1, 7)
+	 * // returns 156.03909286995508
+	 * @param {number} a - order of function
+	 * @param {number} x - evaluate function at this value
 	 * @return {number}
 	 */
 	besselI: function(a, x) {
 
 		var self = this;
 
-		return self.sum(function(m) {
+		return (typeof a !== 'undefined' && typeof x !== 'undefined') ? self.sum(function(m) {
 			return 1 / (self.factorial(m) * self.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a);
-		}, 0, Infinity);
+		}, 0, Infinity) : false;
 
 	},
 
 	/**
-	 * calculate a generic sum using supplied function of one variable and bounds
+	 * Calculate a generic sum using supplied function of one variable and bounds with optional tolerance and maximum number of calculations for infinite sums.
 	 *
+	 * @example
+	 * Math.h.sum(function(x) { return Math.sin(x); }, 0, Math.PI / 4)
+	 * // returns 0
 	 * @param {function} f - function applied within sum
 	 * @param {integer} a - lower bound
 	 * @param {integer} b - upper bound
@@ -613,7 +634,9 @@ Math.h = {
 	 */
 	sum: function(f, a, b, tol, max) {
 
-		var v1 = 0, v2 = 0, s1 = 0, s2 = 0, i = a;
+		var v1 = 0, v2 = 0,
+			s1 = 0, s2 = 0,
+			i = a;
 
 		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return inf_sum(f, a, b, tol, max); }
 		else { return fin_sum(f, a, b); }
@@ -627,6 +650,8 @@ Math.h = {
 
 				v1 = f(i);
 				v2 = f(i + 1);
+
+				console.log(v1);
 
 				if (!isNaN(v1) && !isNaN(v2)) {
 
@@ -666,8 +691,11 @@ Math.h = {
 	},
 
 	/**
-	 * calculate a sample sum using supplied data and a callback
+	 * Calculate a sample sum using supplied data and a callback.
 	 *
+	 * @example
+	 * Math.h.s_sum([{x: 0, y: 0.1}, {x: 0.1, y: 0.5}, {x: 0.5, y: -0.275}, {x: 1, y: 1}], function(el) { return el.y; })
+	 * // returns 1.325
 	 * @param {array} array - array of sample data
 	 * @param {function} callback - function to apply to array when reading values
 	 * @return {number} sum
@@ -688,38 +716,82 @@ Math.h = {
 	},
 
 	/**
-	 * calculate a generic product-sum using supplied function and parameters
+	 * Calculate a generic product-sum using supplied function and parameters.
 	 *
+	 * @example
+	 * Math.h.product_sum(function(x) { return 1/x; }, 1, 5)
+	 * // returns 0.008333333333333333
 	 * @param {function} f - function applied within product-sum
 	 * @param {integer} a - lower bound
 	 * @param {integer} b - upper bound
+	 * @param {integer} [tol] - sum difference tolerance
+	 * @param {integer} [max] - number of terms after which to truncate summation
 	 * @return {number} sum - product-sum
 	 */
-	product_sum: function(f, a, b) {
+	product_sum: function(f, a, b, tol, max) {
 
-		var v1, v2,
-			i = a,
-			sum = 1;
+		var v1 = 1, v2 = 1,
+			s1 = 1, s2 = 1,
+			i = a;
 
-		while (i <= b) {
+		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return inf_sum(f, a, b, tol, max); }
+		else { return fin_sum(f, a, b); }
 
-			v1 = f(i);
-			v2 = f(i + 1);
-			sum *= v1;
+		function inf_sum(f, a, b, tol, max) {
 
-			if (Math.abs(v2 - v1) < 1E-12 || i > 99999) { break; }
+			if (typeof tol === 'undefined') { tol = 1E-12; }
+			if (typeof max === 'undefined') { max = 1E6; }
 
-			i += 1;
+			while (i <= b) {
+
+				v1 = f(i);
+				v2 = f(i + 1);
+
+				if (!isNaN(v1) && !isNaN(v2)) {
+
+					s1 *= v1;
+					s2 = s1 * f(i + 1);
+
+					if (Math.abs(s1 - s2) < tol) { break; }
+
+				}
+
+				if (i > max) { return undefined; }
+
+				i += 1;
+
+			}
+
+			return s1;
 
 		}
 
-		return sum;
+		function fin_sum(f, a, b) {
+
+			while (i <= b) {
+
+				v1 = f(i);
+
+				if (!isNaN(v1)) { s1 *= v1; }
+
+				i += 1;
+
+			}
+
+			return s1;
+
+		}
+
+		return s1;
 
 	},
 
 	/**
-	 * numerically estimates the derivative of a function using the central finite difference method
+	 * Numerically estimates the derivative of a function using the central finite difference method.
 	 *
+	 * @example
+	 * Math.h.derivative(function(x) { return 1/x; }, 1, 1)
+	 * // returns -1.0000000000445652
 	 * @param {function} f - single-variable function to derive
 	 * @param {integer} o - order of derivative to compute
 	 * @param {number} x - value at which to evaluate the derivative
@@ -781,8 +853,14 @@ Math.h = {
 	},
 
 	/**
-	 * numerically estimates the integral of a function using Simpson's rule
+	 * Numerically estimates the integral of a function using Simpson's rule.
 	 *
+	 * @example
+	 * Math.h.integral(function(x) { return 1/x; }, 1, 2)
+	 * // returns 0.6944444444444443
+	 * @example
+	 * Math.h.integral(function(x) { return 1/x; }, 0, 1)
+	 * // returns Infinity
 	 * @param {function} f - single-variable function to integrate
 	 * @param {number} a - lower bound
 	 * @param {number} b - upper bound
@@ -795,8 +873,14 @@ Math.h = {
 	},
 
 	/**
-	 * determines the closest integer to a number's square root
+	 * Determines the closest integer to a number's square root.
 	 *
+	 * @example
+	 * Math.h.sq_size(9)
+	 * // returns 3
+	 * @example
+	 * Math.h.sq_size(11)
+	 * // returns 3
 	 * @param {number} n
 	 * @return {number}
 	 */

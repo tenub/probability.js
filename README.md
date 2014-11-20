@@ -12,8 +12,6 @@ Build steps:
 
 ## Current issues
 
-1. pareto (parameter range)
 3. inverse gaussian
 4. zeta
-5. rayleigh (kurtosis value)
 6. fisher snedecor

@@ -47,7 +47,7 @@ Math.p = {
 		var distr = { pdf: [], cdf: [] },
 			inc = (Math.p.distribution[distrType].discrete) ? 1 : Math.sqrt(moments.variance) / 100;
 
-		if (isNaN(inc) || inc > 99999) { inc = 0.01; }
+		if (isNaN(inc) || Math.abs(inc) > 99999) { inc = 0.01; }
 
 		distr.pdf = Math.p.generatePDF(distrType, params, moments, -inc).concat(Math.p.generatePDF(distrType, params, moments, inc));
 
@@ -83,7 +83,7 @@ Math.p = {
 			value;
 
 		if (Math.p.distribution[distrType].discrete === true) { start = Math.floor(start); }
-		if (typeof moments.mean === 'undefined') { start = 0; }
+		if (isNaN(moments.mean) || Math.abs(moments.mean) > 99999) { start = 0; }
 
 		while (Math.abs(start - i) <= 10 * moments.variance || i < 99999) {
 
@@ -507,6 +507,8 @@ Math.p = {
 			pdf: function(params) {
 
 				return function(x) {
+
+					//return 1 / Math.h.beta(params.d1 / 2, params.d2 / 2) * Math.pow(params.d1 / params.d2, params.d1 / 2) * Math.pow(x, params.d1 / 2 - 1) * Math.pow(1 + params.d1 / params.d2 * x, -(params.d1 + params.d2) / 2);
 
 					return Math.sqrt(Math.pow(params.d1 * x, params.d1) * Math.pow(params.d2, params.d2) / Math.pow(params.d1 * x + params.d2, params.d1 + params.d2)) / (x * Math.h.beta(params.d1 / 2, params.d2 / 2));
 
@@ -1120,7 +1122,7 @@ Math.p = {
 
 			params: [
 				{ id: 'xm', symbol: 'X<sub>m</sub>', title: 'Scale', min: 0.01, max: 1000, step: 0.01, value: 1 },
-				{ id: 'a', symbol: '&alpha;', title: 'Shape', min: 1.01, max: 1000, step: 0.01, value: 2 }
+				{ id: 'a', symbol: '&alpha;', title: 'Shape', min: 1, max: 1000, step: 0.01, value: 2 }
 			],
 
 			bounds: function(params) {
@@ -1235,11 +1237,20 @@ Math.p = {
 
 			mgf: function(params) {
 
-				return function(t) {
+				return {
+
+					mean: Math.h.round(params.sigma * Math.sqrt(Math.PI / 2), 3),
+					variance: Math.h.round((4 - Math.PI) / 2 * Math.pow(params.sigma, 2), 3),
+					skewness: Math.h.round(2 * Math.sqrt(Math.PI) * (Math.PI - 3) / Math.pow(4 - Math.PI, 3 / 2), 3),
+					kurtosis: Math.h.round(-(6 * Math.pow(Math.PI, 2) - 24 * Math.PI + 16) / Math.pow(4 - Math.PI, 2), 3)
+
+				};
+
+				/*return function(t) {
 
 					return 1 + params.sigma * t * Math.exp(Math.pow(params.sigma, 2) * Math.pow(t, 2) / 2) * Math.sqrt(Math.PI / 2) * (Math.h.erf(params.sigma * t / Math.sqrt(2)) + 1);
 
-				};
+				};*/
 
 			},
 
