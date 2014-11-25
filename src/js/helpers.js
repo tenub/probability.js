@@ -18,7 +18,7 @@ Math.h = {
 	 * Define cosecant.
 	 *
 	 * @desc The cosecant is the reciprocal of sine; i.e. the ratio of the length of the hypotenuse to the length of the opposite side.
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	csc: function(x) {
@@ -31,7 +31,7 @@ Math.h = {
 	 * Define secant.
 	 *
 	 * @desc The secant is the reciprocal of cosine; i.e. the ratio of the length of the hypotenuse to the length of the adjacent side.
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	sec: function(x) {
@@ -44,7 +44,7 @@ Math.h = {
 	 * Define cotangent.
 	 *
 	 * @desc The cotangent is the reciprocal of tangent; i.e. the ratio of the length of the adjacent side to the length of the opposite side.
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	cot: function(x) {
@@ -57,7 +57,7 @@ Math.h = {
 	 * Define hyperbolic sine.
 	 *
 	 * @desc <code>(1 - e^(-2x)) / 2e^(-x)</code>
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	sinh: function(x) {
@@ -72,7 +72,7 @@ Math.h = {
 	 * Define hyperbolic cosine.
 	 *
 	 * @desc <code>(1 + e^(-2x)) / 2e^(-x)</code>
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	cosh: function(x) {
@@ -87,7 +87,7 @@ Math.h = {
 	 * Define hyperbolic tangent.
 	 *
 	 * @desc <code>(1 - e^(-2x)) / (1 + e^(-2x))</code>
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	tanh: function(x) {
@@ -110,7 +110,7 @@ Math.h = {
 	 * Define hyperbolic cosecant.
 	 *
 	 * @desc <code>2e^(-x) / (1 - e^(-2x))</code>
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	csch: function(x) {
@@ -123,7 +123,7 @@ Math.h = {
 	 * Define hyperbolic secant.
 	 *
 	 * @desc <code>2e^(-x) / (1 + e^(-2x))</code>
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	sech: function(x) {
@@ -136,7 +136,7 @@ Math.h = {
 	 * Define hyperbolic cotangent.
 	 *
 	 * @desc <code>(1 + e^(-2x)) / (1 - e^(-2x))</code>
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	coth: function(x) {
@@ -148,7 +148,7 @@ Math.h = {
 	/**
 	 * Generate a random number between 0 and 1.
 	 *
-	 * @desc Generate a better pseudo random number using the WELL19937c PRNG method
+	 * @desc Generate a better pseudo random number using the WELL19937c PRNG method.
 	 * @example
 	 * Math.h.random()
 	 * // returns 0.7079318668693304
@@ -252,7 +252,7 @@ Math.h = {
 	 * @example
 	 * Math.h.isInt(1.000000000000001)
 	 * // returns false
-	 * @param {number} n
+	 * @param {number} n - value
 	 * @return {boolean}
 	 */
 	isInt: function(n) {
@@ -262,7 +262,7 @@ Math.h = {
 	},
 
 	/**
-	 * Determines if a value is within bounds of two-element array.
+	 * Determines if a value is within bounds specified by a two-element array.
 	 *
 	 * @example
 	 * Math.h.inBounds(1.0, {
@@ -317,7 +317,7 @@ Math.h = {
 	 * @example
 	 * Math.h.sgn(-3)
 	 * // returns -1
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {integer} sign
 	 */
 	sgn: function(x) {
@@ -341,7 +341,7 @@ Math.h = {
 	 * @example
 	 * Math.h.factorial(-1)
 	 * // returns Infinity
-	 * @param {number} n
+	 * @param {number} n - number to factorialize
 	 * @return {number}
 	 */
 	factorial: function(n) {
@@ -362,8 +362,8 @@ Math.h = {
 	 * @example
 	 * Math.h.choose(5, 2)
 	 * // returns 10
-	 * @param {number} n
-	 * @param {number} k
+	 * @param {number} n - elements in a set
+	 * @param {number} k - combinations in the set
 	 * @return {number}
 	 */
 	choose: function(n, k) {
@@ -378,7 +378,7 @@ Math.h = {
 	 * @example
 	 * Math.h.triangular(4)
 	 * // returns 10
-	 * @param {number} n
+	 * @param {number} n - number
 	 * @return {number}
 	 */
 	triangular: function(n) {
@@ -393,7 +393,7 @@ Math.h = {
 	 * @example
 	 * Math.h.erf(1)
 	 * // returns 0.8427006897475899
-	 * @param {number} x
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	erf: function(x) {
@@ -418,7 +418,7 @@ Math.h = {
 	 * @example
 	 * Math.h.harmonic(9)
 	 * // returns 2.8289682539682537
-	 * @param {number} n
+	 * @param {integer} n - positive integer
 	 * @return {number}
 	 */
 	harmonic: function(n) {
@@ -433,8 +433,8 @@ Math.h = {
 	 * @example
 	 * Math.h.polylogarithm(-3, 0.5)
 	 * // returns 25.99999999999857
-	 * @param {number} s - order s
-	 * @param {number} z - argument z
+	 * @param {number} s - order
+	 * @param {number} z - argument
 	 * @return {number}
 	 */
 	polylogarithm: function(s, z) {
@@ -451,7 +451,7 @@ Math.h = {
 	 * @example
 	 * Math.h.zeta(2)
 	 * // returns 1.644854698619374
-	 * @param {number} s - order s
+	 * @param {number} s - order
 	 * @return {number}
 	 */
 	zeta: function(s) {
@@ -466,7 +466,7 @@ Math.h = {
 	 * @example
 	 * Math.h.xi(5)
 	 * // returns 0.7879706062229069
-	 * @param {number} s - parameter s
+	 * @param {number} s - value
 	 * @return {number}
 	 */
 	xi: function(s) {
@@ -500,7 +500,7 @@ Math.h = {
 	 * @example
 	 * Math.h.gamma(6)
 	 * // returns 120.00000000000014
-	 * @param {number} n
+	 * @param {number} n - value
 	 * @return {number}
 	 */
 	gamma: function(n) {
@@ -548,8 +548,8 @@ Math.h = {
 	 * @example
 	 * Math.h.ligamma(1, 1)
 	 * // returns 0.6321205588282578
-	 * @param {number} a
-	 * @param {number} x
+	 * @param {number} a - parameter
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	ligamma: function(a, x) {
@@ -568,8 +568,8 @@ Math.h = {
 	 * @example
 	 * Math.h.uigamma(1, 1)
 	 * // returns 0.3678794411717422
-	 * @param {number} a
-	 * @param {number} z
+	 * @param {number} a - parameter
+	 * @param {number} z - value
 	 * @return {number}
 	 */
 	uigamma: function(a, z) {
@@ -588,7 +588,7 @@ Math.h = {
 	 * @example
 	 * Math.h.digamma(1)
 	 * // returns -0.5772156649179256
-	 * @param {number} n
+	 * @param {number} n - value
 	 * @return {number}
 	 */
 	digamma: function(n) {
@@ -606,7 +606,7 @@ Math.h = {
 	 * Math.h.besselI(1, 7)
 	 * // returns 156.03909286995508
 	 * @param {number} a - order of function
-	 * @param {number} x - evaluate function at this value
+	 * @param {number} x - value
 	 * @return {number}
 	 */
 	besselI: function(a, x) {
@@ -650,8 +650,6 @@ Math.h = {
 
 				v1 = f(i);
 				v2 = f(i + 1);
-
-				console.log(v1);
 
 				if (!isNaN(v1) && !isNaN(v2)) {
 
@@ -719,7 +717,7 @@ Math.h = {
 	 * Calculate a generic product-sum using supplied function and parameters.
 	 *
 	 * @example
-	 * Math.h.product_sum(function(x) { return 1/x; }, 1, 5)
+	 * Math.h.product(function(x) { return 1/x; }, 1, 5)
 	 * // returns 0.008333333333333333
 	 * @param {function} f - function applied within product-sum
 	 * @param {integer} a - lower bound
@@ -728,7 +726,7 @@ Math.h = {
 	 * @param {integer} [max] - number of terms after which to truncate summation
 	 * @return {number} sum - product-sum
 	 */
-	product_sum: function(f, a, b, tol, max) {
+	product: function(f, a, b, tol, max) {
 
 		var v1 = 1, v2 = 1,
 			s1 = 1, s2 = 1,
@@ -873,7 +871,7 @@ Math.h = {
 	},
 
 	/**
-	 * Determines the closest integer to a number's square root.
+	 * Determines the closest integer to a number's square root. Useful in determining the optimal number of rows and columns for displaying a list of values.
 	 *
 	 * @example
 	 * Math.h.sq_size(9)
@@ -881,44 +879,50 @@ Math.h = {
 	 * @example
 	 * Math.h.sq_size(11)
 	 * // returns 3
-	 * @param {number} n
+	 * @param {number} n - value
 	 * @return {number}
 	 */
 	sq_size: function(n) {
 
-		var m = Math.floor(Math.sqrt(n));
+		var r = Math.sqrt(n),
+			f = Math.floor(r);
 
-		if (n % m !== 0) {
-			for (var i = 1; i < (m - 1); i++) {
-				if (n % (m - i) === 0) { return m - i; }
-			}
-		}
-
-		return m;
+		return (r % f >= 0.5) ? f + 1 : f;
 
 	},
 
 	/**
-	 * outputs formatted array values
+	 * Outputs formatted array values as a string.
 	 *
-	 * @param {array} array
-	 * @param {string} [key] - if array elements are objects, specifies which key value to use
+	 * @example
+	 * Math.h.arr_dump([1, 2, 3, 4, 5])
+	 * // returns "[
+	 * //	1, 2, 3,
+	 * //	4, 5
+	 * // ]"
+	 * @example
+	 * Math.h.arr_dump([{ x: 1, y: 0.5 }, { x: 2, y: -0.1 }, { x: 3, y: 0 }], 1, 'x')
+	 * // returns "[
+	 * //	1,
+	 * //	2,
+	 * //	3
+	 * // ]"
+	 * @param {array} array - input array to format
 	 * @param {integer} [cols] - specify number of columns to output
+	 * @param {string} [key] - if array elements are objects, specifies which key value to use
 	 * @return {string}
 	 */
-	arr_dump: function(array, key, cols) {
+	arr_dump: function(array, cols, key) {
 
-		var l = array.length;
+		if (typeof cols === 'undefined') { cols = this.sq_size(l); }
 
-		if (typeof rows === 'undefined') { rows = this.sq_size(l); }
+		var str = '[';
 
-		var str='[';
+		for (var i = 0, l = array.length; i < l; i++) {
 
-		for (var i = 0; i < l; i++) {
+			if (i % cols === 0) { str += '\n'; }
 
-			if (i % rows === 0) { str += '\n'; }
-
-			str += (typeof key === 'undefined') ? '\t' + array[i] + ',' : '\t' + Math.round(array[i][key] * 10000) / 10000 + ',';
+			str += (typeof key === 'undefined') ? '\t' + array[i] + ',' : '\t' + this.round(array[i][key], 4) + ',';
 
 		}
 
@@ -931,9 +935,9 @@ Math.h = {
 	},
 
 	/**
-	 * parses a function as a string and outputs html
+	 * Parses a function as a string and outputs html.
 	 *
-	 * @param {function} f
+	 * @param {function} f - function
 	 * @return {string} html
 	 */
 	parse_func: function(f) {

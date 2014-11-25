@@ -9,8 +9,11 @@
 Math.p = {
 
 	/**
-	 * calculate sample mean
+	 * Calculate sample mean from an array of x-y coordinate objects.
 	 *
+	 * @example
+	 * Math.p.mean([{ x: 0, y: 0.1 }, { x: 0.5, y: 12.53 }, { x: 4, y: 5 }])
+	 * // returns 5.876666666666667
 	 * @param {array} array - sample array of objects with x and y coordinate properties
 	 * @return {number} mean
 	 */
@@ -21,8 +24,11 @@ Math.p = {
 	},
 
 	/**
-	 * calculate sample variance
+	 * Calculate sample variance from an array of x-y coordinate objects.
 	 *
+	 * @example
+	 * Math.p.variance([{ x: 0, y: 0.1 }, { x: 0.5, y: 12.53 }, { x: 4, y: 5 }])
+	 * // returns 39.20263333333333
 	 * @param {array} array - sample array of objects with x and y coordinate properties
 	 * @return {number} variance
 	 */
@@ -35,7 +41,7 @@ Math.p = {
 	},
 
 	/**
-	 * call method to generate distribution plots based on parameters
+	 * Call method to generate pdf and cdf distribution plots based on a distribution and its parameters and moments.
 	 *
 	 * @param {string} distrType - distribution type as string
 	 * @param {object} params - statistical parameters object
@@ -64,8 +70,7 @@ Math.p = {
 	},
 
 	/**
-	 * generate one side of PDF numerically until y value becomes negligible
-	 * starts at the mean and moves outward in direction of the sign of increment
+	 * Generate one side of a pdf numerically until y value becomes negligible. Starts at the mean and moves outward in the direction of the sign of increment.
 	 *
 	 * @param {string} distrType - distribution type as string
 	 * @param {object} params - statistical parameters object
@@ -104,7 +109,7 @@ Math.p = {
 	},
 
 	/**
-	 * generate CDF based on summation of PDF values
+	 * Generate a cdf based on the summation of pdf values in an array of objects containing x-y coordinate pairs.
 	 *
 	 * @param {array} pdf - distribution array
 	 * @return {array} array of objects containing x-y value pairs
@@ -134,8 +139,11 @@ Math.p = {
 	moments: {
 
 		/**
-		 * calculate the mean of a moment generating function via numerical derivation
+		 * Calculate the mean of a moment generating function via numerical derivation. The mean approximates the statistical norm or average or expected value.
 		 *
+		 * @example
+		 * Math.p.moments.mean(function(t) { return Math.sqrt(t + 0.1); })
+		 * // returns 1.581
 		 * @param {function} f - single-variable function
 		 * @return {number} mean
 		 */
@@ -146,8 +154,11 @@ Math.p = {
 		},
 
 		/**
-		 * calculate the variance of a moment generating function via numerical derivation
+		 * Calculate the variance of a moment generating function via numerical derivation. Variance is the second moment around the mean; the expected value of the square of the deviations of a random variable from its mean value.
 		 *
+		 * @example
+		 * Math.p.moments.variance(function(t) { return Math.sqrt(t + 0.1); })
+		 * // returns -10.406
 		 * @param {function} f - single-variable function
 		 * @return {number} variance
 		 */
@@ -158,8 +169,11 @@ Math.p = {
 		},
 
 		/**
-		 * calculate the skewness of a moment generating function via numerical derivation
+		 * Calculate the skewness of a moment generating function via numerical derivation. Skewness is a measure of the degree of asymmetry of a distribution. If the left tail is more pronounced than the right tail, the function is said to have negative skewness. If the reverse is true, it has positive skewness. If the two are equal, it has zero skewness.
 		 *
+		 * @example
+		 * Math.p.moments.skewness(function(t) { return Math.sqrt(t + 0.1); })
+		 * // returns NaN
 		 * @param {function} f - single-variable function
 		 * @return {number} skewness
 		 */
@@ -170,8 +184,11 @@ Math.p = {
 		},
 
 		/**
-		 * calculate the kurtosis of a moment generating function via numerical derivation
+		 * Calculate the kurtosis of a moment generating function via numerical derivation. Kurtosis is the degree of peakedness of a distribution, defined as a normalized form of the fourth central moment of a distribution.
 		 *
+		 * @example
+		 * Math.p.moments.kurtosis(function(t) { return Math.sqrt(t + 0.1); })
+		 * // returns -38.575
 		 * @param {function} f - single-variable function
 		 * @return {number} kurtosis
 		 */
@@ -218,6 +235,12 @@ Math.p = {
 			],
 
 			mgf: function(params) {
+
+				/*return 1 + Math.h.sum(function(k) {
+					return Math.h.product(function(r) {
+						return (params.a + r) / (params.a + params.b + r);
+					}, 0, k - 1) * Math.pow(t, k) / Math.h.factorial(k);
+				}, 1, Infinity);*/
 
 				return {
 
@@ -484,8 +507,8 @@ Math.p = {
 			},
 
 			params: [
-				{ id: 'd1', symbol: 'd<sub>1</sub>', title: 'Degrees of freedom', min: 0, max: 1000, step: 0.01, value: 10 },
-				{ id: 'd2', symbol: 'd<sub>2</sub>', title: 'Degrees of freedom', min: 0, max: 1000, step: 0.01, value: 10 }
+				{ id: 'd1', symbol: 'd<sub>1</sub>', title: 'Degrees of freedom', min: 0, max: 1000, step: 1, value: 10 },
+				{ id: 'd2', symbol: 'd<sub>2</sub>', title: 'Degrees of freedom', min: 0, max: 1000, step: 1, value: 10 }
 			],
 
 			mgf: function(params) {
@@ -508,9 +531,9 @@ Math.p = {
 
 				return function(x) {
 
-					//return 1 / Math.h.beta(params.d1 / 2, params.d2 / 2) * Math.pow(params.d1 / params.d2, params.d1 / 2) * Math.pow(x, params.d1 / 2 - 1) * Math.pow(1 + params.d1 / params.d2 * x, -(params.d1 + params.d2) / 2);
+					return Math.h.gamma((params.d1 + params.d2) / 2) * Math.pow(params.d1 / params.d2, params.d1 / 2) * Math.pow(x, (params.d1 / 2 - 1)) / (Math.h.gamma(params.d1 / 2) * Math.h.gamma(params.d2 / 2) * Math.pow((1 + params.d1 / params.d2 * x), (params.d1 + params.d2) / 2));
 
-					return Math.sqrt(Math.pow(params.d1 * x, params.d1) * Math.pow(params.d2, params.d2) / Math.pow(params.d1 * x + params.d2, params.d1 + params.d2)) / (x * Math.h.beta(params.d1 / 2, params.d2 / 2));
+					//return Math.sqrt(Math.pow(params.d1 * x, params.d1) * Math.pow(params.d2, params.d2) / Math.pow(params.d1 * x + params.d2, params.d1 + params.d2)) / (x * Math.h.beta(params.d1 / 2, params.d2 / 2));
 
 				};
 
@@ -863,11 +886,24 @@ Math.p = {
 
 			mgf: function(params) {
 
-				return function(t) {
+				return {
+
+					mean: Math.h.round(params.mean, 3),
+
+					variance: Math.h.round(Math.pow(params.mean, 3) / params.shape, 3),
+
+					skewness: Math.h.round(3 * Math.sqrt(params.mean / params.shape), 3),
+
+					kurtosis: Math.h.round(15 * params.mean / params.shape, 3)
+
+
+				};
+
+				/*return function(t) {
 
 					return Math.exp(params.shape / params.mean) * (1 - Math.sqrt(1 - 2 * Math.pow(params.mean, 2) * t / params.shape));
 
-				};
+				};*/
 
 			},
 

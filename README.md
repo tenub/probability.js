@@ -12,6 +12,4 @@ Build steps:
 
 ## Current issues
 
-3. inverse gaussian
-4. zeta
-6. fisher snedecor
+1. zeta (low value parameter)
