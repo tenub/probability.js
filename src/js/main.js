@@ -30,8 +30,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	};
 
 	/**
-	 * generate support parameters based on first element in dropdown list or default to binomial distribution if there are no options
-	 * bind all necessary events
+	 * Generate support parameters based on first element in dropdown list or default to binomial distribution if there are no options. Bind all necessary events.
 	 */
 	self.init = function() {
 
@@ -45,7 +44,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	};
 
 	/**
-	 * bind events needed for generating statistics corresponding to any distribution
+	 * Bind events needed for generating statistics corresponding to a distribution.
 	 */
 	self.bindEvents = function() {
 
@@ -66,13 +65,12 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 
 			$('#stats, #plot').html('');
 
-			var i, inc, start, end,
+			var i, inc, start, end, moments
 				distrType = $('select[name=distr-type]').val(),
 				distrIval = Math.p.distribution[distrType].interval,
 				params = self.getParams('#params'),
 				p_vals = self.getParamVals('#params'),
-				m_0 = Math.p.distribution[distrType].mgf(p_vals),
-				moments;
+				m_0 = Math.p.distribution[distrType].mgf(p_vals);
 
 			if (typeof m_0 === 'function') { moments = { mean: Math.p.moments.mean(m_0), variance: Math.p.moments.variance(m_0), skewness: Math.p.moments.skewness(m_0), kurtosis: Math.p.moments.kurtosis(m_0) }; }
 			else if (typeof m_0 === 'object') { moments = m_0; }
@@ -89,6 +87,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 
 		});
 
+		// parse user input as an array of x-y coordinate pairs
 		$('#user-data').on('submit', function(e) {
 
 			e.preventDefault();
@@ -103,6 +102,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 
 		});
 
+		// redraw svg on window resize if the plot container changes size due to responsive css widths
 		$(window).on('resize', function(e) {
 
 			if (self.svg.width && self.svg.width !== $('#plot').width()) {
@@ -116,7 +116,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 		});
 
 		// reset number of distributions tracked
-		// remove all generated statss
+		// remove all generated statistics
 		$('#calc').on('reset', function(e) {
 
 			e.preventDefault();
@@ -132,7 +132,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	};
 
 	/**
-	 * build params object to send to other methods in the library
+	 * Build params array to send to other methods in the library.
 	 *
 	 * @param {string} id - id of form element containing parameter inputs
 	 * @return {object} parameters object
@@ -155,7 +155,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	};
 
 	/**
-	 * build params object to send to other methods in the library
+	 * Build params object to send to other methods in the library.
 	 *
 	 * @param {string} id - id of form element containing parameter inputs
 	 * @return {object} parameters object
@@ -172,7 +172,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	};
 
 	/**
-	 * render input html for distribution parameters
+	 * Render input html for distribution parameters.
 	 *
 	 * @param {string} distrType - distribution type as string
 	 * @return {string} html
@@ -185,7 +185,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	};
 
 	/**
-	 * parses a string as CSV format and outputs as array
+	 * Parse a string as CSV format and outputs as array.
 	 *
 	 * @param {string} string
 	 * @return {array} data
@@ -234,7 +234,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	};
 
 	/**
-	 * plot array data using d3
+	 * Plot array data using d3 plotting library.
 	 *
 	 * @param {string} id - id of element to append plot to
 	 */
@@ -344,6 +344,9 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 
 	};
 
+	/**
+	 * Plot graph and set svg dimensions based on new data.
+	 */
 	self.redrawPlot = function() {
 
 		self.plot('#plot');

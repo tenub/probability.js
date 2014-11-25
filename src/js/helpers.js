@@ -152,6 +152,7 @@ Math.h = {
 	 * @example
 	 * Math.h.random()
 	 * // returns 0.7079318668693304
+	 *
 	 * @return {number} random number between 0 and 1
 	 */
 	random: function() {
@@ -252,6 +253,7 @@ Math.h = {
 	 * @example
 	 * Math.h.isInt(1.000000000000001)
 	 * // returns false
+	 *
 	 * @param {number} n - value
 	 * @return {boolean}
 	 */
@@ -276,6 +278,7 @@ Math.h = {
 	 *   upper: { closed: false, value: 1 }
 	 * })
 	 * // returns false
+	 *
 	 * @param {number} value - any number to test
 	 * @param {array} bounds - two-element array of lower/upper bounds
 	 * @return {boolean}
@@ -295,8 +298,9 @@ Math.h = {
 	 * @example
 	 * Math.h.round(0.8819197530392557, 3)
 	 * // returns 0.882
-	 * @param {number} n - any number
-	 * @param {number} d - number of decimal places
+	 *
+	 * @param {number} n - number
+	 * @param {number} d - decimal places
 	 * @return {number}
 	 */
 	round: function(n, d) {
@@ -317,6 +321,7 @@ Math.h = {
 	 * @example
 	 * Math.h.sgn(-3)
 	 * // returns -1
+	 *
 	 * @param {number} x - value
 	 * @return {integer} sign
 	 */
@@ -341,6 +346,7 @@ Math.h = {
 	 * @example
 	 * Math.h.factorial(-1)
 	 * // returns Infinity
+	 *
 	 * @param {number} n - number to factorialize
 	 * @return {number}
 	 */
@@ -362,6 +368,7 @@ Math.h = {
 	 * @example
 	 * Math.h.choose(5, 2)
 	 * // returns 10
+	 *
 	 * @param {number} n - elements in a set
 	 * @param {number} k - combinations in the set
 	 * @return {number}
@@ -378,6 +385,7 @@ Math.h = {
 	 * @example
 	 * Math.h.triangular(4)
 	 * // returns 10
+	 *
 	 * @param {number} n - number
 	 * @return {number}
 	 */
@@ -393,6 +401,7 @@ Math.h = {
 	 * @example
 	 * Math.h.erf(1)
 	 * // returns 0.8427006897475899
+	 *
 	 * @param {number} x - value
 	 * @return {number}
 	 */
@@ -418,6 +427,7 @@ Math.h = {
 	 * @example
 	 * Math.h.harmonic(9)
 	 * // returns 2.8289682539682537
+	 *
 	 * @param {integer} n - positive integer
 	 * @return {number}
 	 */
@@ -433,6 +443,7 @@ Math.h = {
 	 * @example
 	 * Math.h.polylogarithm(-3, 0.5)
 	 * // returns 25.99999999999857
+	 *
 	 * @param {number} s - order
 	 * @param {number} z - argument
 	 * @return {number}
@@ -451,6 +462,7 @@ Math.h = {
 	 * @example
 	 * Math.h.zeta(2)
 	 * // returns 1.644854698619374
+	 *
 	 * @param {number} s - order
 	 * @return {number}
 	 */
@@ -466,6 +478,7 @@ Math.h = {
 	 * @example
 	 * Math.h.xi(5)
 	 * // returns 0.7879706062229069
+	 *
 	 * @param {number} s - value
 	 * @return {number}
 	 */
@@ -481,6 +494,7 @@ Math.h = {
 	 * @example
 	 * Math.h.beta(2, 1.6)
 	 * // returns 0.24038461538461522
+	 *
 	 * @param {number} a - alpha
 	 * @param {number} b - beta
 	 * @return {number}
@@ -500,6 +514,7 @@ Math.h = {
 	 * @example
 	 * Math.h.gamma(6)
 	 * // returns 120.00000000000014
+	 *
 	 * @param {number} n - value
 	 * @return {number}
 	 */
@@ -548,6 +563,7 @@ Math.h = {
 	 * @example
 	 * Math.h.ligamma(1, 1)
 	 * // returns 0.6321205588282578
+	 *
 	 * @param {number} a - parameter
 	 * @param {number} x - value
 	 * @return {number}
@@ -568,6 +584,7 @@ Math.h = {
 	 * @example
 	 * Math.h.uigamma(1, 1)
 	 * // returns 0.3678794411717422
+	 *
 	 * @param {number} a - parameter
 	 * @param {number} z - value
 	 * @return {number}
@@ -588,6 +605,7 @@ Math.h = {
 	 * @example
 	 * Math.h.digamma(1)
 	 * // returns -0.5772156649179256
+	 *
 	 * @param {number} n - value
 	 * @return {number}
 	 */
@@ -605,6 +623,7 @@ Math.h = {
 	 * @example
 	 * Math.h.besselI(1, 7)
 	 * // returns 156.03909286995508
+	 *
 	 * @param {number} a - order of function
 	 * @param {number} x - value
 	 * @return {number}
@@ -625,6 +644,7 @@ Math.h = {
 	 * @example
 	 * Math.h.sum(function(x) { return Math.sin(x); }, 0, Math.PI / 4)
 	 * // returns 0
+	 *
 	 * @param {function} f - function applied within sum
 	 * @param {integer} a - lower bound
 	 * @param {integer} b - upper bound
@@ -694,6 +714,7 @@ Math.h = {
 	 * @example
 	 * Math.h.s_sum([{x: 0, y: 0.1}, {x: 0.1, y: 0.5}, {x: 0.5, y: -0.275}, {x: 1, y: 1}], function(el) { return el.y; })
 	 * // returns 1.325
+	 *
 	 * @param {array} array - array of sample data
 	 * @param {function} callback - function to apply to array when reading values
 	 * @return {number} sum
@@ -719,6 +740,7 @@ Math.h = {
 	 * @example
 	 * Math.h.product(function(x) { return 1/x; }, 1, 5)
 	 * // returns 0.008333333333333333
+	 *
 	 * @param {function} f - function applied within product-sum
 	 * @param {integer} a - lower bound
 	 * @param {integer} b - upper bound
@@ -790,6 +812,7 @@ Math.h = {
 	 * @example
 	 * Math.h.derivative(function(x) { return 1/x; }, 1, 1)
 	 * // returns -1.0000000000445652
+	 *
 	 * @param {function} f - single-variable function to derive
 	 * @param {integer} o - order of derivative to compute
 	 * @param {number} x - value at which to evaluate the derivative
@@ -859,6 +882,7 @@ Math.h = {
 	 * @example
 	 * Math.h.integral(function(x) { return 1/x; }, 0, 1)
 	 * // returns Infinity
+	 *
 	 * @param {function} f - single-variable function to integrate
 	 * @param {number} a - lower bound
 	 * @param {number} b - upper bound
@@ -879,6 +903,7 @@ Math.h = {
 	 * @example
 	 * Math.h.sq_size(11)
 	 * // returns 3
+	 *
 	 * @param {number} n - value
 	 * @return {number}
 	 */
@@ -907,6 +932,7 @@ Math.h = {
 	 * //	2,
 	 * //	3
 	 * // ]"
+	 *
 	 * @param {array} array - input array to format
 	 * @param {integer} [cols] - specify number of columns to output
 	 * @param {string} [key] - if array elements are objects, specifies which key value to use

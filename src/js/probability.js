@@ -14,6 +14,7 @@ Math.p = {
 	 * @example
 	 * Math.p.mean([{ x: 0, y: 0.1 }, { x: 0.5, y: 12.53 }, { x: 4, y: 5 }])
 	 * // returns 5.876666666666667
+	 *
 	 * @param {array} array - sample array of objects with x and y coordinate properties
 	 * @return {number} mean
 	 */
@@ -29,6 +30,7 @@ Math.p = {
 	 * @example
 	 * Math.p.variance([{ x: 0, y: 0.1 }, { x: 0.5, y: 12.53 }, { x: 4, y: 5 }])
 	 * // returns 39.20263333333333
+	 *
 	 * @param {array} array - sample array of objects with x and y coordinate properties
 	 * @return {number} variance
 	 */
@@ -144,6 +146,7 @@ Math.p = {
 		 * @example
 		 * Math.p.moments.mean(function(t) { return Math.sqrt(t + 0.1); })
 		 * // returns 1.581
+		 *
 		 * @param {function} f - single-variable function
 		 * @return {number} mean
 		 */
@@ -159,6 +162,7 @@ Math.p = {
 		 * @example
 		 * Math.p.moments.variance(function(t) { return Math.sqrt(t + 0.1); })
 		 * // returns -10.406
+		 *
 		 * @param {function} f - single-variable function
 		 * @return {number} variance
 		 */
@@ -174,6 +178,7 @@ Math.p = {
 		 * @example
 		 * Math.p.moments.skewness(function(t) { return Math.sqrt(t + 0.1); })
 		 * // returns NaN
+		 *
 		 * @param {function} f - single-variable function
 		 * @return {number} skewness
 		 */
@@ -189,6 +194,7 @@ Math.p = {
 		 * @example
 		 * Math.p.moments.kurtosis(function(t) { return Math.sqrt(t + 0.1); })
 		 * // returns -38.575
+		 *
 		 * @param {function} f - single-variable function
 		 * @return {number} kurtosis
 		 */
