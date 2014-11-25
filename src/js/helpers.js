@@ -5,9 +5,9 @@
 Math.h = {
 
 	/**
-	 * Euler–Mascheroni constant.
+	 * Euler-Mascheroni constant.
 	 *
-	 * @desc The Euler–Mascheroni constant (also called Euler's constant) is a mathematical constant recurring in analysis and number theory, usually denoted by the lowercase Greek letter gamma. It is defined as the limiting difference between the harmonic series and the natural logarithm.
+	 * @desc The Euler-Mascheroni constant (also called Euler's constant) is a mathematical constant recurring in analysis and number theory, usually denoted by the lowercase Greek letter gamma. It is defined as the limiting difference between the harmonic series and the natural logarithm.
 	 * @constant
 	 * @type {number}
 	 * @default
