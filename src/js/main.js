@@ -19,7 +19,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	// mustache templates used for displaying generated statistics
 	self.templates = {
 
-		desc: '<h1>Description</h1>{{#description}}<p>{{.}}</p>{{/description}}',
+		desc: '<h1>Description</h1>{{#description}}<p>{{{.}}}</p>{{/description}}',
 
 		params: '{{#.}}<label>{{ title }} (<var>{{{ symbol }}}</var>):<input type="number" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ value }}" id="{{ id }}" data-symbol="{{{ symbol }}}"/></label>{{/.}}',
 
