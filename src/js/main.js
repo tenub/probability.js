@@ -1,9 +1,9 @@
 require.config({
 	baseUrl: 'assets/js',
 	paths: {
-		d3: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min',
-		jquery: 'http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min',
-		mustache: 'http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min'
+		d3: 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min',
+		jquery: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min',
+		mustache: 'https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min'
 	}
 });
 
@@ -49,7 +49,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	self.bindEvents = function() {
 
 		// generate input elements based on selected distribution type
-		$('select[name=distr-type]').on('change', function(e) {
+		$('select[name=distr-type]').on('change', function() {
 
 			var distrType = $(this).val();
 
@@ -65,7 +65,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 
 			$('#stats, #plot').html('');
 
-			var i, inc, start, end, moments
+			var i, inc, start, end, moments,
 				distrType = $('select[name=distr-type]').val(),
 				distrIval = Math.p.distribution[distrType].interval,
 				params = self.getParams('#params'),
@@ -103,7 +103,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 		});
 
 		// redraw svg on window resize if the plot container changes size due to responsive css widths
-		$(window).on('resize', function(e) {
+		$(window).on('resize', function() {
 
 			if (self.svg.width && self.svg.width !== $('#plot').width()) {
 
@@ -234,7 +234,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	};
 
 	/**
-	 * Plot array data using d3 plotting library.
+	 * Plot array data using d3 graph library.
 	 *
 	 * @param {string} id - id of element to append plot to
 	 */

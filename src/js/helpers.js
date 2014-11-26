@@ -973,28 +973,113 @@ Math.h = {
 			s_p = 0,
 			s_b = 0,
 			html = '',
-			keywords = [
+			keywords = {
 
-				'function',
-				'if',
-				'else',
-				'params',
+				comments: [
 
-				'Math.PI',
+					// comments
+					'\/\/',
+					'\/*',
+					'*\/'
 
-				'Math.exp',
-				'Math.log',
-				'Math.pow',
-				'Math.sqrt',
+				],
 
-				'Math.h.bessel',
-				'Math.h.beta',
-				'Math.h.choose',
-				'Math.h.factorial',
-				'Math.h.gamma',
-				'Math.h.zeta'
+				code: [
 
-			];
+					// code keywords
+					'else',
+					'for',
+					'function',
+					'if',
+					'switch',
+					'var',
+					'while'
+
+				],
+
+				custom: [
+
+					// custom keywords
+					'params'
+
+				],
+
+				constants: [
+
+					// built in MATH constants
+					'Math.E',
+					'Math.LN2',
+					'Math.LN10',
+					'Math.LOG2E',
+					'Math.LOG10E',
+					'Math.PI',
+					'Math.SQRT1_2',
+					'Math.SQRT2',
+
+					// helper MATH constants
+					'Math.h.EM'
+
+				],
+
+				functions: [
+
+					// built in MATH methods
+					'Math.abs',
+					'Math.acos',
+					'Math.asin',
+					'Math.atan',
+					'Math.atan2',
+					'Math.ceil',
+					'Math.cos',
+					'Math.exp',
+					'Math.floor',
+					'Math.log',
+					'Math.max',
+					'Math.min',
+					'Math.pow',
+					'Math.random',
+					'Math.round',
+					'Math.sin',
+					'Math.sqrt',
+					'Math.tan',
+
+					// helper MATH methods
+					'Math.h.besselI',
+					'Math.h.beta',
+					'Math.h.choose',
+					'Math.h.cosh',
+					'Math.h.cot',
+					'Math.h.coth',
+					'Math.h.csc',
+					'Math.h.csch',
+					'Math.h.derivative',
+					'Math.h.digamma',
+					'Math.h.erf',
+					'Math.h.factorial',
+					'Math.h.gamma',
+					'Math.h.harmonic',
+					'Math.h.inBounds',
+					'Math.h.integral',
+					'Math.h.isInt',
+					'Math.h.ligamma',
+					'Math.h.polylogarithm',
+					'Math.h.product',
+					'Math.h.random',
+					'Math.h.round',
+					'Math.h.sec',
+					'Math.h.sech',
+					'Math.h.sgn',
+					'Math.h.sinh',
+					'Math.h.sum',
+					'Math.h.tanh',
+					'Math.h.triangular',
+					'Math.h.uigamma',
+					'Math.h.xi',
+					'Math.h.zeta'
+
+				]
+
+			};
 
 		f = f.toString();
 
