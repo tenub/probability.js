@@ -10,6 +10,18 @@
 <!--[if lt IE 9]>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
 <![endif]-->
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+		extensions: ['tex2jax.js'],
+		jax: ['input/TeX', 'output/HTML-CSS'],
+		tex2jax: {
+			inlineMath: [['$', '$'], ['\\(', '\\)']],
+			displayMath: [['$$', '$$'], ['\\[', '\\]']],
+			processEscapes: true
+		},
+		'HTML-CSS': { availableFonts: ['TeX'] }
+	});
+</script>
 <script data-main="assets/js/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.15/require.min.js"></script>
 </head>
 <body>
@@ -35,24 +47,24 @@
 					</optgroup>
 					<optgroup label="Continuous">
 						<option value="uniform">Uniform</option>
-						<option value="irwin_hall">Irwin-Hall</option>
+						<option value="irwinHall">Irwin-Hall</option>
 						<option value="exponential">Exponential</option>
 						<option value="pareto">Pareto</option>
 						<option value="gaussian">Gaussian</option>
-						<option value="inv_gaussian">Inverse Gaussian</option>
+						<option value="invGaussian">Inverse Gaussian</option>
 						<option value="logistic">Logistic</option>
-						<option value="hyp_secant">Hyperbolic Secant</option>
-						<option value="students_t">Student's T</option>
+						<option value="hypSecant">Hyperbolic Secant</option>
+						<option value="studentsT">Student's T</option>
 						<option value="beta">Beta</option>
 						<option value="gamma">Gamma</option>
 						<option value="rayleigh">Rayleigh</option>
-						<option value="chi_squared">Chi-squared</option>
+						<option value="chiSquared">Chi-squared</option>
 						<option value="weibull">Weibull</option>
 						<option value="laplace">Laplace</option>
 						<option value="gumbel">Gumbel</option>
 						<option value="gompertz">Gompertz</option>
 						<option value="cauchy">Cauchy</option>
-						<option value="fisher_snedecor">Fisher-Snedecor</option>
+						<option value="fisherSnedecor">Fisher-Snedecor</option>
 						<option value="wigner">Wigner semicircle</option>
 					</optgroup>
 				</select>
@@ -63,13 +75,13 @@
 				<input type="reset" value="Reset"/>
 				<input type="submit" value="Calculate"/>
 			</form>
+		</section>
 		<section id="results">
 			<div id="stats"></div>
 			<div id="plot"></div>
 		</section>
-		<footer>
-			<section>
-				<h1>Legend</h1>
+		<section id="legend">
+			<div>
 				<ul>
 					<li><var>&mu;</var> = mean</li>
 					<li><var>&sigma;<sup>2</sup></var> = variance</li>
@@ -80,8 +92,9 @@
 					<li><var>p(x)</var> = PDF</li>
 					<li><var>P(x)</var> = CDF</li>
 				</ul>
-			</section>
-		</footer>
+			</div>
+		</section>
+		<footer></footer>
 	</div>
 </body>
 </html>

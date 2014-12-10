@@ -3,7 +3,8 @@ require.config({
 	paths: {
 		d3: 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min',
 		jquery: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min',
-		mustache: 'https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min'
+		mustache: 'https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min',
+		mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.4.0/MathJax.js'
 	}
 });
 
@@ -21,11 +22,11 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 
 		desc: '<h1>Description</h1>{{#description}}<p>{{{.}}}</p>{{/description}}',
 
-		params: '{{#.}}<label>{{ title }} (<var>{{{ symbol }}}</var>):<input type="number" min="{{ min }}" max="{{ max }}" step="{{ step }}" value="{{ value }}" id="{{ id }}" data-symbol="{{{ symbol }}}"/></label>{{/.}}',
+		params: '{{#.}}<label>{{title}} (<var>{{{symbol}}}</var>):<input type="number" min="{{min}}" max="{{max}}" step="{{step}}" value="{{value}}" id="{{id}}" data-symbol="{{{symbol}}}"/></label>{{/.}}',
 
-		moments: '<pre class="center"><span>&mu;: {{ mean }}</span><span>&sigma;<sup>2</sup>: {{ variance }}</span><span>&gamma;<sub>1</sub>: {{ skewness }}</span><span>&gamma;<sub>2</sub>: {{ kurtosis }}</span></pre>',
+		moments: '<pre class="center"><span>&mu;: {{mean}}</span><span>&sigma;<sup>2</sup>: {{variance}}</span><span>&gamma;<sub>1</sub>: {{skewness}}</span><span>&gamma;<sub>2</sub>: {{kurtosis}}</span></pre>',
 
-		distr: '<h1>DF<sub>({{#.}}<var class="param">{{{ symbol }}}=<em>{{ value }}</em></var>{{/.}})</sub></h1>',
+		distr: '<h1>DF<sub>({{#.}}<var class="param">{{{symbol}}}=<em>{{value}}</em></var>{{/.}})</sub></h1>',
 
 	};
 
@@ -34,7 +35,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 	 */
 	self.init = function() {
 
-		var distrType = $('select[name=distr-type] option').eq(0).val() || 'binomial';
+		var distrType = $('select[name=distr-type] option').eq(0).val();
 
 		$('#params').html(self.renderParams(distrType));
 		$('#desc').html(mustache.render(self.templates.desc, Math.p.distribution[distrType]));
@@ -123,9 +124,7 @@ define(['jquery', 'mustache', 'd3', 'helpers', 'probability'], function($, musta
 
 			self.data = {};
 
-			$('#results').fadeOut(500, function() {
-				$('#stats, #plot').html('');
-			});
+			$('#results').fadeOut(500, function() { $('#stats, #plot').html(''); });
 
 		});
 

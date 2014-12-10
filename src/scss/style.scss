@@ -71,14 +71,14 @@ fieldset {
 }
 
 pre,
-footer section {
+#legend div {
 	background: #f9f9f9;
 	border: 1px solid #eee;
 	border-radius: 1em;
 	color: #333;
 	display: inline-block;
 	font-family: 'Inconsolata', monospace;
-	margin: 0.5em 0;
+	margin: 0;
 	text-align: left;
 	transition: all 0.5s;
 	&:hover {
@@ -95,13 +95,6 @@ footer section {
 
 pre {
 	padding: 1em 4em 1em 1em;
-}
-
-sub {
-	position: static;
-	bottom: auto;
-	line-height: 1.5;
-	vertical-align: text-bottom;
 }
 
 svg {
@@ -153,28 +146,7 @@ var {
 }
 
 footer {
-	display: block;
-	margin: 1rem 0;
-	section {
-		display: inline-block;
-		padding: .6rem .3rem;
-		font-size: 1.2rem;
-		text-align: center;
-		h1 {
-			margin: 0;
-			font-size: 1.6rem;
-			font-weight: normal;
-		}
-		ul {
-			list-style: none;
-			margin: .5rem 0;
-			padding: 0;
-			li {
-				display: inline;
-				margin: 0 1rem;
-			}
-		}
-	}
+	
 }
 
 .container {
@@ -242,6 +214,59 @@ small.ln {
 	#plot {
 		display: inline-block;
 		margin: 0 auto;
+	}
+}
+
+#legend {
+	position: fixed;
+	top: 0;
+	right: 0;
+	margin: 1rem;
+	div {
+		display: inline-block;
+		position: relative;
+		padding: .6rem .3rem;
+		font-size: 1.2rem;
+		h1, ul {
+			display: none;
+		}
+		h1 {
+			margin: 0;
+			font-size: 1.6rem;
+			font-weight: normal;
+			text-align: center;
+		}
+		ul {
+			list-style: none;
+			margin: .5rem 0;
+			padding: 0;
+			text-align: left;
+			li {
+				margin: 0 1rem;
+			}
+		}
+		&:after {
+			content: '\f128';
+			display: inline-block;
+			margin: 0 1em;
+			font-family: 'FontAwesome';
+			font-size: 1.4rem;
+			text-rendering: auto;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+	}
+	&:hover {
+		display: block;
+		div {
+			&:after {
+				content: '';
+				display: none;
+			}
+			h1, ul {
+				display: block;
+			}
+		}
 	}
 }
 

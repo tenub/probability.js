@@ -20,7 +20,7 @@ Math.p = {
 	 */
 	mean: function(array) {
 
-		return 1 / array.length * Math.h.s_sum(array, function(el) { return el.y; });
+		return 1 / array.length * Math.h.sSum(array, function(el) { return el.y; });
 
 	},
 
@@ -38,7 +38,7 @@ Math.p = {
 
 		var mean = Math.p.mean(array);
 
-		return 1 / (array.length - 1) * Math.h.s_sum(array, function(el) { return Math.pow(el.y - mean, 2); });
+		return 1 / (array.length - 1) * Math.h.sSum(array, function(el) { return Math.pow(el.y - mean, 2); });
 
 	},
 
@@ -395,7 +395,7 @@ Math.p = {
 
 		},
 
-		chi_squared: {
+		chiSquared: {
 
 			description: [
 				'The chi-squared distribution with k degrees of freedom is the distribution of a sum of the squares of k independent standard normal random variables. A special case of the gamma distribution, it is one of the most widely used probability distributions in inferential statistics, e.g., in hypothesis testing or in construction of confidence intervals. When it is being distinguished from the more general noncentral chi-squared distribution, this distribution is sometimes called the central chi-squared distribution.',
@@ -438,7 +438,7 @@ Math.p = {
 
 				return function(x) {
 
-					return Math.h.integral(Math.p.distribution.chi_squared.pdf(params), 0, x);
+					return Math.h.integral(Math.p.distribution.chiSquared.pdf(params), 0, x);
 
 				};
 
@@ -498,7 +498,7 @@ Math.p = {
 
 		},
 
-		fisher_snedecor: {
+		fisherSnedecor: {
 
 			description: [
 				'The F-distribution is a continuous probability distribution. It is also known as Snedecor\'s F distribution or the Fisher-Snedecor distribution (after R. A. Fisher and George W. Snedecor). The F-distribution arises frequently as the null distribution of a test statistic, most notably in the analysis of variance.'
@@ -549,7 +549,7 @@ Math.p = {
 
 				return function(x) {
 
-					return Math.h.integral(Math.p.distribution.fisher_snedecor.pdf(params), 0, x);
+					return Math.h.integral(Math.p.distribution.fisherSnedecor.pdf(params), 0, x);
 
 				};
 
@@ -822,7 +822,7 @@ Math.p = {
 
 		},
 
-		hyp_secant: {
+		hypSecant: {
 
 			description: [
 				'The hyperbolic secant distribution is a continuous probability distribution whose probability density function and characteristic function are proportional to the hyperbolic secant function. The hyperbolic secant function is equivalent to the inverse hyperbolic cosine, and thus this distribution is also called the inverse-cosh distribution.'
@@ -870,7 +870,7 @@ Math.p = {
 
 		},
 
-		inv_gaussian: {
+		invGaussian: {
 
 			description: [
 				'The inverse Gaussian distribution (also known as the Wald distribution) is a two-parameter family of continuous probability distributions with support on (0,&infin;).',
@@ -902,7 +902,6 @@ Math.p = {
 
 					kurtosis: Math.h.round(15 * params.mean / params.shape, 3)
 
-
 				};
 
 				/*return function(t) {
@@ -927,7 +926,7 @@ Math.p = {
 
 				return function(x) {
 
-					return Math.h.integral(Math.p.distribution.inv_gaussian.pdf(params), 0, x);
+					return Math.h.integral(Math.p.distribution.invGaussian.pdf(params), 0, x);
 
 				};
 
@@ -935,7 +934,7 @@ Math.p = {
 
 		},
 
-		irwin_hall: {
+		irwinHall: {
 
 			description: [
 				'The Irwin-Hall distribution, named after Joseph Oscar Irwin and Philip Hall, is probability distribution for a random variable defined as sum of a number of independent random variables, each having a uniform distribution. For this reason it is also known as the uniform sum distribution.',
@@ -992,7 +991,7 @@ Math.p = {
 
 				return function(x) {
 
-					return Math.h.integral(Math.p.distribution.irwin_hall.pdf(params), 0, x);
+					return Math.h.integral(Math.p.distribution.irwinHall.pdf(params), 0, x);
 
 				};
 
@@ -1370,7 +1369,7 @@ Math.p = {
 
 		},
 
-		students_t: {
+		studentsT: {
 
 			description: [
 				'Student\'s t-distribution (or simply the t-distribution) is a family of continuous probability distributions that arise when estimating the mean of a normally distributed population in situations where the sample size is small and population standard deviation is unknown. Whereas a normal distribution describes a full population, t-distributions describe samples drawn from a full population; accordingly, the t-distribution for each sample size is different, and the larger the sample, the more the distribution resembles a normal distribution.',

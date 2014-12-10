@@ -157,17 +157,17 @@ Math.h = {
 	 */
 	random: function() {
 
-		var r = 624, //state size
-			M1 = 70, //first parameter
-			M2 = 179, //second parameter
-			M3 = 449, //third parameter
-			index = 0, //index
-			v = [], //state
-			iRm1 = [], //indirection array for (i + r - 1) % r
-			iRm2 = [], //indirection array for (i + r - 2) % r
-			i1 = [], //indirection array for (i + M1) % r
-			i2 = [], //indirection array for (i + M2) % r
-			i3 = []; //indirection array for (i + M3) % r
+		var r = 624,	// state size
+			M1 = 70,	// first parameter
+			M2 = 179,	// second parameter
+			M3 = 449,	// third parameter
+			index = 0,	// index
+			v = [],		// state
+			iRm1 = [],	// indirection array for (i + r - 1) % r
+			iRm2 = [],	// indirection array for (i + r - 2) % r
+			i1 = [],	// indirection array for (i + M1) % r
+			i2 = [],	// indirection array for (i + M2) % r
+			i3 = [];	// indirection array for (i + M3) % r
 
 		/**
 		 * Seed the generator with an array of 32-bit unsigned values.
@@ -182,14 +182,14 @@ Math.h = {
 
 		}
 
-		// Seed the generator with a single unsigned 32-bit value. Equivalent to seedArray([value]).
+		// seed the generator with a single unsigned 32-bit value. Equivalent to seedArray([value]).
 		function seed(value) {
 
 			seedArray([value]);
 
 		}
 
-		// Generate a single random 32-bit float from 0 (inclusive) to 1 (exclusive).
+		// generate a single random 32-bit float from 0 (inclusive) to 1 (exclusive).
 		function random() {
 
 			var indexRm1 = iRm1[index],
@@ -215,7 +215,7 @@ Math.h = {
 			z4 ^= (z4 << 7) & 0xe46e1700;
 			z4 ^= (z4 << 15) & 0x9b868000;
 
-			//return 32-bit float
+			// return 32-bit float
 			return (z4 >>> 0) / 0x100000000;
 
 		}
@@ -450,9 +450,7 @@ Math.h = {
 	 */
 	polylogarithm: function(s, z) {
 
-		return (s === 1) ? Infinity : this.sum(function(k) {
-			return Math.pow(z, k) / Math.pow(k, s);
-		}, 1, Infinity);
+		return (s === 1) ? Infinity : this.sum(function(k) { return Math.pow(z, k) / Math.pow(k, s); }, 1, Infinity);
 
 	},
 
@@ -572,9 +570,7 @@ Math.h = {
 
 		var self = this;
 
-		return Math.pow(x, a) * this.gamma(a) * Math.exp(-x) * this.sum(function(k) {
-			return Math.pow(x, k) / self.gamma(a + k + 1);
-		}, 0, Infinity);
+		return Math.pow(x, a) * this.gamma(a) * Math.exp(-x) * this.sum(function(k) { return Math.pow(x, k) / self.gamma(a + k + 1); }, 0, Infinity);
 
 	},
 
@@ -593,9 +589,7 @@ Math.h = {
 
 		var self = this;
 
-		return this.gamma(a) * (1 - Math.pow(z, a) * Math.exp(-z) * this.sum(function(k) {
-			return Math.pow(z, k) / self.gamma(a + k + 1);
-		}, 0, Infinity));
+		return this.gamma(a) * (1 - Math.pow(z, a) * Math.exp(-z) * this.sum(function(k) { return Math.pow(z, k) / self.gamma(a + k + 1); }, 0, Infinity));
 
 	},
 
@@ -632,9 +626,7 @@ Math.h = {
 
 		var self = this;
 
-		return (typeof a !== 'undefined' && typeof x !== 'undefined') ? self.sum(function(m) {
-			return 1 / (self.factorial(m) * self.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a);
-		}, 0, Infinity) : false;
+		return (typeof a !== 'undefined' && typeof x !== 'undefined') ? self.sum(function(m) { return 1 / (self.factorial(m) * self.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a); }, 0, Infinity) : false;
 
 	},
 
@@ -658,10 +650,10 @@ Math.h = {
 			s1 = 0, s2 = 0,
 			i = a;
 
-		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return inf_sum(f, a, b, tol, max); }
-		else { return fin_sum(f, a, b); }
+		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return infSum(f, a, b, tol, max); }
+		else { return finSum(f, a, b); }
 
-		function inf_sum(f, a, b, tol, max) {
+		function infSum(f, a, b, tol, max) {
 
 			if (typeof tol === 'undefined') { tol = 1E-12; }
 			if (typeof max === 'undefined') { max = 1E6; }
@@ -690,7 +682,7 @@ Math.h = {
 
 		}
 
-		function fin_sum(f, a, b) {
+		function finSum(f, a, b) {
 
 			while (i <= b) {
 
@@ -712,23 +704,19 @@ Math.h = {
 	 * Calculate a sample sum using supplied data and a callback.
 	 *
 	 * @example
-	 * Math.h.s_sum([{x: 0, y: 0.1}, {x: 0.1, y: 0.5}, {x: 0.5, y: -0.275}, {x: 1, y: 1}], function(el) { return el.y; })
+	 * Math.h.sSum([{x: 0, y: 0.1}, {x: 0.1, y: 0.5}, {x: 0.5, y: -0.275}, {x: 1, y: 1}], function(el) { return el.y; })
 	 * // returns 1.325
 	 *
 	 * @param {array} array - array of sample data
 	 * @param {function} callback - function to apply to array when reading values
 	 * @return {number} sum
 	 */
-	s_sum: function(array, callback) {
+	sSum: function(array, callback) {
 
 		var i, l,
 			s = 0;
 
-		for (i = 0, l = array.length; i < l; i++) {
-
-			s += callback(array[i]);
-
-		}
+		for (i = 0, l = array.length; i < l; i++) { s += callback(array[i]); }
 
 		return s;
 
@@ -754,10 +742,10 @@ Math.h = {
 			s1 = 1, s2 = 1,
 			i = a;
 
-		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return inf_sum(f, a, b, tol, max); }
-		else { return fin_sum(f, a, b); }
+		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return infProd(f, a, b, tol, max); }
+		else { return finProd(f, a, b); }
 
-		function inf_sum(f, a, b, tol, max) {
+		function infProd(f, a, b, tol, max) {
 
 			if (typeof tol === 'undefined') { tol = 1E-12; }
 			if (typeof max === 'undefined') { max = 1E6; }
@@ -786,7 +774,7 @@ Math.h = {
 
 		}
 
-		function fin_sum(f, a, b) {
+		function finProd(f, a, b) {
 
 			while (i <= b) {
 
@@ -848,11 +836,7 @@ Math.h = {
 
 		}*/
 
-		f1 = function(x, h) {
-			return self.sum(function(i) {
-				return Math.pow(-1, i) * self.choose(o, i) * f(x + (o / 2 - i) * h);
-			}, 0, o) / Math.pow(h, o);
-		};
+		f1 = function(x, h) { return self.sum(function(i) { return Math.pow(-1, i) * self.choose(o, i) * f(x + (o / 2 - i) * h); }, 0, o) / Math.pow(h, o); };
 
 		while (i <= 99999) {
 
@@ -898,16 +882,16 @@ Math.h = {
 	 * Determines the closest integer to a number's square root. Useful in determining the optimal number of rows and columns for displaying a list of values.
 	 *
 	 * @example
-	 * Math.h.sq_size(9)
+	 * Math.h.sqSize(9)
 	 * // returns 3
 	 * @example
-	 * Math.h.sq_size(11)
+	 * Math.h.sqSize(11)
 	 * // returns 3
 	 *
 	 * @param {number} n - value
 	 * @return {number}
 	 */
-	sq_size: function(n) {
+	sqSize: function(n) {
 
 		var r = Math.sqrt(n),
 			f = Math.floor(r);
@@ -920,13 +904,13 @@ Math.h = {
 	 * Outputs formatted array values as a string.
 	 *
 	 * @example
-	 * Math.h.arr_dump([1, 2, 3, 4, 5])
+	 * Math.h.arrDump([1, 2, 3, 4, 5])
 	 * // returns "[
 	 * //	1, 2, 3,
 	 * //	4, 5
 	 * // ]"
 	 * @example
-	 * Math.h.arr_dump([{ x: 1, y: 0.5 }, { x: 2, y: -0.1 }, { x: 3, y: 0 }], 1, 'x')
+	 * Math.h.arrDump([{ x: 1, y: 0.5 }, { x: 2, y: -0.1 }, { x: 3, y: 0 }], 1, 'x')
 	 * // returns "[
 	 * //	1,
 	 * //	2,
@@ -938,9 +922,9 @@ Math.h = {
 	 * @param {string} [key] - if array elements are objects, specifies which key value to use
 	 * @return {string}
 	 */
-	arr_dump: function(array, cols, key) {
+	arrDump: function(array, cols, key) {
 
-		if (typeof cols === 'undefined') { cols = this.sq_size(l); }
+		if (typeof cols === 'undefined') { cols = this.sqSize(l); }
 
 		var str = '[';
 
@@ -966,23 +950,14 @@ Math.h = {
 	 * @param {function} f - function
 	 * @return {string} html
 	 */
-	parse_func: function(f) {
+	parseFunc: function(f) {
 
 		var i,
 			c = '',
-			s_p = 0,
-			s_b = 0,
-			html = '',
+			str = '',
+			res = [],
+			depth = 0,
 			keywords = {
-
-				comments: [
-
-					// comments
-					'\/\/',
-					'\/*',
-					'*\/'
-
-				],
 
 				code: [
 
@@ -1007,17 +982,17 @@ Math.h = {
 				constants: [
 
 					// built in MATH constants
-					'Math.E',
-					'Math.LN2',
-					'Math.LN10',
-					'Math.LOG2E',
-					'Math.LOG10E',
-					'Math.PI',
-					'Math.SQRT1_2',
-					'Math.SQRT2',
+					['Math.E', 'e'],
+					['Math.LN2', '\\ln(2)'],
+					['Math.LN10', '\\ln(10)'],
+					['Math.LOG2E', '\\log_2(e)'],
+					['Math.LOG10E', '\\log_10(e)'],
+					['Math.PI', '\\pi'],
+					['Math.SQRT1_2', '\\sqrt{\\frac{1}{2}}'],
+					['Math.SQRT2', '\\sqrt{2}'],
 
 					// helper MATH constants
-					'Math.h.EM'
+					['Math.h.EM', '\\gamma']
 
 				],
 
@@ -1081,23 +1056,46 @@ Math.h = {
 
 			};
 
-		f = f.toString();
+		f = '\t\t\t\t\treturn 1 / (2 * Math.h.factorial(params.n - 1)) * Math.h.sum(function(k) {\n\t\t\t\t\t\t// test comment\n\t\t\t\t\t\treturn Math.pow(-1, k) * Math.h.choose(params.n, k) * Math.pow(x - k, params.n - 1) * /* test inline comment */ Math.h.sgn(x - k);\n\t\t\t\t\t}, 0, params.n);';
+
+		f = f.toString()
+			// strip single-line comments
+			.replace(/\/\/.*(?:\r?\n|\r)/g, '')
+			// strip multi-line comments
+			.replace(/\/\*[\s\S]*?\*\//g, '')
+			// normalize whitespace
+			.replace(/\s+/g, ' ')
+			// format parameters
+			.replace(/params\.(\w+)/gi, '<var>$1</var>');
 
 		for (i = 0, l = f.length; i < l; i++) {
 
 			c = f.charAt(i);
 
-			if (c === '(') { s_p += 1; }
+			if (c === '(' || c === ')') {
 
-			if (c === ')') { s_p -= 1; }
+				if (res[depth] === undefined) { res[depth] = []; }
 
-			if (c === '{') { s_b += 1; }
+				res[depth].push({ str: str, pos: i });
 
-			if (c === '}') { s_b -= 1; }
+				if (c === '(') { depth += 1; }
+				if (c === ')') { depth -= 1; }
+				//if (c === '{') { depth += 1; }
+				//if (c === '}') { depth += 1; }
+
+				str = '';
+
+			} else {
+
+				str += c;
+
+			}
 
 		}
 
-		return html;
+		console.log(f, res);
+
+		return res;
 
 	}
 
