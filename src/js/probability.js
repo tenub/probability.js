@@ -227,6 +227,14 @@ Math.p = {
 				'In Bayesian inference, the beta distribution is the conjugate prior probability distribution for the Bernoulli, binomial, negative binomial and geometric distributions. For example, the beta distribution can be used in Bayesian analysis to describe initial knowledge concerning probability of success such as the probability that a space vehicle will successfully complete a specified mission. The beta distribution is a suitable model for the random behavior of percentages and proportions.'
 			],
 
+			formulas: [
+
+				'mgf=1+\\sum_{k=1}^{\\infty}\\bigg(\\prod_{r=0}^{k-1}\\frac{(\\alpha+r)}{(\\alpha+\\beta+r)}\\bigg)\\frac{t^{k}}{k!}',
+				'pdf=\\frac{x^{\\alpha-1}(1-x)^{\\beta-1}}{B(\\alpha,\\beta)}',
+				'cdf=I_x(\\alpha,\\beta)',
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -291,6 +299,14 @@ Math.p = {
 				'The binomial distribution is frequently used to model the number of successes in a sample of size n drawn with replacement from a population of size N. If the sampling is carried out without replacement, the draws are not independent and so the resulting distribution is a hypergeometric distribution, not a binomial one. However, for N much larger than n, the binomial distribution is a good approximation, and widely used.'
 			],
 
+			formulas: [
+
+				'mgf=(1-p+pe^{t})^{n}',
+				'pmf=\\binom{n}{k}p^{k}(1-p)^{n-k}',
+				'cdf=I_{1-p}(n-k,1+k)'
+
+			],
+
 			discrete: true,
 
 			bounds: function(params) {
@@ -342,6 +358,13 @@ Math.p = {
 				'The Cauchy distribution, named after Augustin Cauchy, is a continuous probability distribution. It is also known, especially among physicists, as the Lorentz distribution (after Hendrik Lorentz), Cauchy-Lorentz distribution, Lorentz(ian) function, or Breit-Wigner distribution. The simplest Cauchy distribution is called the standard Cauchy distribution. It is the distribution of a random variable that is the ratio of two independent standard normal variables.',
 				'The Cauchy distribution is often used in statistics as the canonical example of a "pathological" distribution since both its mean and its variance are undefined. The Cauchy distribution does not have finite moments of order greater than or equal to one; only fractional absolute moments exist. The Cauchy distribution has no moment generating function.',
 				'Its importance in physics is the result of it being the solution to the differential equation describing forced resonance. In mathematics, it is closely related to the Poisson kernel, which is the fundamental solution for the Laplace equation in the upper half-plane. In spectroscopy, it is the description of the shape of spectral lines which are subject to homogeneous broadening in which all atoms interact in the same way with the frequency range contained in the line shape. Many mechanisms cause homogeneous broadening, most notably collision broadening, and Chantler-Alda radiation. In its standard form, it is the maximum entropy probability distribution for a random variate X.'
+			],
+
+			formulas: [
+
+				'pdf=\\frac{1}{\\pi\\gamma\\bigg[1+\\Big(\\frac{x-x_{0}}{\\gamma}\\Big)^{2}\\bigg]}',
+				'cdf=\\frac{1}{\\pi}arctan\\bigg(\\frac{x-x_{0}}{\\gamma}\\bigg)+\\frac{1}{2}'
+
 			],
 
 			discrete: false,
@@ -402,6 +425,14 @@ Math.p = {
 					'The chi-squared distribution is used in the common chi-squared tests for goodness of fit of an observed distribution to a theoretical one, the independence of two criteria of classification of qualitative data, and in confidence interval estimation for a population standard deviation of a normal distribution from a sample standard deviation. Many other statistical tests also use this distribution, like Friedman\'s analysis of variance by ranks.'
 			],
 
+			formulas: [
+
+				'mgf=(1-2t)^{-k/2}, t<\\frac{1}{2}',
+				'pdf=\\frac{1}{2^{\\frac{k}{2}}\\Gamma\\big(\\frac{k}{2}\\big)}x^{\\frac{k}{2}-1}e^{-\\frac{x}{2}}',
+				'cdf=\\frac{1}{\\Gamma\\big(\\frac{k}{2}\\big)}\\gamma\\Big(\\frac{k}{2},\\frac{x}{2}\\Big)'
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -453,6 +484,14 @@ Math.p = {
 				'Note that the exponential distribution is not the same as the class of exponential families of distributions, which is a large class of probability distributions that includes the exponential distribution as one of its members, but also includes the normal distribution, binomial distribution, gamma distribution, Poisson, and many others.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -502,6 +541,14 @@ Math.p = {
 
 			description: [
 				'The F-distribution is a continuous probability distribution. It is also known as Snedecor\'s F distribution or the Fisher-Snedecor distribution (after R. A. Fisher and George W. Snedecor). The F-distribution arises frequently as the null distribution of a test statistic, most notably in the analysis of variance.'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: false,
@@ -565,6 +612,14 @@ Math.p = {
 				'If k is an integer, then the distribution represents an Erlang distribution; i.e., the sum of k independent exponentially distributed random variables, each of which has a mean of &theta;.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -618,6 +673,14 @@ Math.p = {
 				'The Gaussian distribution is sometimes informally called the bell curve. However, many other distributions are bell-shaped (such as Cauchy\'s, Student\'s, and logistic). The terms Gaussian function and Gaussian bell curve are also ambiguous because they sometimes refer to multiples of the normal distribution that cannot be directly interpreted in terms of probabilities.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -669,6 +732,14 @@ Math.p = {
 				'The geometric distribution is either of two discrete probability distributions. The definition used here is: the probability distribution of the number Y = X - 1 of failures before the first success, supported on the set { 0, 1, 2, 3, ... }.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: true,
 
 			bounds: function(params) {
@@ -717,6 +788,14 @@ Math.p = {
 
 			description: [
 				'The Gompertz distribution is a continuous probability distribution. The Gompertz distribution is often applied to describe the distribution of adult lifespans by demographers and actuaries. Related fields of science such as biology and gerontology also considered the Gompertz distribution for the analysis of survival. More recently, computer scientists have also started to model the failure rates of computer codes by the Gompertz distribution. In Marketing Science, it has been used as an individual-level simulation for customer lifetime value modeling. Early users in the 1990s for the Gompertz distribution in CLV models included Edge Consulting and BrandScience.'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: false,
@@ -775,6 +854,14 @@ Math.p = {
 				'In the latent variable formulation of the multinomial logit model - common in discrete choice theory - the errors of the latent variables follow a Gumbel distribution. This is useful because the difference of two Gumbel-distributed random variables has a logistic distribution.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -828,6 +915,14 @@ Math.p = {
 				'The hyperbolic secant distribution is a continuous probability distribution whose probability density function and characteristic function are proportional to the hyperbolic secant function. The hyperbolic secant function is equivalent to the inverse hyperbolic cosine, and thus this distribution is also called the inverse-cosh distribution.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -875,6 +970,14 @@ Math.p = {
 			description: [
 				'The inverse Gaussian distribution (also known as the Wald distribution) is a two-parameter family of continuous probability distributions with support on (0,&infin;).',
 				'As &lambda; tends to infinity, the inverse Gaussian distribution becomes more like a normal (Gaussian) distribution. The inverse Gaussian distribution has several properties analogous to a Gaussian distribution. The name can be misleading: it is an "inverse" only in that, while the Gaussian describes a Brownian Motion\'s level at a fixed time, the inverse Gaussian describes the distribution of the time a Brownian Motion with positive drift takes to reach a fixed positive level.'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: false,
@@ -941,6 +1044,14 @@ Math.p = {
 				'The generation of pseudo-random numbers having an approximately normal distribution is sometimes accomplished by computing the sum of a number of pseudo-random numbers having a uniform distribution; usually for the sake of simplicity of programming. Rescaling the Irwin-Hall distribution provides the exact distribution of the random variates being generated.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -1005,6 +1116,14 @@ Math.p = {
 				'The Laplace distribution is a continuous probability distribution named after Pierre-Simon Laplace. It is also sometimes called the double exponential distribution, because it can be thought of as two exponential distributions (with an additional location parameter) spliced together back-to-back, although the term \'double exponential distribution\' is also sometimes used to refer to the Gumbel distribution. The difference between two independent identically distributed exponential random variables is governed by a Laplace distribution, as is a Brownian motion evaluated at an exponentially distributed random time. Increments of Laplace motion or a variance gamma process evaluated over the time scale also have a Laplace distribution.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -1058,6 +1177,14 @@ Math.p = {
 				'The logarithmic distribution (also known as the logarithmic series distribution or the log-series distribution) is a discrete probability distribution derived from the Maclaurin series expansion.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: true,
 
 			bounds: function(params) {
@@ -1106,6 +1233,14 @@ Math.p = {
 
 			description: [
 				'The logistic distribution is a continuous probability distribution. Its cumulative distribution function is the logistic function, which appears in logistic regression and feedforward neural networks. It resembles the normal distribution in shape but has heavier tails (higher kurtosis). The Tukey lambda distribution can be considered a generalization of the logistic distribution since it adds a shape parameter, &lambda; (the Tukey distribution becomes logistic when &lambda; is zero).'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: false,
@@ -1157,6 +1292,14 @@ Math.p = {
 
 			description: [
 				'The Pareto distribution, named after the Italian civil engineer, economist, and sociologist Vilfredo Pareto, is a power law probability distribution that is used in description of social, scientific, geophysical, actuarial, and many other types of observable phenomena.'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: false,
@@ -1214,6 +1357,14 @@ Math.p = {
 				'For instance, an individual keeping track of the amount of mail they receive each day may notice that they receive an average number of 4 letters per day. As it is reasonable to assume that receiving one piece of mail will not affect the arrival times of future pieces of mail-that pieces of mail from a wide range of sources arrive independently of one another-the number of pieces of mail received per day would obey a Poisson distribution. Other examples might include: the number of phone calls received by a call center per hour, the number of decay events per second from a radioactive source, or the number of taxis passing a particular street corner per hour.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: true,
 
 			bounds: function(params) {
@@ -1262,6 +1413,14 @@ Math.p = {
 
 			description: [
 				'The Rayleigh distribution is a continuous probability distribution for positive-valued random variables. A Rayleigh distribution is often observed when the overall magnitude of a vector is related to its directional components. One example where the Rayleigh distribution naturally arises is when wind velocity is analyzed into its orthogonal 2-dimensional vector components. Assuming that each component is uncorrelated, normally distributed with equal variance, and zero mean, then the overall wind speed (vector magnitude) will be characterized by a Rayleigh distribution. A second example of the distribution arises in the case of random complex numbers whose real and imaginary components are independently and identically distributed Gaussian with equal variance and zero mean. In that case, the absolute value of the complex number is Rayleigh-distributed.'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: false,
@@ -1324,6 +1483,14 @@ Math.p = {
 				'The distribution is also applicable to a special case of the difference of dependent Poisson random variables, but just the obvious case where the two variables have a common additive random contribution which is cancelled by the differencing.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: true,
 
 			bounds: function(params) {
@@ -1376,6 +1543,14 @@ Math.p = {
 				'The t-distribution plays a role in a number of widely used statistical analyses, including the Student\'s t-test for assessing the statistical significance of the difference between two sample means, the construction of confidence intervals for the difference between two population means, and in linear regression analysis. The Student\'s t-distribution also arises in the Bayesian analysis of data from a normal family.',
 				'If we take a sample of n observations from a normal distribution, then the t-distribution with &nu; = n-1 degrees of freedom can be defined as the distribution of the location of the true mean, relative to the sample mean and divided by the sample standard deviation, after multiplying by the normalizing term sqrt{n}. In this way, the t-distribution can be used to estimate how likely it is that the true mean lies in any given range.',
 				'The t-distribution is symmetric and bell-shaped, like the normal distribution, but has heavier tails, meaning that it is more prone to producing values that fall far from its mean. This makes it useful for understanding the statistical behavior of certain types of ratios of random quantities, in which variation in the denominator is amplified and may produce outlying values when the denominator of the ratio falls close to zero. The Student\'s t-distribution is a special case of the generalised hyperbolic distribution.'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: false,
@@ -1434,6 +1609,14 @@ Math.p = {
 				'The continuous uniform distribution or rectangular distribution is a family of symmetric probability distributions such that for each member of the family, all intervals of the same length on the distribution\'s support are equally probable. The support is defined by the two parameters, a and b, which are its minimum and maximum values. The distribution is often abbreviated U(a,b). It is the maximum entropy probability distribution for a random variate X under no constraint other than that it is contained in the distribution\'s support.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -1484,6 +1667,14 @@ Math.p = {
 
 			description: [
 				'The Weibull distribution is a continuous probability distribution. It is named after Waloddi Weibull, who described it in detail in 1951, although it was first identified by Fréchet (1927) and first applied by Rosin & Rammler (1933) to describe a particle size distribution. The Weibull distribution is related to a number of other probability distributions; in particular, it interpolates between the exponential distribution and the Rayleigh distribution. If the quantity X is a "time-to-failure", the Weibull distribution gives a distribution for which the failure rate is proportional to a power of time. The shape parameter, k, is that power plus one.'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: false,
@@ -1558,6 +1749,14 @@ Math.p = {
 				'It is a scaled beta distribution, more precisely, if Y is beta distributed with parameters &alpha; = &beta; = 3/2, then X = 2RY - R has the Wigner semicircle distribution.'
 			],
 
+			formulas: [
+
+				'',
+				'',
+				''
+
+			],
+
 			discrete: false,
 
 			bounds: function(params) {
@@ -1618,6 +1817,14 @@ Math.p = {
 
 			description: [
 				'The zeta distribution is a discrete probability distribution. The Riemann zeta function being the sum of all term k^{-s} for integer k, it appears thus as the normalization of the Zipf distribution. Indeed the terms "Zipf distribution" and the "zeta distribution" are often used interchangeably. But note that while the Zeta distribution is a probability distribution by itself, it is not associated to the Zipf\'s law with same exponent.'
+			],
+
+			formulas: [
+
+				'',
+				'',
+				''
+
 			],
 
 			discrete: true,
