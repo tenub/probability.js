@@ -889,7 +889,7 @@ Math.h = {
 			// Search for maximum in this column
 			var maxEl = Math.abs(A[i][i]);
 			var maxRow = i;
-			for (k = i + 1; k < n; k++) {
+			for (k = (i + 1); k < n; k++) {
 				if (Math.abs(A[k][i]) > maxEl) {
 					maxEl = Math.abs(A[k][i]);
 					maxRow = k;
@@ -897,14 +897,14 @@ Math.h = {
 			}
 
 			// Swap maximum row with current row (column by column)
-			for (k = i; k < n + 1; k++) {
+			for (k = i; k < (n + 1); k++) {
 				var tmp = A[maxRow][k];
 				A[maxRow][k] = A[i][k];
 				A[i][k] = tmp;
 			}
 
 			// Make all rows below this one 0 in current column
-			for (k = i + 1; k < n; k++) {
+			for (k = (i + 1); k < n; k++) {
 				var c = -A[k][i] / A[i][i];
 				for (j = i; j < n + 1; j++) {
 					if (i === j) {
@@ -918,9 +918,9 @@ Math.h = {
 
 		// Solve equation Ax=b for an upper triangular matrix A
 		var x = new Array(n);
-		for (i = n - 1; i > -1; i--) {
+		for (i = (n - 1); i > -1; i--) {
 			x[i] = A[i][n] / A[i][i];
-			for (k = i - 1; k > -1; k--) {
+			for (k = (i - 1); k > -1; k--) {
 				A[k][n] -= A[k][i] * x[i];
 			}
 		}

@@ -229,9 +229,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = 1+\\sum_{k=1}^{\\infty}\\bigg(\\prod_{r=0}^{k-1}\\frac{(\\alpha+r)}{(\\alpha+\\beta+r)}\\bigg)\\frac{t^{k}}{k!}',
-				'pdf = \\frac{x^{\\alpha-1}(1-x)^{\\beta-1}}{B(\\alpha,\\beta)}',
-				'cdf = I_x(\\alpha,\\beta)',
+				'\\mathbf{mgf} = 1+\\sum_{k=1}^{\\infty}\\bigg(\\prod_{r=0}^{k-1}\\frac{(\\alpha+r)}{(\\alpha+\\beta+r)}\\bigg)\\frac{t^{k}}{k!}',
+				'\\mathbf{pdf} = \\frac{x^{\\alpha-1}(1-x)^{\\beta-1}}{B(\\alpha,\\beta)}',
+				'\\mathbf{cdf} = I_x(\\alpha,\\beta)',
 
 			],
 
@@ -301,9 +301,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = (1-p+pe^{t})^{n}',
-				'pmf = \\binom{n}{k}p^{k}(1-p)^{n-k}',
-				'cdf = I_{1-p}(n-k,1+k)'
+				'\\mathbf{mgf} = (1-p+pe^{t})^{n}',
+				'\\mathbf{pmf} = \\binom{n}{k}p^{k}(1-p)^{n-k}',
+				'\\mathbf{cdf} = I_{1-p}(n-k,1+k)'
 
 			],
 
@@ -362,8 +362,8 @@ Math.p = {
 
 			formulas: [
 
-				'pdf = \\frac{1}{\\pi\\gamma\\bigg[1+\\Big(\\frac{x-x_{0}}{\\gamma}\\Big)^{2}\\bigg]}',
-				'cdf = \\frac{1}{\\pi}arctan\\bigg(\\frac{x-x_{0}}{\\gamma}\\bigg)+\\frac{1}{2}'
+				'\\mathbf{pdf} = \\frac{1}{\\pi\\gamma\\bigg[1+\\Big(\\frac{x-x_{0}}{\\gamma}\\Big)^{2}\\bigg]}',
+				'\\mathbf{cdf} = \\frac{1}{\\pi}arctan\\bigg(\\frac{x-x_{0}}{\\gamma}\\bigg)+\\frac{1}{2}'
 
 			],
 
@@ -486,9 +486,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\frac{\\lambda}{\\lambda-t}, t < \\lambda',
-				'pdf = {\\lambda}e^{-{\\lambda}x}',
-				'cdf = 1-e^{-{\\lambda}x}'
+				'\\mathbf{mgf} = \\frac{\\lambda}{\\lambda-t}, t < \\lambda',
+				'\\mathbf{pdf} = {\\lambda}e^{-{\\lambda}x}',
+				'\\mathbf{cdf} = 1-e^{-{\\lambda}x}'
 
 			],
 
@@ -545,8 +545,8 @@ Math.p = {
 
 			formulas: [
 
-				'pdf = \\frac{\\sqrt{(d_1 x)^{d_1} d_2^{d_2} / (d_1 x + d_2)^{d_1 + d_2}}}{xB\\big(\\frac{d_1}{2},\\frac{d_2}{2}\\big)}',
-				'cdf = I_{\\frac{d_1 x}{d_1 x + d_2}}\\Big(\\frac{d_1}{2},\\frac{d_2}{2}\\Big)'
+				'\\mathbf{pdf} = \\frac{\\sqrt{(d_1 x)^{d_1} d_2^{d_2} / (d_1 x + d_2)^{d_1 + d_2}}}{xB\\big(\\frac{d_1}{2},\\frac{d_2}{2}\\big)}',
+				'\\mathbf{cdf} = I_{\\frac{d_1 x}{d_1 x + d_2}}\\Big(\\frac{d_1}{2},\\frac{d_2}{2}\\Big)'
 
 			],
 
@@ -613,9 +613,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = (1-\\theta t)^{-k}, t < \\frac{1}{\\theta}',
-				'pdf = \\frac{1}{\\Gamma(k)\\theta^k}x^{k - 1} e^{\\frac{-x}{\\theta}}',
-				'cdf = \\frac{1}{\\Gamma(k)}\\gamma\\Big(k, \\frac{x}{\\theta}\\Big)'
+				'\\mathbf{mgf} = (1-\\theta t)^{-k}, t < \\frac{1}{\\theta}',
+				'\\mathbf{pdf} = \\frac{1}{\\Gamma(k)\\theta^k}x^{k - 1} e^{\\frac{-x}{\\theta}}',
+				'\\mathbf{cdf} = \\frac{1}{\\Gamma(k)}\\gamma\\Big(k, \\frac{x}{\\theta}\\Big)'
 
 			],
 
@@ -674,9 +674,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = e^{\\mu t + \\frac{1}{2} \\sigma^2 t^2}',
-				'pdf = \\frac{1}{\\sigma\\sqrt{2 \\pi}}e^{-\\frac{(x - \\mu)^2}{2 \\sigma^2}}',
-				'cdf = \\frac{1}{2} \\bigg[1 + erf\\bigg(\\frac{x - \\mu}{\\sigma\\sqrt{2}}\\bigg)\\bigg]'
+				'\\mathbf{mgf} = e^{\\mu t + \\frac{1}{2} \\sigma^2 t^2}',
+				'\\mathbf{pdf} = \\frac{1}{\\sigma\\sqrt{2 \\pi}}e^{-\\frac{(x - \\mu)^2}{2 \\sigma^2}}',
+				'\\mathbf{cdf} = \\frac{1}{2} \\bigg[1 + erf\\bigg(\\frac{x - \\mu}{\\sigma\\sqrt{2}}\\bigg)\\bigg]'
 
 			],
 
@@ -733,9 +733,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\frac{p}{1 - (1 - p) e^t}',
-				'pmf = (1 - p)^k p',
-				'cdf = 1 - (1 - p)^{k + 1}'
+				'\\mathbf{mgf} = \\frac{p}{1 - (1 - p) e^t}',
+				'\\mathbf{pmf} = (1 - p)^k p',
+				'\\mathbf{cdf} = 1 - (1 - p)^{k + 1}'
 
 			],
 
@@ -791,9 +791,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\eta e^{\\eta}\\int_1^\\infty \\! e^{-\\eta v} v^{-t / b} \\, \\mathrm{d}v, t > 0',
-				'pdf = b \\eta e^{b x}e^{\\eta}\\exp{\\big(-\\eta e^{b x})}',
-				'cdf = 1 - \\exp{(-\\eta(e^{bx} - 1)\\big)}'
+				'\\mathbf{mgf} = \\eta e^{\\eta}\\int_1^\\infty \\! e^{-\\eta v} v^{-t / b} \\, \\mathrm{d}v, t > 0',
+				'\\mathbf{pdf} = b \\eta e^{b x}e^{\\eta}\\exp{\\big(-\\eta e^{b x})}',
+				'\\mathbf{cdf} = 1 - \\exp{(-\\eta(e^{bx} - 1)\\big)}'
 
 			],
 
@@ -855,9 +855,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\Gamma(1 - \\beta t)e^{\\mu t}',
-				'pdf = \\frac{1}{\\beta}e^{-(\\frac{x - \\mu}{\\beta} + e^{-\\frac{x - \\mu}{\\beta}})}',
-				'cdf = e^{-e^{-(x - \\mu) / \\beta}}'
+				'\\mathbf{mgf} = \\Gamma(1 - \\beta t)e^{\\mu t}',
+				'\\mathbf{pdf} = \\frac{1}{\\beta}e^{-(\\frac{x - \\mu}{\\beta} + e^{-\\frac{x - \\mu}{\\beta}})}',
+				'\\mathbf{cdf} = e^{-e^{-(x - \\mu) / \\beta}}'
 
 			],
 
@@ -916,9 +916,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\sec{(t)}, \\left|t\\right| < \\frac{\\pi}{2}',
-				'pdf = \\frac{1}{2} \\mathrm{sech}\\Big({\\frac{\\pi}{2} x}\\Big)',
-				'cdf = \\frac{2}{\\pi} \\arctan{\\bigg[\\exp{\\Big(\\frac{\\pi}{2} x\\Big)}\\bigg]}'
+				'\\mathbf{mgf} = \\sec{(t)}, \\left|t\\right| < \\frac{\\pi}{2}',
+				'\\mathbf{pdf} = \\frac{1}{2} \\mathrm{sech}\\Big({\\frac{\\pi}{2} x}\\Big)',
+				'\\mathbf{cdf} = \\frac{2}{\\pi} \\arctan{\\bigg[\\exp{\\Big(\\frac{\\pi}{2} x\\Big)}\\bigg]}'
 
 			],
 
@@ -973,9 +973,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = e^{\\Big(\\frac{\\lambda}{\\mu}\\Big)}\\Bigg[1 - \\sqrt{1 - \\frac{2 \\mu^2 t}{\\lambda}}\\Bigg]',
-				'pdf = \\bigg[\\frac{\\lambda}{2 \\pi x^3}\\bigg]^{1/2}\\exp{\\frac{-\\lambda (x - \\mu)^2}{2 \\mu^2 x}}',
-				'cdf = \\Phi\\Bigg(\\sqrt{\\frac{\\lambda}{x}}\\bigg(\\frac{x}{\\mu} - 1\\bigg)\\Bigg) + \\exp\\bigg(\\frac{2 \\lambda}{\\mu}\\bigg)\\Phi\\Bigg(-\\sqrt{\\frac{\\lambda}{x}}\\bigg(\\frac{x}{\\mu} + 1\\bigg)\\Bigg)'
+				'\\mathbf{mgf} = e^{\\Big(\\frac{\\lambda}{\\mu}\\Big)}\\Bigg[1 - \\sqrt{1 - \\frac{2 \\mu^2 t}{\\lambda}}\\Bigg]',
+				'\\mathbf{pdf} = \\bigg[\\frac{\\lambda}{2 \\pi x^3}\\bigg]^{1/2}\\exp{\\frac{-\\lambda (x - \\mu)^2}{2 \\mu^2 x}}',
+				'\\mathbf{cdf} = \\Phi\\Bigg(\\sqrt{\\frac{\\lambda}{x}}\\bigg(\\frac{x}{\\mu} - 1\\bigg)\\Bigg) + \\exp\\bigg(\\frac{2 \\lambda}{\\mu}\\bigg)\\Phi\\Bigg(-\\sqrt{\\frac{\\lambda}{x}}\\bigg(\\frac{x}{\\mu} + 1\\bigg)\\Bigg)'
 
 			],
 
@@ -1045,9 +1045,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\Bigg(\\frac{e^t - 1}{t}\\Bigg)^n',
-				'pdf = \\frac{1}{2(n - 1)!}\\sum_{k=0}^{n}(-1)^k\\binom{n}{k}(x - k)^{n - 1}\\mathrm{sgn}(x - k)',
-				'cdf = \\frac{1}{2} + \\frac{1}{2n!}\\sum_{k=0}^{n}(-1)^k\\binom{n}{k}(x - k)^{n}\\mathrm{sgn}(x - k)'
+				'\\mathbf{mgf} = \\Bigg(\\frac{e^t - 1}{t}\\Bigg)^n',
+				'\\mathbf{pdf} = \\frac{1}{2(n - 1)!}\\sum_{k=0}^{n}(-1)^k\\binom{n}{k}(x - k)^{n - 1}\\mathrm{sgn}(x - k)',
+				'\\mathbf{cdf} = \\frac{1}{2} + \\frac{1}{2n!}\\sum_{k=0}^{n}(-1)^k\\binom{n}{k}(x - k)^{n}\\mathrm{sgn}(x - k)'
 
 			],
 
@@ -1117,9 +1117,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\frac{\\exp{(\\mu t)}}{1 - b^2 t^2}, \\left|t\\right| < 1 / b',
-				'pdf = \\frac{1}{2b}\\exp{\\bigg(-\\frac{\\left|x - \\mu\\right|}{b}\\bigg)}',
-				'cdf = \\left\\{ \\begin{array}{lr} \\frac{1}{2}\\exp{\\Big(\\frac{x - \\mu}{b}\\Big)} & : x < \\mu\\\\ 1 - \\frac{1}{2}\\exp{\\Big(-\\frac{x - \\mu}{b}\\Big)} & : x \\ge \\mu \\end{array} \\right.'
+				'\\mathbf{mgf} = \\frac{\\exp{(\\mu t)}}{1 - b^2 t^2}, \\left|t\\right| < 1 / b',
+				'\\mathbf{pdf} = \\frac{1}{2b}\\exp{\\bigg(-\\frac{\\left|x - \\mu\\right|}{b}\\bigg)}',
+				'\\mathbf{cdf} = \\left\\{ \\begin{array}{lr} \\frac{1}{2}\\exp{\\Big(\\frac{x - \\mu}{b}\\Big)} & : x < \\mu\\\\ 1 - \\frac{1}{2}\\exp{\\Big(-\\frac{x - \\mu}{b}\\Big)} & : x \\ge \\mu \\end{array} \\right.'
 
 			],
 
@@ -1178,9 +1178,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\frac{\\ln{(1 - p \\exp{(t)})}}{\\ln{(1 - p)}}, t < -\\ln{p}',
-				'pmf = \\frac{-1}{\\ln{(1 - p)}}\\frac{p^k}{k}',
-				'cdf = 1 + \\frac{\\mathrm{B}(p; k + 1, 0)}{\\ln{(1 - p)}}'
+				'\\mathbf{mgf} = \\frac{\\ln{(1 - p \\exp{(t)})}}{\\ln{(1 - p)}}, t < -\\ln{p}',
+				'\\mathbf{pmf} = \\frac{-1}{\\ln{(1 - p)}}\\frac{p^k}{k}',
+				'\\mathbf{cdf} = 1 + \\frac{\\mathrm{B}(p; k + 1, 0)}{\\ln{(1 - p)}}'
 
 			],
 
@@ -1236,9 +1236,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = e^{\\mu t}\\mathrm{B}(1 - s t, 1 + s t)',
-				'pdf = \\frac{e^{-\\frac{x - \\mu}{s}}}{s\\Big(1 + e^{-\\frac{x - \\mu}{s}}\\Big)^2}',
-				'cdf = \\frac{1}{1 + e^{-\\frac{x - \\mu}{s}}}'
+				'\\mathbf{mgf} = e^{\\mu t}\\mathrm{B}(1 - s t, 1 + s t)',
+				'\\mathbf{pdf} = \\frac{e^{-\\frac{x - \\mu}{s}}}{s\\Big(1 + e^{-\\frac{x - \\mu}{s}}\\Big)^2}',
+				'\\mathbf{cdf} = \\frac{1}{1 + e^{-\\frac{x - \\mu}{s}}}'
 
 			],
 
@@ -1295,9 +1295,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\alpha (-x_m t)^{\\alpha}\\Gamma(-\\alpha, -x_m t), t < 0',
-				'pdf = \\frac{\\alpha x_m^{\\alpha}}{x^{\\alpha + 1}}, x \\ge x_m',
-				'cdf = 1 - \\Big(\\frac{x_m}{x}\\Big)^\\alpha, x \\ge x_m'
+				'\\mathbf{mgf} = \\alpha (-x_m t)^{\\alpha}\\Gamma(-\\alpha, -x_m t), t < 0',
+				'\\mathbf{pdf} = \\frac{\\alpha x_m^{\\alpha}}{x^{\\alpha + 1}}, x \\ge x_m',
+				'\\mathbf{cdf} = 1 - \\Big(\\frac{x_m}{x}\\Big)^\\alpha, x \\ge x_m'
 
 			],
 
@@ -1358,9 +1358,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\exp{(\\lambda(e^t - 1))}',
-				'pmf = \\frac{\\lambda^k}{k!}e^{-\\lambda}',
-				'cdf = e^{-\\lambda}\\sum_{i=0}^{\\left\\lfloor{k}\\right\\rfloor}\\frac{\\lambda^i}{i!}'
+				'\\mathbf{mgf} = \\exp{(\\lambda(e^t - 1))}',
+				'\\mathbf{pmf} = \\frac{\\lambda^k}{k!}e^{-\\lambda}',
+				'\\mathbf{cdf} = e^{-\\lambda}\\sum_{i=0}^{\\left\\lfloor{k}\\right\\rfloor}\\frac{\\lambda^i}{i!}'
 
 				/*cdf = \\frac{\\Gamma(\\left\\lfloor{k + 1}\\right\\rfloor, \\lambda)}{\\left\\lfloor{k}\\right\\rfloor!}*/
 
@@ -1418,9 +1418,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = 1 + \\sigma t e^{\\sigma^2 t^2 / 2} \\sqrt{\\frac{\\pi}{2}}\\bigg(\\mathrm{erf}{\\bigg(\\frac{\\sigma t}{\\sqrt{2}}\\bigg)} + 1\\bigg)',
-				'pdf = \\frac{x}{\\sigma^2}e^{-x^2 / 2\\sigma^2}',
-				'cdf = 1 - e^{-x^2 / 2\\sigma^2}'
+				'\\mathbf{mgf} = 1 + \\sigma t e^{\\sigma^2 t^2 / 2} \\sqrt{\\frac{\\pi}{2}}\\bigg(\\mathrm{erf}{\\bigg(\\frac{\\sigma t}{\\sqrt{2}}\\bigg)} + 1\\bigg)',
+				'\\mathbf{pdf} = \\frac{x}{\\sigma^2}e^{-x^2 / 2\\sigma^2}',
+				'\\mathbf{cdf} = 1 - e^{-x^2 / 2\\sigma^2}'
 
 			],
 
@@ -1486,8 +1486,8 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = e^{-(\\mu_1 + \\mu_2) + \\mu_1 e^t + \\mu_2 e^{-t}}',
-				'pmf = e^{-(\\mu_1 + \\mu_2)}\\bigg(\\frac{\\mu_1}{\\mu_2}\\bigg)^{k/2} I_k(2\\sqrt{\\mu_1 \\mu_2})'
+				'\\mathbf{mgf} = e^{-(\\mu_1 + \\mu_2) + \\mu_1 e^t + \\mu_2 e^{-t}}',
+				'\\mathbf{pmf} = e^{-(\\mu_1 + \\mu_2)}\\bigg(\\frac{\\mu_1}{\\mu_2}\\bigg)^{k/2} I_k(2\\sqrt{\\mu_1 \\mu_2})'
 
 			],
 
@@ -1547,8 +1547,8 @@ Math.p = {
 
 			formulas: [
 
-				'pdf = \\frac{\\Gamma(\\frac{\\nu + 1}{2})}{\\sqrt{\\nu\\pi}\\Gamma(\\frac{\\nu}{2})}\\Big(1 + \\frac{x^2}{\\nu}\\Big)^{-\\frac{\\nu + 1}{2}}',
-				'cdf = \\frac{1}{2} + x\\Gamma\\Big(\\frac{\\nu + 1}{2}\\Big)\\times\\frac{2F_1\\big(\\frac{1}{2}, \\frac{\\nu + 1}{2}; \\frac{3}{2}; -\\frac{x^2}{\\nu}\\big)}{\\sqrt{\\nu\\pi}\\Gamma(\\frac{\\nu}{2})}'
+				'\\mathbf{pdf} = \\frac{\\Gamma(\\frac{\\nu + 1}{2})}{\\sqrt{\\nu\\pi}\\Gamma(\\frac{\\nu}{2})}\\Big(1 + \\frac{x^2}{\\nu}\\Big)^{-\\frac{\\nu + 1}{2}}',
+				'\\mathbf{cdf} = \\frac{1}{2} + x\\Gamma\\Big(\\frac{\\nu + 1}{2}\\Big)\\times\\frac{2F_1\\big(\\frac{1}{2}, \\frac{\\nu + 1}{2}; \\frac{3}{2}; -\\frac{x^2}{\\nu}\\big)}{\\sqrt{\\nu\\pi}\\Gamma(\\frac{\\nu}{2})}'
 
 			],
 
@@ -1610,9 +1610,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\left\\{ \\begin{array}{lr} \\frac{e^{t b} - e^{t a}}{t(b - a)} & : t \\ne 0\\\\ 1 & : t = 0 \\end{array} \\right.',
-				'pdf = \\left\\{ \\begin{array}{lr} \\frac{1}{b - a} & : x \\in [a, b]\\\\ 0 & : \\text{otherwise} \\end{array} \\right.',
-				'cdf = \\left\\{ \\begin{array}{lr} 0 & : x < a\\\\ \\frac{x - a}{b - a} & : x \\in [a, b)\\\\ 1 & : x \\ge b \\end{array} \\right.'
+				'\\mathbf{mgf} = \\left\\{ \\begin{array}{lr} \\frac{e^{t b} - e^{t a}}{t(b - a)} & : t \\ne 0\\\\ 1 & : t = 0 \\end{array} \\right.',
+				'\\mathbf{pdf} = \\left\\{ \\begin{array}{lr} \\frac{1}{b - a} & : x \\in [a, b]\\\\ 0 & : \\text{otherwise} \\end{array} \\right.',
+				'\\mathbf{cdf} = \\left\\{ \\begin{array}{lr} 0 & : x < a\\\\ \\frac{x - a}{b - a} & : x \\in [a, b)\\\\ 1 & : x \\ge b \\end{array} \\right.'
 
 			],
 
@@ -1670,9 +1670,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\sum_{n=0}^{\\infty}\\frac{t^n\\lambda^n}{n!}\\Gamma(1 + n/k), k \\ge 1',
-				'pdf = \\left\\{ \\begin{array}{lr} \\frac{k}{\\lambda}\\Big(\\frac{x}{\\lambda}\\Big)^{k - 1} e^{-(x / \\lambda)^k} & : x \\ge 0\\\\ 0 & : x < 0 \\end{array} \\right.',
-				'cdf = \\left\\{ \\begin{array}{lr} 1 - e^{-(x / \\lambda)^k} & : x \\ge 0\\\\ 0 & : x < 0 \\end{array} \\right.'
+				'\\mathbf{mgf} = \\sum_{n=0}^{\\infty}\\frac{t^n\\lambda^n}{n!}\\Gamma(1 + n/k), k \\ge 1',
+				'\\mathbf{pdf} = \\left\\{ \\begin{array}{lr} \\frac{k}{\\lambda}\\Big(\\frac{x}{\\lambda}\\Big)^{k - 1} e^{-(x / \\lambda)^k} & : x \\ge 0\\\\ 0 & : x < 0 \\end{array} \\right.',
+				'\\mathbf{cdf} = \\left\\{ \\begin{array}{lr} 1 - e^{-(x / \\lambda)^k} & : x \\ge 0\\\\ 0 & : x < 0 \\end{array} \\right.'
 
 			],
 
@@ -1750,9 +1750,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = 2\\frac{I_1(R t)}{R t}',
-				'pdf = \\frac{2}{\\pi R^2}\\sqrt{R^2 - x^2}',
-				'cdf = \\frac{1}{2} + \\frac{x\\sqrt{R^2 - x^2}}{\\pi R^2} + \\frac{\\arcsin\\big(\\frac{x}{R}\\big)}{\\pi}, -R \\le x \\le R'
+				'\\mathbf{mgf} = 2\\frac{I_1(R t)}{R t}',
+				'\\mathbf{pdf} = \\frac{2}{\\pi R^2}\\sqrt{R^2 - x^2}',
+				'\\mathbf{cdf} = \\frac{1}{2} + \\frac{x\\sqrt{R^2 - x^2}}{\\pi R^2} + \\frac{\\arcsin\\big(\\frac{x}{R}\\big)}{\\pi}, -R \\le x \\le R'
 
 			],
 
@@ -1820,9 +1820,9 @@ Math.p = {
 
 			formulas: [
 
-				'mgf = \\frac{\\mathrm{Li}_s(e^t)}{\\zeta(s)}',
-				'pmf = \\frac{1/k^s}{\\zeta(s)}',
-				'cdf = \\frac{H_{k,s}}{\\zeta(s)}'
+				'\\mathbf{mgf} = \\frac{\\mathrm{Li}_s(e^t)}{\\zeta(s)}',
+				'\\mathbf{pmf} = \\frac{1/k^s}{\\zeta(s)}',
+				'\\mathbf{cdf} = \\frac{H_{k,s}}{\\zeta(s)}'
 
 			],
 
