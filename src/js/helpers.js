@@ -3,7 +3,6 @@
  * @desc Defines helper methods
  */
 Math.h = {
-
 	/**
 	 * Euler-Mascheroni constant.
 	 *
@@ -22,9 +21,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	csc: function(x) {
-
 		return 1 / Math.sin(x);
-
 	},
 
 	/**
@@ -35,9 +32,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	sec: function(x) {
-
 		return 1 / Math.cos(x);
-
 	},
 
 	/**
@@ -48,9 +43,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	cot: function(x) {
-
 		return 1 / Math.tan(x);
-
 	},
 
 	/**
@@ -61,11 +54,9 @@ Math.h = {
 	 * @return {number}
 	 */
 	sinh: function(x) {
-
 		var y = Math.exp(x);
 
 		return (y - 1 / y) / 2;
-
 	},
 
 	/**
@@ -76,11 +67,9 @@ Math.h = {
 	 * @return {number}
 	 */
 	cosh: function(x) {
-
 		var y = Math.exp(x);
 
 		return (y + 1 / y) / 2;
-
 	},
 
 	/**
@@ -91,19 +80,15 @@ Math.h = {
 	 * @return {number}
 	 */
 	tanh: function(x) {
-
-		if (x === Infinity) { return 1; }
-
-		else if (x === -Infinity) { return -1; }
-
-		else {
-
+		if (x === Infinity) {
+			return 1;
+		} else if (x === -Infinity) {
+			return -1;
+		} else {
 			var y = Math.exp(2 * x);
 
 			return (y - 1) / (y + 1);
-
 		}
-
 	},
 
 	/**
@@ -114,9 +99,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	csch: function(x) {
-
 		return 1 / this.sinh(x);
-
 	},
 
 	/**
@@ -127,9 +110,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	sech: function(x) {
-
 		return 1 / this.cosh(x);
-
 	},
 
 	/**
@@ -140,9 +121,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	coth: function(x) {
-
 		return 1 / this.tanh(x);
-
 	},
 
 	/**
@@ -156,7 +135,6 @@ Math.h = {
 	 * @return {number} random number between 0 and 1
 	 */
 	random: function() {
-
 		var r = 624,	// state size
 			M1 = 70,	// first parameter
 			M2 = 179,	// second parameter
@@ -175,36 +153,33 @@ Math.h = {
 		 * If less, the rest of the state is initialized with an algorithm that is based on a linear congruential generator from Numerical Recipes.
 		 */
 		function seedArray(array) {
-
 			v = array.slice(0, r);
 
-			for (var i = array.length; i < r; i++) { v[i] = ((1664525 * v[i - array.length]) + 1013904223) >>> 0; }
-
+			for (var i = array.length; i < r; i++) {
+				v[i] = ((1664525 * v[i - array.length]) + 1013904223) >>> 0;
+			}
 		}
 
 		// seed the generator with a single unsigned 32-bit value. Equivalent to seedArray([value]).
 		function seed(value) {
-
 			seedArray([value]);
-
 		}
 
 		// generate a single random 32-bit float from 0 (inclusive) to 1 (exclusive).
 		function random() {
+			var indexRm1 = iRm1[index];
+			var indexRm2 = iRm2[index];
 
-			var indexRm1 = iRm1[index],
-				indexRm2 = iRm2[index],
+			var v0 = v[index];
+			var vM1 = v[i1[index]];
+			var vM2 = v[i2[index]];
+			var vM3 = v[i3[index]];
 
-				v0 = v[index],
-				vM1 = v[i1[index]],
-				vM2 = v[i2[index]],
-				vM3 = v[i3[index]],
-
-				z0 = (0x80000000 & v[indexRm1]) ^ (0x7FFFFFFF & v[indexRm2]),
-				z1 = (v0 ^ (v0 << 25)) ^ (vM1 ^ (vM1 >>> 27)),
-				z2 = (vM2 >>> 9) ^ (vM3 ^ (vM3 >>> 1)),
-				z3 = z1 ^ z2,
-				z4 = z0 ^ (z1 ^ (z1 << 9)) ^ (z2 ^ (z2 << 21)) ^ (z3 ^ (z3 >>> 21));
+			var z0 = (0x80000000 & v[indexRm1]) ^ (0x7FFFFFFF & v[indexRm2]);
+			var z1 = (v0 ^ (v0 << 25)) ^ (vM1 ^ (vM1 >>> 27));
+			var z2 = (vM2 >>> 9) ^ (vM3 ^ (vM3 >>> 1));
+			var z3 = z1 ^ z2;
+			var z4 = z0 ^ (z1 ^ (z1 << 9)) ^ (z2 ^ (z2 << 21)) ^ (z3 ^ (z3 >>> 21));
 
 			v[index] = z3;
 			v[indexRm1] = z4;
@@ -217,18 +192,15 @@ Math.h = {
 
 			// return 32-bit float
 			return (z4 >>> 0) / 0x100000000;
-
 		}
 
 		// pre-compute indirection tables
 		for (var i = 0; i < r; i++) {
-
 			iRm1.push((i + r - 1) % r);
 			iRm2.push((i + r - 2) % r);
 			i1.push((i + M1) % r);
 			i2.push((i + M2) % r);
 			i3.push((i + M3) % r);
-
 		}
 
 		// seed with date
@@ -241,7 +213,6 @@ Math.h = {
 		};*/
 
 		return random();
-
 	},
 
 	/**
@@ -258,9 +229,7 @@ Math.h = {
 	 * @return {boolean}
 	 */
 	isInt: function(n) {
-
 		return typeof n === 'number' && isFinite(n) && n > -9007199254740992 && n < 9007199254740992 && Math.floor(n) === n;
-
 	},
 
 	/**
@@ -284,12 +253,17 @@ Math.h = {
 	 * @return {boolean}
 	 */
 	inBounds: function(value, bounds) {
-
-		if (bounds.lower.closed && bounds.upper.closed) { return (value >= bounds.lower.value && value <= bounds.upper.value) ? true : false; }
-		if (bounds.lower.closed && !bounds.upper.closed) { return (value >= bounds.lower.value && value < bounds.upper.value) ? true : false; }
-		if (!bounds.lower.closed && bounds.upper.closed) { return (value > bounds.lower.value && value <= bounds.upper.value) ? true : false; }
-		if (!bounds.lower.closed && !bounds.upper.closed) { return (value > bounds.lower.value && value < bounds.upper.value) ? true : false; }
-
+		if (bounds.lower.closed && bounds.upper.closed) {
+			return value >= bounds.lower.value && value <= bounds.upper.value;
+		} else if (bounds.lower.closed && !bounds.upper.closed) {
+			return value >= bounds.lower.value && value < bounds.upper.value;
+		} else if (!bounds.lower.closed && bounds.upper.closed) {
+			return value > bounds.lower.value && value <= bounds.upper.value;
+		} else if (!bounds.lower.closed && !bounds.upper.closed) {
+			return value > bounds.lower.value && value < bounds.upper.value;
+		} else {
+			return false;
+		}
 	},
 
 	/**
@@ -304,9 +278,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	round: function(n, d) {
-
 		return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
-
 	},
 
 	/**
@@ -326,12 +298,15 @@ Math.h = {
 	 * @return {integer} sign
 	 */
 	sgn: function(x) {
-
-		if (x < 0) { return -1; }
-		else if (x === 0) { return 0; }
-		else if (x > 0) { return 1; }
-		else { return false; }
-
+		if (x < 0) {
+			return -1;
+		} else if (x === 0) {
+			return 0;
+		} else if (x > 0) {
+			return 1;
+		} else {
+			return false;
+		}
 	},
 
 	/**
@@ -351,12 +326,16 @@ Math.h = {
 	 * @return {number}
 	 */
 	factorial: function(n) {
+		if (!this.isInt(n) || n < 0) {
+			return this.gamma(n + 1);
+		} else {
+			var i = 0;
+			var f = 1;
 
-		if (!this.isInt(n) || n < 0) { return this.gamma(n + 1); }
-		else {
-			var i = 0,
-				f = 1;
-			for (i = n; i > 1; --i) { f *= i; }
+			for (i = n; i > 1; --i) {
+				f *= i;
+			}
+
 			return f;
 		}
 
@@ -374,9 +353,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	choose: function(n, k) {
-
 		return (this.isInt(n) && this.isInt(k) && n > 0 && k >= 0) ? this.factorial(n) / (this.factorial(n - k) * this.factorial(k)) : false;
-
 	},
 
 	/**
@@ -390,9 +367,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	triangular: function(n) {
-
 		return this.choose(n + 1, 2);
-
 	},
 
 	/**
@@ -406,19 +381,20 @@ Math.h = {
 	 * @return {number}
 	 */
 	erf: function(x) {
+		var c = [0.254829592, -0.284496736, 1.421413741, -1.453152027, 1.061405429];
+		var p = 0.3275911;
+		var s = 1;
 
-		var c = [0.254829592, -0.284496736, 1.421413741, -1.453152027, 1.061405429],
-			p = 0.3275911, s = 1;
-
-		if (x < 0) { s = -1; }
+		if (x < 0) {
+			s = -1;
+		}
 
 		x = Math.abs(x);
 
-		var t = 1.0 / (1.0 + p * x),
-			y = 1.0 - (((((c[4] * t + c[3]) * t) + c[2]) * t + c[1]) * t + c[0]) * t * Math.exp(-x * x);
+		var t = 1.0 / (1.0 + p * x);
+		var y = 1.0 - (((((c[4] * t + c[3]) * t) + c[2]) * t + c[1]) * t + c[0]) * t * Math.exp(-x * x);
 
 		return s * y;
-
 	},
 
 	/**
@@ -432,9 +408,9 @@ Math.h = {
 	 * @return {number}
 	 */
 	harmonic: function(n) {
-
-		return (n < 0) ? Infinity : this.sum(function(k) { return 1 / k; }, 1, n);
-
+		return (n < 0) ? Infinity : this.sum(function(k) {
+			return 1 / k;
+		}, 1, n);
 	},
 
 	/**
@@ -449,9 +425,9 @@ Math.h = {
 	 * @return {number}
 	 */
 	polylogarithm: function(s, z) {
-
-		return (s === 1) ? Infinity : this.sum(function(k) { return Math.pow(z, k) / Math.pow(k, s); }, 1, Infinity);
-
+		return (s === 1) ? Infinity : this.sum(function(k) {
+			return Math.pow(z, k) / Math.pow(k, s);
+		}, 1, Infinity);
 	},
 
 	/**
@@ -465,9 +441,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	zeta: function(s) {
-
 		return this.polylogarithm(s, 1);
-
 	},
 
 	/**
@@ -481,9 +455,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	xi: function(s) {
-
 		return 0.5 * s * (s - 1) * Math.pow(Math.PI, -s / 2) * this.gamma(0.5 * s) * this.zeta(s);
-
 	},
 
 	/**
@@ -498,9 +470,7 @@ Math.h = {
 	 * @return {number}
 	 */
 	beta: function(a, b) {
-
 		return this.gamma(a) * this.gamma(b) / this.gamma(a + b);
-
 	},
 
 	/**
@@ -517,42 +487,44 @@ Math.h = {
 	 * @return {number}
 	 */
 	gamma: function(n) {
+		var g = 7;
+		var p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+		var g_ln = 607 / 128;
+		var p_ln = [0.99999999999999709182, 57.156235665862923517, -59.597960355475491248, 14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4, 0.46523628927048575665e-4, -0.98374475304879564677e-4, 0.15808870322491248884e-3, -0.21026444172410488319e-3, 0.21743961811521264320e-3, -0.16431810653676389022e-3, 0.84418223983852743293e-4, -0.26190838401581408670e-4, 0.36899182659531622704e-5];
 
-		var g = 7,
-			p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7],
-			g_ln = 607 / 128,
-			p_ln = [0.99999999999999709182, 57.156235665862923517, -59.597960355475491248, 14.136097974741747174, -0.49191381609762019978, 0.33994649984811888699e-4, 0.46523628927048575665e-4, -0.98374475304879564677e-4, 0.15808870322491248884e-3, -0.21026444172410488319e-3, 0.21743961811521264320e-3, -0.16431810653676389022e-3, 0.84418223983852743293e-4, -0.26190838401581408670e-4, 0.36899182659531622704e-5];
-
-		if (n < 0.5) { return Math.PI / (Math.sin(Math.PI * n) * this.gamma(1 - n)); }
-		else if (n > 100) { return Math.exp(lngamma(n)); }
-		else {
-
+		if (n < 0.5) {
+			return Math.PI / (Math.sin(Math.PI * n) * this.gamma(1 - n));
+		} else if (n > 100) {
+			return Math.exp(lngamma(n));
+		} else {
 			n -= 1;
 
 			var x = p[0];
 
-			for (var i = 1; i < g + 2; i++) { x += p[i] / (n + i); }
+			for (var i = 1; i < g + 2; i++) {
+				x += p[i] / (n + i);
+			}
 
 			var t = n + g + 0.5;
 
 			return Math.sqrt(2 * Math.PI) * Math.pow(t, n + 0.5) * Math.exp(-t) * x;
-
 		}
 
 		function lngamma(n) {
-
-			if (n < 0) { return Number('0/0'); }
+			if (n < 0) {
+				return Number('0/0');
+			}
 
 			var x = p_ln[0];
 
-			for (var i = p_ln.length - 1; i > 0; --i) { x += p_ln[i] / (n + i); }
+			for (var i = p_ln.length - 1; i > 0; --i) {
+				x += p_ln[i] / (n + i);
+			}
 
 			var t = n + g_ln + 0.5;
 
 			return 0.5 * Math.log(2 * Math.PI) + (n + 0.5) * Math.log(t) - t + Math.log(x) - Math.log(n);
-
 		}
-
 	},
 
 	/**
@@ -567,11 +539,11 @@ Math.h = {
 	 * @return {number}
 	 */
 	ligamma: function(a, x) {
-
 		var self = this;
 
-		return Math.pow(x, a) * this.gamma(a) * Math.exp(-x) * this.sum(function(k) { return Math.pow(x, k) / self.gamma(a + k + 1); }, 0, Infinity);
-
+		return Math.pow(x, a) * this.gamma(a) * Math.exp(-x) * this.sum(function(k) {
+			return Math.pow(x, k) / self.gamma(a + k + 1);
+		}, 0, Infinity);
 	},
 
 	/**
@@ -586,11 +558,11 @@ Math.h = {
 	 * @return {number}
 	 */
 	uigamma: function(a, z) {
-
 		var self = this;
 
-		return this.gamma(a) * (1 - Math.pow(z, a) * Math.exp(-z) * this.sum(function(k) { return Math.pow(z, k) / self.gamma(a + k + 1); }, 0, Infinity));
-
+		return this.gamma(a) * (1 - Math.pow(z, a) * Math.exp(-z) * this.sum(function(k) {
+			return Math.pow(z, k) / self.gamma(a + k + 1);
+		}, 0, Infinity));
 	},
 
 	/**
@@ -604,11 +576,11 @@ Math.h = {
 	 * @return {number}
 	 */
 	digamma: function(n) {
-
 		var self = this;
 
-		return (n > 0) ? this.derivative(function(x) { return Math.log(self.gamma(x)); }, 1, n) : Infinity;
-
+		return (n > 0) ? this.derivative(function(x) {
+			return Math.log(self.gamma(x));
+		}, 1, n) : Infinity;
 	},
 
 	/**
@@ -623,11 +595,11 @@ Math.h = {
 	 * @return {number}
 	 */
 	besselI: function(a, x) {
-
 		var self = this;
 
-		return (typeof a !== 'undefined' && typeof x !== 'undefined') ? self.sum(function(m) { return 1 / (self.factorial(m) * self.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a); }, 0, Infinity) : false;
-
+		return (typeof a !== 'undefined' && typeof x !== 'undefined') ? self.sum(function(m) {
+			return 1 / (self.factorial(m) * self.gamma(m + a + 1)) * Math.pow(x / 2, 2 * m + a);
+		}, 0, Infinity) : false;
 	},
 
 	/**
@@ -645,59 +617,62 @@ Math.h = {
 	 * @return {number} sum
 	 */
 	sum: function(f, a, b, tol, max) {
+		var v1 = 0;
+		var v2 = 0;
+		var s1 = 0;
+		var s2 = 0;
+		var i = a;
 
-		var v1 = 0, v2 = 0,
-			s1 = 0, s2 = 0,
-			i = a;
-
-		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return infSum(f, a, b, tol, max); }
-		else { return finSum(f, a, b); }
+		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) {
+			return infSum(f, a, b, tol, max);
+		} else {
+			return finSum(f, a, b);
+		}
 
 		function infSum(f, a, b, tol, max) {
-
-			if (typeof tol === 'undefined') { tol = 1E-12; }
-			if (typeof max === 'undefined') { max = 1E6; }
+			if (typeof tol === 'undefined') {
+				tol = 1E-12;
+			}
+			if (typeof max === 'undefined') {
+				max = 1E6;
+			}
 
 			while (i <= b) {
-
 				v1 = f(i);
 				v2 = f(i + 1);
 
 				if (!isNaN(v1) && !isNaN(v2)) {
-
 					s1 += v1;
 					s2 = s1 + f(i + 1);
 
-					if (Math.abs(s1 - s2) < tol) { break; }
-
+					if (Math.abs(s1 - s2) < tol) {
+						break;
+					}
 				}
 
-				if (i > max) { return undefined; }
+				if (i > max) {
+					return undefined;
+				}
 
 				i += 1;
-
 			}
 
 			return s1;
-
 		}
 
 		function finSum(f, a, b) {
-
 			while (i <= b) {
-
 				v1 = f(i);
 
-				if (!isNaN(v1)) { s1 += v1; }
+				if (!isNaN(v1)) {
+					s1 += v1;
+				}
 
 				i += 1;
-
 			}
 
 			return s1;
-
 		}
-
 	},
 
 	/**
@@ -712,14 +687,15 @@ Math.h = {
 	 * @return {number} sum
 	 */
 	sSum: function(array, callback) {
+		var i;
+		var l;
+		var s = 0;
 
-		var i, l,
-			s = 0;
-
-		for (i = 0, l = array.length; i < l; i++) { s += callback(array[i]); }
+		for (i = 0, l = array.length; i < l; i++) {
+			s += callback(array[i]);
+		}
 
 		return s;
-
 	},
 
 	/**
@@ -737,61 +713,64 @@ Math.h = {
 	 * @return {number} sum - product-sum
 	 */
 	product: function(f, a, b, tol, max) {
+		var v1 = 1;
+		var v2 = 1;
+		var s1 = 1;
+		var s2 = 1;
+		var i = a;
 
-		var v1 = 1, v2 = 1,
-			s1 = 1, s2 = 1,
-			i = a;
-
-		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) { return infProd(f, a, b, tol, max); }
-		else { return finProd(f, a, b); }
+		if (Math.abs(a) === Infinity || Math.abs(b) === Infinity) {
+			return infProd(f, a, b, tol, max);
+		} else {
+			return finProd(f, a, b);
+		}
 
 		function infProd(f, a, b, tol, max) {
-
-			if (typeof tol === 'undefined') { tol = 1E-12; }
-			if (typeof max === 'undefined') { max = 1E6; }
+			if (typeof tol === 'undefined') {
+				tol = 1E-12;
+			}
+			if (typeof max === 'undefined') {
+				max = 1E6;
+			}
 
 			while (i <= b) {
-
 				v1 = f(i);
 				v2 = f(i + 1);
 
 				if (!isNaN(v1) && !isNaN(v2)) {
-
 					s1 *= v1;
 					s2 = s1 * f(i + 1);
 
-					if (Math.abs(s1 - s2) < tol) { break; }
-
+					if (Math.abs(s1 - s2) < tol) {
+						break;
+					}
 				}
 
-				if (i > max) { return undefined; }
+				if (i > max) {
+					return undefined;
+				}
 
 				i += 1;
-
 			}
 
 			return s1;
-
 		}
 
 		function finProd(f, a, b) {
-
 			while (i <= b) {
-
 				v1 = f(i);
 
-				if (!isNaN(v1)) { s1 *= v1; }
+				if (!isNaN(v1)) {
+					s1 *= v1;
+				}
 
 				i += 1;
-
 			}
 
 			return s1;
-
 		}
 
 		return s1;
-
 	},
 
 	/**
@@ -807,54 +786,50 @@ Math.h = {
 	 * @return {number}
 	 */
 	derivative: function(f, o, x) {
-
-		var self = this,
-			f1, h = 0.01,
-			i = 0,
-			v = [], d = [];
+		var self = this;
+		var f1;
+		var h = 0.01;
+		var i = 0;
+		var v = [];
+		var d = [];
 
 		/*switch (o) {
-
 			case 1:
 				f1 = function(x, h) { return (-f(x + 2 * h) + 8 * f(x + h) - 8 * f(x - h) + f(x - 2 * h)) / (12 * h); };
 				break;
-
 			case 2:
 				f1 = function(x, h) { return (-f(x + 2 * h) + 16 * f(x + h) - 30 * f(x) + 16 * f(x - h) - f(x - 2 * h)) / (12 * Math.pow(h, 2)); };
 				break;
-
 			case 3:
 				f1 = function(x, h) { return (f(x + 2 * h) - 2 * f(x + h) + 2 * f(x - h) - f(x - 2 * h)) / (2 * Math.pow(h, 3)); };
 				break;
-
 			case 4:
 				f1 = function(x, h) { return (f(x + 2 * h) - 4 * f(x + h) + 6 * f(x) - 4 * f(x - h) + f(x - 2 * h)) / Math.pow(h, 4); };
 				break;
-
 			default:
 				return false;
-
 		}*/
 
-		f1 = function(x, h) { return self.sum(function(i) { return Math.pow(-1, i) * self.choose(o, i) * f(x + (o / 2 - i) * h); }, 0, o) / Math.pow(h, o); };
+		f1 = function(x, h) {
+			return self.sum(function(i) {
+				return Math.pow(-1, i) * self.choose(o, i) * f(x + (o / 2 - i) * h);
+			}, 0, o) / Math.pow(h, o);
+		};
 
 		while (i <= 99999) {
-
 			h -= h / 2;
 			v[i] = f1(x, h);
 
 			if (i !== 0) {
-
 				d[i] = Math.abs(v[i] - v[i - 1]);
 
-				if (!isNaN(v[i]) && !isNaN(v[i - 1]) && (Math.abs(v[i]) !== Infinity && Math.abs(v[i - 1]) !== Infinity) && (d[i] >= d[i - 1])) { return v[i - 1]; }
-
+				if (!isNaN(v[i]) && !isNaN(v[i - 1]) && (Math.abs(v[i]) !== Infinity && Math.abs(v[i - 1]) !== Infinity) && (d[i] >= d[i - 1])) {
+					return v[i - 1];
+				}
 			}
 
 			i += 1;
-
 		}
-
 	},
 
 	/**
@@ -873,22 +848,22 @@ Math.h = {
 	 * @return {number}
 	 */
 	integral: function(f, a, b) {
-
 		return (b - a) / 6 * (f(a) + 4 * f((a + b) / 2) + f(b));
-
 	},
 
 	/** Solve a linear system of equations given by a nxn matrix
 	with a result vector nx1. */
 	gauss: function(A) {
-
-		var n = A.length,
-			i, j, k;
+		var n = A.length;
+		var i;
+		var j;
+		var k;
 
 		for (i = 0; i < n; i++) {
 			// Search for maximum in this column
 			var maxEl = Math.abs(A[i][i]);
 			var maxRow = i;
+
 			for (k = (i + 1); k < n; k++) {
 				if (Math.abs(A[k][i]) > maxEl) {
 					maxEl = Math.abs(A[k][i]);
@@ -899,6 +874,7 @@ Math.h = {
 			// Swap maximum row with current row (column by column)
 			for (k = i; k < (n + 1); k++) {
 				var tmp = A[maxRow][k];
+
 				A[maxRow][k] = A[i][k];
 				A[i][k] = tmp;
 			}
@@ -906,6 +882,7 @@ Math.h = {
 			// Make all rows below this one 0 in current column
 			for (k = (i + 1); k < n; k++) {
 				var c = -A[k][i] / A[i][i];
+
 				for (j = i; j < n + 1; j++) {
 					if (i === j) {
 						A[k][j] = 0;
@@ -926,7 +903,6 @@ Math.h = {
 		}
 
 		return x;
-
 	},
 
 	/**
@@ -943,12 +919,10 @@ Math.h = {
 	 * @return {number}
 	 */
 	sqSize: function(n) {
-
-		var r = Math.sqrt(n),
-			f = Math.floor(r);
+		var r = Math.sqrt(n);
+		var f = Math.floor(r);
 
 		return (r % f >= 0.5) ? f + 1 : f;
-
 	},
 
 	/**
@@ -974,17 +948,18 @@ Math.h = {
 	 * @return {string}
 	 */
 	arrDump: function(array, cols, key) {
-
-		if (typeof cols === 'undefined') { cols = this.sqSize(l); }
+		if (typeof cols === 'undefined') {
+			cols = this.sqSize(l);
+		}
 
 		var str = '[';
 
 		for (var i = 0, l = array.length; i < l; i++) {
-
-			if (i % cols === 0) { str += '\n'; }
+			if (i % cols === 0) {
+				str += '\n';
+			}
 
 			str += (typeof key === 'undefined') ? '\t' + array[i] + ',' : '\t' + this.round(array[i][key], 4) + ',';
-
 		}
 
 		str = str.slice(0, -1);
@@ -992,7 +967,6 @@ Math.h = {
 		str += '\n]';
 
 		return str;
-
 	},
 
 	/**
@@ -1002,110 +976,96 @@ Math.h = {
 	 * @return {string} html
 	 */
 	parseFunc: function(f) {
+		var i;
+		var c = '';
+		var str = '';
+		var res = [];
+		var depth = 0;
+		var keywords = {
+			code: [
+				// code keywords
+				'else',
+				'for',
+				'function',
+				'if',
+				'switch',
+				'var',
+				'while'
+			],
+			custom: [
+				// custom keywords
+				'params'
+			],
+			constants: [
+				// built in MATH constants
+				['Math.E', 'e'],
+				['Math.LN2', '\\ln(2)'],
+				['Math.LN10', '\\ln(10)'],
+				['Math.LOG2E', '\\log_2(e)'],
+				['Math.LOG10E', '\\log_10(e)'],
+				['Math.PI', '\\pi'],
+				['Math.SQRT1_2', '\\sqrt{\\frac{1}{2}}'],
+				['Math.SQRT2', '\\sqrt{2}'],
 
-		var i,
-			c = '',
-			str = '',
-			res = [],
-			depth = 0,
-			keywords = {
+				// helper MATH constants
+				['Math.h.EM', '\\gamma']
+			],
+			functions: [
+				// built in MATH methods
+				'Math.abs',
+				'Math.acos',
+				'Math.asin',
+				'Math.atan',
+				'Math.atan2',
+				'Math.ceil',
+				'Math.cos',
+				'Math.exp',
+				'Math.floor',
+				'Math.log',
+				'Math.max',
+				'Math.min',
+				'Math.pow',
+				'Math.random',
+				'Math.round',
+				'Math.sin',
+				'Math.sqrt',
+				'Math.tan',
 
-				code: [
-
-					// code keywords
-					'else',
-					'for',
-					'function',
-					'if',
-					'switch',
-					'var',
-					'while'
-
-				],
-
-				custom: [
-
-					// custom keywords
-					'params'
-
-				],
-
-				constants: [
-
-					// built in MATH constants
-					['Math.E', 'e'],
-					['Math.LN2', '\\ln(2)'],
-					['Math.LN10', '\\ln(10)'],
-					['Math.LOG2E', '\\log_2(e)'],
-					['Math.LOG10E', '\\log_10(e)'],
-					['Math.PI', '\\pi'],
-					['Math.SQRT1_2', '\\sqrt{\\frac{1}{2}}'],
-					['Math.SQRT2', '\\sqrt{2}'],
-
-					// helper MATH constants
-					['Math.h.EM', '\\gamma']
-
-				],
-
-				functions: [
-
-					// built in MATH methods
-					'Math.abs',
-					'Math.acos',
-					'Math.asin',
-					'Math.atan',
-					'Math.atan2',
-					'Math.ceil',
-					'Math.cos',
-					'Math.exp',
-					'Math.floor',
-					'Math.log',
-					'Math.max',
-					'Math.min',
-					'Math.pow',
-					'Math.random',
-					'Math.round',
-					'Math.sin',
-					'Math.sqrt',
-					'Math.tan',
-
-					// helper MATH methods
-					'Math.h.besselI',
-					'Math.h.beta',
-					'Math.h.choose',
-					'Math.h.cosh',
-					'Math.h.cot',
-					'Math.h.coth',
-					'Math.h.csc',
-					'Math.h.csch',
-					'Math.h.derivative',
-					'Math.h.digamma',
-					'Math.h.erf',
-					'Math.h.factorial',
-					'Math.h.gamma',
-					'Math.h.harmonic',
-					'Math.h.inBounds',
-					'Math.h.integral',
-					'Math.h.isInt',
-					'Math.h.ligamma',
-					'Math.h.polylogarithm',
-					'Math.h.product',
-					'Math.h.random',
-					'Math.h.round',
-					'Math.h.sec',
-					'Math.h.sech',
-					'Math.h.sgn',
-					'Math.h.sinh',
-					'Math.h.sum',
-					'Math.h.tanh',
-					'Math.h.triangular',
-					'Math.h.uigamma',
-					'Math.h.xi',
-					'Math.h.zeta'
-
-				]
-
-			};
+				// helper MATH methods
+				'Math.h.besselI',
+				'Math.h.beta',
+				'Math.h.choose',
+				'Math.h.cosh',
+				'Math.h.cot',
+				'Math.h.coth',
+				'Math.h.csc',
+				'Math.h.csch',
+				'Math.h.derivative',
+				'Math.h.digamma',
+				'Math.h.erf',
+				'Math.h.factorial',
+				'Math.h.gamma',
+				'Math.h.harmonic',
+				'Math.h.inBounds',
+				'Math.h.integral',
+				'Math.h.isInt',
+				'Math.h.ligamma',
+				'Math.h.polylogarithm',
+				'Math.h.product',
+				'Math.h.random',
+				'Math.h.round',
+				'Math.h.sec',
+				'Math.h.sech',
+				'Math.h.sgn',
+				'Math.h.sinh',
+				'Math.h.sum',
+				'Math.h.tanh',
+				'Math.h.triangular',
+				'Math.h.uigamma',
+				'Math.h.xi',
+				'Math.h.zeta'
+			]
+		};
 
 		f = '\t\t\t\t\treturn 1 / (2 * Math.h.factorial(params.n - 1)) * Math.h.sum(function(k) {\n\t\t\t\t\t\t// test comment\n\t\t\t\t\t\treturn Math.pow(-1, k) * Math.h.choose(params.n, k) * Math.pow(x - k, params.n - 1) * /* test inline comment */ Math.h.sgn(x - k);\n\t\t\t\t\t}, 0, params.n);';
 
@@ -1120,34 +1080,83 @@ Math.h = {
 			.replace(/params\.(\w+)/gi, '<var>$1</var>');
 
 		for (i = 0, l = f.length; i < l; i++) {
-
 			c = f.charAt(i);
 
 			if (c === '(' || c === ')') {
-
-				if (res[depth] === undefined) { res[depth] = []; }
+				if (res[depth] === undefined) {
+					res[depth] = [];
+				}
 
 				res[depth].push({ str: str, pos: i });
 
-				if (c === '(') { depth += 1; }
-				if (c === ')') { depth -= 1; }
+				if (c === '(') {
+					depth += 1;
+				}
+				if (c === ')') {
+					depth -= 1;
+				}
 				//if (c === '{') { depth += 1; }
 				//if (c === '}') { depth += 1; }
 
 				str = '';
-
 			} else {
-
 				str += c;
-
 			}
-
 		}
 
 		console.log(f, res);
 
 		return res;
+	},
 
+	/**
+	 * Parses math operations from an input string.
+	 *
+	 * @param {string} string - "math" input
+	 * @return {string} html
+	 */
+	parseMath: function(string) {
+		var i;
+		var c = '';
+		var res = {};
+		var depth = 0;
+
+		string = '/* test comment */ ((x-2)(x+3))^2';
+
+		string = string.toString()
+			// strip single-line comments
+			.replace(/\/\/.*(?:\r?\n|\r)/g, '')
+			// strip multi-line comments
+			.replace(/\/\*[\s\S]*?\*\//g, '')
+			// normalize whitespace
+			.replace(/\s+/g, '');
+
+		function findMaxDepth(str) {
+			var d = 0, a = [];
+
+			for (i = 0, l = str.length; i < l; i++) {
+				c = str.charAt(i);
+
+				if (c === '(' || c === '[' || c === '{') {
+					d += 1;
+				} else if (c === ')' || c === ']' || c === '}') {
+					d -= 1;
+				}
+
+				a.push(d);
+			}
+
+			return Math.max.apply(null, a);
+		}
+
+		function validateString(string) {
+			if (/[^!|.:%=<>(){}\[\]\w\/*^+-]/gi.test(string) || (string.split('(').length - 1 !== string.split(')').length - 1) || (string.split('{').length - 1 !== string.split('}').length - 1) || (string.split('[').length - 1 !== string.split(']').length - 1)) {
+				return false;
+			}
+
+			return true;
+		}
+
+		return res;
 	}
-
 };
